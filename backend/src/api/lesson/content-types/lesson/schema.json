@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lessons",
+  "info": {
+    "singularName": "lesson",
+    "pluralName": "lessons",
+    "displayName": "Lesson",
+    "description": "Bài học thuộc về một khóa học"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "blocks"
+    },
+    "order": {
+      "type": "integer"
+    },
+    "isFree": {
+      "type": "boolean",
+      "default": false
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course",
+      "inversedBy": "lessons"
+    },
+    "user_progresses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-progress.user-progress",
+      "mappedBy": "lesson"
+    },
+    "user_activity_logs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-activity-log.user-activity-log",
+      "mappedBy": "lesson"
+    },
+    "videoUrl": {
+      "type": "string"
+    }
+  }
+}

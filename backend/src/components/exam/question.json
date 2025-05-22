@@ -1,0 +1,23 @@
+{
+    "collectionName": "components_exam_questions",
+    "info": {
+      "displayName": "Question",
+      "description": ""
+    },
+    "options": {},
+    "attributes": {
+      "questionText": {
+        "type": "string",
+        "required": true
+      },
+      "options": {
+        "type": "json",
+        "required": true
+      },
+      "correctAnswer": {
+        "type": "string",
+        "required": true
+      }
+    }
+  }
+  

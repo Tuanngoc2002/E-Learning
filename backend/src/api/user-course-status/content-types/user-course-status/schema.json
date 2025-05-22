@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_course_statuses",
+  "info": {
+    "singularName": "user-course-status",
+    "pluralName": "user-course-statuses",
+    "displayName": "UserCourseStatuses"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course",
+      "inversedBy": "user_course_statuses"
+    },
+    "progress": {
+      "type": "integer"
+    },
+    "isCompleted": {
+      "type": "boolean"
+    },
+    "startedAt": {
+      "type": "datetime"
+    },
+    "lastAccessed": {
+      "type": "datetime"
+    }
+  }
+}

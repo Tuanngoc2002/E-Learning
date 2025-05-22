@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_activity_logs",
+  "info": {
+    "singularName": "user-activity-log",
+    "pluralName": "user-activity-logs",
+    "displayName": "UserActivityLog"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "user_activity_logs"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course",
+      "inversedBy": "user_activity_logs"
+    },
+    "lesson": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lesson.lesson",
+      "inversedBy": "user_activity_logs"
+    },
+    "duration": {
+      "type": "biginteger"
+    },
+    "accessedAt": {
+      "type": "datetime"
+    }
+  }
+}

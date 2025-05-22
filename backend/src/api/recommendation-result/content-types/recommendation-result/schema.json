@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "recommendation_results",
+  "info": {
+    "singularName": "recommendation-result",
+    "pluralName": "recommendation-results",
+    "displayName": "RecommendationResult"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "recommendation_results"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course",
+      "inversedBy": "recommendation_results"
+    },
+    "score": {
+      "type": "decimal"
+    },
+    "recommendedAt": {
+      "type": "datetime"
+    }
+  }
+}

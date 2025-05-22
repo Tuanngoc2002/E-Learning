@@ -1,0 +1,76 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_progresses",
+  "info": {
+    "singularName": "user-progress",
+    "pluralName": "user-progresses",
+    "displayName": "UserProgress",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "score": {
+      "type": "decimal"
+    },
+    "durationSpent": {
+      "type": "biginteger"
+    },
+    "isCompleted": {
+      "type": "boolean"
+    },
+    "accessedAt": {
+      "type": "datetime"
+    },
+    "reaction": {
+      "type": "enumeration",
+      "enum": [
+        "like",
+        "neutral",
+        "dislike"
+      ]
+    },
+    "feedback": {
+      "type": "text"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "user_progresses"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course",
+      "inversedBy": "user_progresses"
+    },
+    "lesson": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::lesson.lesson",
+      "inversedBy": "user_progresses"
+    },
+    "difficulty": {
+      "type": "enumeration",
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ]
+    },
+    "timeOfDay": {
+      "type": "enumeration",
+      "enum": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night"
+      ]
+    },
+    "organizationID": {
+      "type": "string"
+    }
+  }
+}

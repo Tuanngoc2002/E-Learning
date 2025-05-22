@@ -1,0 +1,169 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+E-LearningAI Development Guidelines
+
+-Development Philosophy
++Check correct folder before do something 
+
++Develop with Atomic Design principles.
+
++Write clean, reusable, and scalable code.
+
++Emphasize type-safety and functional programming.
+
++Follow modular and maintainable practices.
+
++Ensure all features are testable and extensible.
+
+-Code Style Guidelines
+
++Use 2-space indentation.
+
++Use single quotes for strings.
+
++Omit semicolons unless necessary.
+
++Use strict equality (===) over loose equality (==).
+
++Avoid unused variables.
+
++Limit line length to 100 characters.
+
++Limit props per component to 5; use object when exceeding.
+
++Split components exceeding 100 lines of JSX.
+
+-Naming Conventions
+
++PascalCase for Components, Interfaces, and Types.
+
++camelCase for variables, functions, hooks, props.
+
++kebab-case for file and folder names.
+
++UPPER_SNAKE_CASE for constants and environment variables.
+
++Prefix boolean variables with verbs: isLoading, hasError.
+
++Prefix custom hooks with use: useAuth, useCourseProgress.
+
+
+-State Management
+
++Local state: useState, useReducer, useContext.
+
++Global state: Zustand or Redux Toolkit (createSlice).
+
++Avoid deeply nested structures; normalize the state.
+
++Separate slices by feature.
+
+
+-GraphQL & Data Fetching
+
++Use GraphQL Codegen to generate typed SDK.
+
++Fetch data using SWR or graphql-request.
+
++Create feature-based hooks: useUserQuery, useCourseMutation.
+
++Handle loading, error, and empty states properly.
+
+-Next.js Best Practices
+
++Use App Router and Layouts.
+
++Prefer Server Components.
+
++Use 'use client' directive only when necessary (events, state, DOM APIs).
+
++Use generateMetadata() for SEO.
+
++Split heavy components using dynamic imports.
+
+
+-Tailwind CSS Styling Guidelines
+
++Use concise and consistent utility classes.
+
++Follow spacing scale (p-4, gap-6, mt-8, etc.).
+
++Customize theme via tailwind.config.ts.
+
++Implement dark mode using :root or Tailwind dark mode.
+
++Avoid inline styles unless necessary.
+
+
+-AI Module Guidelines
+
++AI logic is stored under /features/ai/ or /lib/ai/.
+
++Organized into: data-preparation, model-selection, training, and recommendation.
+
++Use API or Colab server for model communication.
+
++Recommendation results follow:
+type CourseRecommendation = {
+  courseId: string;
+  score: number;
+  reason: string;
+}
+
+-Security & Access Control
+
++Implement role-based middleware for Admin, Instructor, and User.
+
++Sanitize all user inputs.
+
++Use DOMPurify for sanitizing user-generated HTML.
+
++Use token-based or OAuth2 authentication.
+
+
+-Testing
+
++Unit tests using Jest and React Testing Library.
+
++Follow Arrange-Act-Assert pattern.
+
++Mock APIs using Mock Service Worker (MSW).
+
++Write tests for complex components, hooks, and flows.
+
+
+-Accessibility (a11y)
+
++Use semantic HTML and valid ARIA attributes.
+
++Ensure keyboard accessibility and logical focus order.
+
++Maintain WCAG contrast ratios.
+
++Provide clear error messages and accessible form feedback.
+
+
+-Internationalization (i18n)
+
++Use next-i18next for translations.
+
++Detect locale from the URL.
+
++Format dates, numbers, and currencies based on locale.
+
++Support RTL layouts when applicable.
+
+
+-Documentation
+
++Use JSDoc for functions, types, and public APIs.
+
++Add clear examples where needed.
+
++Document folder structure and feature boundaries.
+
++Use consistent Markdown formatting and structure.
+

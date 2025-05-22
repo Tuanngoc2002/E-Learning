@@ -1,0 +1,111 @@
+{
+  "kind": "collectionType",
+  "collectionName": "users",
+  "info": {
+    "singularName": "user",
+    "pluralName": "users",
+    "displayName": "User"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "users-permissions": {
+      "advanced": {
+        "unique_email": true,
+        "allow_register": true,
+        "default_role": "authenticated"
+      }
+    }
+  },
+  "attributes": {
+    "username": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true
+    },
+    "provider": {
+      "type": "string"
+    },
+    "password": {
+      "type": "password",
+      "required": true
+    },
+    "resetPasswordToken": {
+      "type": "string"
+    },
+    "confirmationToken": {
+      "type": "string"
+    },
+    "confirmed": {
+      "type": "boolean",
+      "default": false
+    },
+    "blocked": {
+      "type": "boolean",
+      "default": false
+    },
+    "role": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.role",
+      "inversedBy": "users"
+    },
+    "organizationID": {
+      "type": "string"
+    },
+    "courses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::course.course",
+      "mappedBy": "instructor"
+    },
+    "user_progresses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-progress.user-progress",
+      "mappedBy": "user"
+    },
+    "user_activity_logs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-activity-log.user-activity-log",
+      "mappedBy": "user"
+    },
+    "user_course_statuses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-course-status.user-course-status",
+      "mappedBy": "user"
+    },
+    "recommendation_results": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::recommendation-result.recommendation-result",
+      "mappedBy": "user"
+    },
+    "user_courses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-course.user-course",
+      "mappedBy": "user"
+    },
+    "chat_messages": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::chat-message.chat-message",
+      "mappedBy": "users_permissions_user"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "user"
+    }
+  }
+}

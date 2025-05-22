@@ -1,0 +1,99 @@
+{
+  "kind": "collectionType",
+  "collectionName": "courses",
+  "info": {
+    "singularName": "course",
+    "pluralName": "courses",
+    "displayName": "course",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "descriptions": {
+      "type": "text"
+    },
+    "difficulty": {
+      "type": "enumeration",
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ]
+    },
+    "price": {
+      "type": "float"
+    },
+    "isPublished": {
+      "type": "boolean",
+      "default": false
+    },
+    "organizationID": {
+      "type": "string"
+    },
+    "instructor": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "courses"
+    },
+    "lessons": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::lesson.lesson",
+      "mappedBy": "course"
+    },
+    "user_progresses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-progress.user-progress",
+      "mappedBy": "course"
+    },
+    "user_activity_logs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-activity-log.user-activity-log",
+      "mappedBy": "course"
+    },
+    "user_course_statuses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-course-status.user-course-status",
+      "mappedBy": "course"
+    },
+    "recommendation_results": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::recommendation-result.recommendation-result",
+      "mappedBy": "course"
+    },
+    "user_courses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-course.user-course",
+      "mappedBy": "course"
+    },
+    "chat_messages": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::chat-message.chat-message",
+      "mappedBy": "course"
+    },
+    "exam": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::exam.exam",
+      "mappedBy": "course"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "course"
+    }
+  }
+}
