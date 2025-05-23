@@ -11,6 +11,7 @@ import vnpayService from '@/services/vnpayService';
 import { useSearchParams } from 'next/navigation';
 import { useComments } from '@/hooks/useComments';
 import ChatBox from '@/components/molecules/Chatbox';
+import RecommendedCourses from '@/components/organisms/RecommendedCourses';
 
 const CourseDetailPage = () => {
   const params = useParams();
@@ -226,7 +227,7 @@ const CourseDetailPage = () => {
       />
 
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto space-y-16">
           <div className="grid md:grid-cols-3 gap-8">
             {/* Course Info */}
             <div className="md:col-span-2">
@@ -262,11 +263,11 @@ const CourseDetailPage = () => {
                   <div className="flex items-center mb-6">
                     <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
                       <span className="text-indigo-600 font-semibold">
-                        {course.instructor.username.charAt(0).toUpperCase()}
+                        {course?.instructor?.username?.charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
-                      <p className="font-medium">{course.instructor.username}</p>
+                      <p className="font-medium">{course?.instructor?.username}</p>
                       <p className="text-sm text-gray-500">Instructor</p>
                     </div>
                   </div>
@@ -347,6 +348,9 @@ const CourseDetailPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Recommended Courses */}
+          <RecommendedCourses courseId={courseId} />
 
           {/* Course Curriculum */}
           <div className="mt-16">
@@ -480,13 +484,13 @@ const CourseDetailPage = () => {
                             <div className="flex items-start space-x-3">
                               <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
                                 <span className="text-indigo-600 font-semibold">
-                                  {comment.user.username.charAt(0).toUpperCase()}
+                                  {comment?.user?.username?.charAt(0).toUpperCase()}
                                 </span>
                               </div>
                               <div className="flex-1">
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center space-x-2">
-                                    <span className="font-medium">{comment.user.username}</span>
+                                    <span className="font-medium">{comment?.user?.username}</span>
                                     <span className="text-sm text-gray-500">
                                       {new Date(comment.createdAt).toLocaleDateString()}
                                     </span>
@@ -582,7 +586,7 @@ const CourseDetailPage = () => {
                                         <div className="flex items-start space-x-3">
                                           <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
                                             <span className="text-indigo-600 font-semibold text-sm">
-                                              {reply.user.username.charAt(0).toUpperCase()}
+                                              {reply?.user?.username?.charAt(0).toUpperCase()}
                                             </span>
                                           </div>
                                           <div className="flex-1">
