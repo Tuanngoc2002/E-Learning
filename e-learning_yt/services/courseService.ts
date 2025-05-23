@@ -29,7 +29,7 @@ export const courseService = {
   async getCourseById(id: number): Promise<Course> {
     try {
       const response = await fetch(
-        `${API_URL}/api/courses/${id}?populate[lessons][populate]=*&populate[lessons][sort]=order:asc`,
+        `${API_URL}/api/courses/${id}?populate[lessons][populate]=*&populate[lessons][sort]=order:asc&populate[user_courses][populate]=*`,
         { headers }
       );
       if (!response.ok) {

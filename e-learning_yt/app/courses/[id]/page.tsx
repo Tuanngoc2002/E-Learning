@@ -34,6 +34,7 @@ const CourseDetailPage = () => {
 
   // Check enrollment status from course data
   useEffect(() => {
+    console.log(course);
     if (course && course.user_courses && course.user_courses.length > 0) {
       setIsEnrolled(true);
     } else {
@@ -60,42 +61,45 @@ const CourseDetailPage = () => {
 
     if (enrollment === 'pending' && vnp_ResponseCode && vnp_TransactionStatus) {
       const handlePaymentReturn = async () => {
-        try {
-          // Verify payment success
-          if (vnp_ResponseCode === '00' && vnp_TransactionStatus === '00') {
-            console.log('Enrolling with courseId:', courseId);
-            // Complete enrollment
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/enroll`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${jwt}`,
-              },
-              body: JSON.stringify({
-                data: {
-                  course: courseId
-                }
-              }),
-            });
-
-            const data = await response.json();
-            console.log('Enrollment response:', data);
-
-            if (!response.ok) {
-              console.error('Enrollment failed:', data);
-              throw new Error(data.error?.message || data.error || 'Failed to enroll in course');
+        // Verify payment success
+        if (vnp_ResponseCode === '00' && vnp_TransactionStatus === '00') {
+          try {
+            // Get courseId from localStorage
+            const pendingCourseId = localStorage.getItem('pendingEnrollmentCourseId');
+            if (!pendingCourseId) {
+              throw new Error('Course ID not found');
             }
 
-            setIsEnrolled(true);
-            setEnrollmentSuccess(true);
-            // Remove query parameters after successful enrollment
-            router.replace(`/courses/${courseId}`);
-          } else {
-            setEnrollmentError('Payment was not successful');
-          }
-        } catch (err) {
-          console.error('Enrollment error:', err);
-          setEnrollmentError(err instanceof Error ? err.message : 'Failed to complete enrollment');
+            // Complete enrollment
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/enroll`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${jwt}`,
+                },
+                body: JSON.stringify({
+                  data: {
+                    course: parseInt(pendingCourseId)
+                  }
+                }),
+              });
+
+              const data = await response.json();
+
+              if (!response.ok) {
+                throw new Error(data.error || 'Failed to enroll in course');
+              }
+
+              setIsEnrolled(true);
+              setEnrollmentSuccess(true);
+              // Remove query parameters after successful enrollment
+              router.replace(`/courses/${courseId}`);
+            } catch (err) {
+              setEnrollmentError(err instanceof Error ? err.message : 'Failed to complete enrollment');
+            }
+
+        } else {
+          setEnrollmentError('Payment was not successful');
         }
       };
 
@@ -115,6 +119,9 @@ const CourseDetailPage = () => {
     try {
       setEnrollmentLoading(true);
       setEnrollmentError(null);
+
+      // Save courseId to localStorage before payment
+      localStorage.setItem('pendingEnrollmentCourseId', course.id.toString());
 
       // Create VNPAY payment URL
       const { paymentUrl } = await vnpayService.createPayment({
@@ -169,6 +176,7 @@ const CourseDetailPage = () => {
       setEnrollmentLoading(false);
     }
   };
+
 
   if (loading) {
     return (
@@ -300,27 +308,23 @@ const CourseDetailPage = () => {
                         ({new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(course.price * 24000)})
                       </div>
                     </div>
-                    <button 
-                      onClick={handleEnrollClick}
-                      disabled={enrollmentLoading || isEnrolled}
-                      className={`w-full py-3 px-4 rounded-lg transition duration-300 ${isEnrolled 
-                        ? 'bg-green-100 text-green-800 cursor-not-allowed flex items-center justify-center' 
-                        : 'bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-indigo-400'}`}
-                    >
-                      {isEnrolled ? (
-                        <>
+                    {isEnrolled ? (
+                      <div className="bg-green-100 text-green-800 py-3 px-4 rounded-lg mb-4">
+                        <div className="flex items-center justify-center">
                           <FaCheck className="mr-2" />
-                          Already enrolled
-                        </>
-                      ) : enrollmentLoading ? (
-                        'Processing...'
-                      ) : (
-                        'Enroll Now'
-                      )}
-                    </button>
-                    {enrollmentError && (
-                      <p className="text-red-500 text-sm mt-2">{enrollmentError}</p>
+                          <span>Enrolled</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <button 
+                        onClick={handleEnrollClick}
+                        disabled={enrollmentLoading}
+                        className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 disabled:bg-indigo-400"
+                      >
+                        {enrollmentLoading ? 'Processing...' : 'Enroll Now'}
+                      </button>
                     )}
+                   
                   </div>
                   <div className="border-t border-gray-200 pt-4">
                     <h3 className="font-semibold mb-2">This course includes:</h3>
