@@ -47,7 +47,14 @@ const RecommendedCourses: React.FC<RecommendedCoursesProps> = ({ courseId }) => 
         }
 
         const { data } = await response.json();
-        setRecommendations(data);
+        // Get current course name
+        const currentCourse = data.find((course: Course) => course.id === courseId);
+        // Filter out the current course and courses with same name
+        const filteredRecommendations = data.filter((course: Course) => 
+          course.id !== courseId && 
+          course.name.toLowerCase() !== currentCourse?.name?.toLowerCase()
+        );
+        setRecommendations(filteredRecommendations);
       } catch (error) {
         console.error('Error fetching recommendations:', error);
       } finally {
@@ -81,7 +88,6 @@ const RecommendedCourses: React.FC<RecommendedCoursesProps> = ({ courseId }) => 
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Recommended Courses</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {recommendations.map((course) => (
           <Link 

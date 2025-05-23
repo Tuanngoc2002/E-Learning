@@ -349,8 +349,12 @@ const CourseDetailPage = () => {
             </div>
           </div>
 
-          {/* Recommended Courses */}
-          <RecommendedCourses courseId={courseId} />
+          {course && (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+              <h2 className="text-2xl font-bold mb-6">Recommended Courses</h2>
+              <RecommendedCourses courseId={course.id} />
+            </div>
+          )}
 
           {/* Course Curriculum */}
           <div className="mt-16">

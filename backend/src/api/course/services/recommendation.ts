@@ -28,7 +28,7 @@ const getRecommendedCourses = async (courseId: number) => {
 
     const baseFilters: Filter = {
       $and: [
-        { id: { $ne: courseId } }
+        { id: { $ne: Number(courseId) } }
       ]
     };
 
