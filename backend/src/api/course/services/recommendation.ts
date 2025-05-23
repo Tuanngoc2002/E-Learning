@@ -12,6 +12,11 @@ interface Course {
   difficulty_level?: { id: number; name: string };
   tags?: Array<{ id: number; name: string }>;
   price?: number;
+  user_courses?: Array<{
+    id: number;
+    documentId: string;
+    enrolledAt: string;
+  }>;
 }
 
 interface Filter {
@@ -20,31 +25,34 @@ interface Filter {
 
 interface ScoredCourse extends Course {
   score: number;
+  relevance?: number;
 }
 
 const calculateSimilarityScore = (course1: Course, course2: Course): number => {
   let score = 0;
 
-  // Category similarity (highest weight)
+  // Category similarity (highest weight - 5 points)
   if (course1.category?.id === course2.category?.id) {
     score += 5;
   }
 
-  // Difficulty level similarity
+  // Difficulty level similarity (3 points)
   if (course1.difficulty_level?.id === course2.difficulty_level?.id) {
     score += 3;
   }
 
-  // Tags similarity
-  const course1Tags = new Set(course1.tags?.map(tag => tag.id) || []);
-  const course2Tags = new Set(course2.tags?.map(tag => tag.id) || []);
-  const commonTags = new Set([...course1Tags].filter(x => course2Tags.has(x)));
-  score += commonTags.size * 2;
+  // Tags similarity (2 points per matching tag)
+  const course1Tags = course1.tags?.map(tag => tag.id) || [];
+  const course2Tags = course2.tags?.map(tag => tag.id) || [];
+  const commonTags = course1Tags.filter(tagId => course2Tags.includes(tagId));
+  score += commonTags.length * 2;
 
-  // Price range similarity (smaller difference = higher score)
+  // Price range similarity (up to 2 points)
   if (course1.price && course2.price) {
     const priceDiff = Math.abs(course1.price - course2.price);
-    score += Math.max(0, 2 - (priceDiff / 100)); // Max 2 points for price similarity
+    const maxPrice = Math.max(course1.price, course2.price);
+    const priceScore = 2 * (1 - priceDiff / maxPrice);
+    score += priceScore;
   }
 
   // Popularity factors
@@ -55,9 +63,9 @@ const calculateSimilarityScore = (course1: Course, course2: Course): number => {
   return score;
 };
 
-const getRecommendedCourses = async (courseId: number) => {
+const getRecommendedCourses = async (courseId: number, userId?: number) => {
   try {
-    // Get the current course with all necessary details
+    // Get the current course
     const currentCourse = await strapi.db.query('api::course.course').findOne({
       where: { id: courseId },
       populate: ['category', 'tags', 'difficulty_level']
@@ -67,48 +75,65 @@ const getRecommendedCourses = async (courseId: number) => {
       throw new Error('Course not found');
     }
 
-    // Get all potential courses for recommendation
+    // Get user's enrolled courses if userId is provided
+    let enrolledCourseIds: number[] = [];
+    if (userId) {
+      const userCourses = await strapi.db.query('api::user-course.user-course').findMany({
+        where: { user: userId },
+        populate: ['course']
+      });
+      enrolledCourseIds = userCourses
+        .map(uc => uc.course?.id)
+        .filter((id): id is number => typeof id === 'number');
+    }
+
+    // Get all potential courses
     const allCourses = await strapi.db.query('api::course.course').findMany({
-      where: {
-        $and: [
-          { id: { $ne: courseId } },
-          { name: { $ne: currentCourse.name } } // Exclude courses with same name
-        ]
-      },
       populate: ['category', 'tags', 'difficulty_level', 'thumbnail', 'instructor', 'user_courses']
     }) as Course[];
 
+    // Filter out enrolled and duplicate courses
+    const filteredCourses = allCourses.filter(course => {
+      // Exclude current course and courses with same name
+      if (course.id === courseId || course.name === currentCourse.name) return false;
+      
+      // Exclude enrolled courses (from user_courses table)
+      if (enrolledCourseIds.includes(course.id)) return false;
+      
+      // Exclude courses that have user_courses (already enrolled)
+      if (course.user_courses && course.user_courses.length > 0) return false;
+      
+      return true;
+    });
+
     // Remove duplicate courses based on documentId and name
-    const uniqueCourses = allCourses.reduce((acc: Course[], current) => {
+    const uniqueCourses = filteredCourses.reduce((acc: Course[], current) => {
       const isDuplicate = acc.some(course => 
         course.documentId === current.documentId || 
         course.name.toLowerCase() === current.name.toLowerCase()
       );
-      if (!isDuplicate) {
-        acc.push(current);
-      }
+      if (!isDuplicate) acc.push(current);
       return acc;
     }, []);
 
-    // Calculate similarity scores for each course
-    const scoredCourses: ScoredCourse[] = uniqueCourses
+    // Calculate scores and get top 4
+    const scoredCourses = uniqueCourses
       .map(course => ({
         ...course,
         score: calculateSimilarityScore(currentCourse, course)
       }))
-      .sort((a, b) => b.score - a.score) // Sort by score in descending order
-      .slice(0, 4); // Get top 4 recommendations
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4);
 
-    // Normalize scores to a 0-1 range for relevance
-    const maxScore = Math.max(...scoredCourses.map(c => c.score));
-    const minScore = Math.min(...scoredCourses.map(c => c.score));
-    const scoreRange = maxScore - minScore;
+    // Normalize scores
+    const scores = scoredCourses.map(c => c.score);
+    const maxScore = Math.max(...scores);
+    const minScore = Math.min(...scores);
+    const range = maxScore - minScore;
 
     return scoredCourses.map(course => ({
       ...course,
-      relevance: scoreRange > 0 
-        ? (course.score - minScore) / scoreRange
-        : 1
+      relevance: range > 0 ? (course.score - minScore) / range : 1
     }));
   } catch (error) {
     console.error('Error getting recommended courses:', error);
