@@ -7,6 +7,7 @@ import "./globals.css";
 import ResponsiveNav from "@/components/organisms/ResponsiveNav";
 import Footer from "@/components/organisms/Footer";
 import ScrollToTop from "@/components/Helper/ScrollToTop";
+import { usePathname } from 'next/navigation';
 
 const font = Space_Grotesk({
   weight: ["300", "400", "500", "600", "700"],
@@ -15,11 +16,14 @@ const font = Space_Grotesk({
 
 // Client component wrapper
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
+  const isAuthPage = pathname === '/login' || pathname === '/register';
+
   return (
     <ApolloProvider client={client}>
-      <ResponsiveNav />
+      {!isAuthPage && <ResponsiveNav />}
       {children}
-      <Footer />
+      {!isAuthPage && <Footer />}
       <ScrollToTop />
     </ApolloProvider>
   );

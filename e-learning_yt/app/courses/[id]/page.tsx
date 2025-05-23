@@ -7,12 +7,15 @@ import { useCourseDetail } from '@/hooks/useCourseDetail';
 import { useAuth } from '@/hooks/useAuth';
 import PageHero from '@/components/organisms/PageHero';
 import { useEffect, useState } from 'react';
+import vnpayService from '@/services/vnpayService';
+import { useSearchParams } from 'next/navigation';
 import { useComments } from '@/hooks/useComments';
 import ChatBox from '@/components/molecules/Chatbox';
 
 const CourseDetailPage = () => {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const courseId = Number(params.id);
   const { course, lessons, loading, error } = useCourseDetail(courseId);
   const { isAuthenticated, user, jwt } = useAuth();
@@ -49,6 +52,57 @@ const CourseDetailPage = () => {
     }
   }, [error, router]);
 
+  // Handle VNPAY return
+  useEffect(() => {
+    const enrollment = searchParams.get('enrollment');
+    const vnp_ResponseCode = searchParams.get('vnp_ResponseCode');
+    const vnp_TransactionStatus = searchParams.get('vnp_TransactionStatus');
+
+    if (enrollment === 'pending' && vnp_ResponseCode && vnp_TransactionStatus) {
+      const handlePaymentReturn = async () => {
+        try {
+          // Verify payment success
+          if (vnp_ResponseCode === '00' && vnp_TransactionStatus === '00') {
+            console.log('Enrolling with courseId:', courseId);
+            // Complete enrollment
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/enroll`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`,
+              },
+              body: JSON.stringify({
+                data: {
+                  course: courseId
+                }
+              }),
+            });
+
+            const data = await response.json();
+            console.log('Enrollment response:', data);
+
+            if (!response.ok) {
+              console.error('Enrollment failed:', data);
+              throw new Error(data.error?.message || data.error || 'Failed to enroll in course');
+            }
+
+            setIsEnrolled(true);
+            setEnrollmentSuccess(true);
+            // Remove query parameters after successful enrollment
+            router.replace(`/courses/${courseId}`);
+          } else {
+            setEnrollmentError('Payment was not successful');
+          }
+        } catch (err) {
+          console.error('Enrollment error:', err);
+          setEnrollmentError(err instanceof Error ? err.message : 'Failed to complete enrollment');
+        }
+      };
+
+      handlePaymentReturn();
+    }
+  }, [searchParams, jwt, courseId, router]);
+
   const handleEnrollClick = async () => {
     if (!isAuthenticated) {
       // Redirect to login page if user is not authenticated
@@ -56,7 +110,24 @@ const CourseDetailPage = () => {
       return;
     }
 
-    setShowEnrollmentModal(true);
+    if (!course) return;
+
+    try {
+      setEnrollmentLoading(true);
+      setEnrollmentError(null);
+
+      // Create VNPAY payment URL
+      const { paymentUrl } = await vnpayService.createPayment({
+        price: course.price,
+        return_url: `${window.location.origin}/courses/${courseId}?enrollment=pending`,
+      });
+
+      // Redirect to VNPAY payment page
+      window.location.href = paymentUrl;
+    } catch (err) {
+      setEnrollmentError(err instanceof Error ? err.message : 'Failed to create payment');
+      setEnrollmentLoading(false);
+    }
   };
 
   const handleConfirmEnrollment = async () => {
@@ -221,25 +292,32 @@ const CourseDetailPage = () => {
               <div className="bg-white rounded-lg shadow-md overflow-hidden sticky top-4">
                 <div className="p-6">
                   <div className="text-center mb-6">
-                    <div className="text-3xl font-bold text-indigo-600 mb-2">
-                      ${course.price}
-                    </div>
-                    {isEnrolled ? (
-                      <div className="bg-green-100 text-green-800 py-3 px-4 rounded-lg mb-4">
-                        <div className="flex items-center justify-center">
-                          <FaCheck className="mr-2" />
-                          <span>Enrolled</span>
-                        </div>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-indigo-600 mb-1">
+                        ${course.price}
                       </div>
-                    ) : (
-                      <button 
-                        onClick={handleEnrollClick}
-                        disabled={enrollmentLoading}
-                        className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 disabled:bg-indigo-400"
-                      >
-                        {enrollmentLoading ? 'Processing...' : 'Enroll Now'}
-                      </button>
-                    )}
+                      <div className="text-gray-600 text-sm">
+                        ({new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(course.price * 24000)})
+                      </div>
+                    </div>
+                    <button 
+                      onClick={handleEnrollClick}
+                      disabled={enrollmentLoading || isEnrolled}
+                      className={`w-full py-3 px-4 rounded-lg transition duration-300 ${isEnrolled 
+                        ? 'bg-green-100 text-green-800 cursor-not-allowed flex items-center justify-center' 
+                        : 'bg-indigo-600 text-white hover:bg-indigo-700 disabled:bg-indigo-400'}`}
+                    >
+                      {isEnrolled ? (
+                        <>
+                          <FaCheck className="mr-2" />
+                          Already enrolled
+                        </>
+                      ) : enrollmentLoading ? (
+                        'Processing...'
+                      ) : (
+                        'Enroll Now'
+                      )}
+                    </button>
                     {enrollmentError && (
                       <p className="text-red-500 text-sm mt-2">{enrollmentError}</p>
                     )}

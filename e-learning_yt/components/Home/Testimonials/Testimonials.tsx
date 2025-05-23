@@ -8,21 +8,21 @@ const testimonials = [
     id: 1,
     name: "John Doe",
     role: "Web Developer",
-    image: "/images/testimonials/user1.jpg",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
     content: "The courses are well-structured and the instructors are knowledgeable. I learned a lot!",
   },
   {
     id: 2,
     name: "Jane Smith",
     role: "UI Designer",
-    image: "/images/testimonials/user2.jpg",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
     content: "Great platform for learning new skills. The community is supportive and helpful.",
   },
   {
     id: 3,
     name: "Mike Johnson",
     role: "Business Analyst",
-    image: "/images/testimonials/user3.jpg",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     content: "The quality of content is excellent. I highly recommend these courses to everyone.",
   },
 ];
@@ -67,4 +67,4 @@ const Testimonials = () => {
   );
 };
 
-export default Testimonials; 
+export default Testimonials;
