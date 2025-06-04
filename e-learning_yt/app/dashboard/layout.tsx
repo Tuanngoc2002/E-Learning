@@ -26,7 +26,7 @@ interface NavItem {
 const navigation: NavItem[] = [
   { label: 'Dashboard', icon: <FiHome className="w-6 h-6" />, href: '/dashboard', roles: ['admin', 'instructor', 'user'] },
   { label: 'Courses', icon: <FiBook className="w-6 h-6" />, href: '/dashboard/courses', roles: ['admin', 'instructor', 'user'] },
-  { label: 'Users', icon: <FiUsers className="w-6 h-6" />, href: '/dashboard/users', roles: ['admin'] },
+  { label: 'Users', icon: <FiUsers className="w-6 h-6" />, href: '/dashboard/admin/users', roles: ['admin'] },
   { label: 'Analytics', icon: <FiBarChart2 className="w-6 h-6" />, href: '/dashboard/analytics', roles: ['admin', 'instructor'] },
   { label: 'Messages', icon: <FiMessageCircle className="w-6 h-6" />, href: '/dashboard/messages', roles: ['admin', 'instructor', 'user'] },
   { label: 'Settings', icon: <FiSettings className="w-6 h-6" />, href: '/dashboard/settings', roles: ['admin', 'instructor', 'user'] },

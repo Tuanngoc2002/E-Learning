@@ -51,14 +51,19 @@ export interface CourseResponse {
 }
 
 export interface Lesson {
-  id: string;
+  id: number;
   title: string;
-  description: string;
-  videoUrl: string;
-  duration: number; // in minutes
+  content?: string | null;
+  videoUrl?: string | null;
   order: number;
-  isPreview: boolean;
   isFree: boolean;
+  course?: {
+    id: number;
+    name: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
 }
 
 export interface CourseProgress {

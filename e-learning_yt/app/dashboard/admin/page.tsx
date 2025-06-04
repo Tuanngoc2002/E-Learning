@@ -207,23 +207,52 @@ const AdminDashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Link href="/dashboard/admin/users/new" className="bg-blue-600 text-white p-6 rounded-lg shadow-md hover:bg-blue-700 transition">
-            <FiUserPlus className="w-8 h-8 mb-4" />
-            <h3 className="font-semibold">Add New User</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Link
+            href="/dashboard/admin/users"
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <div className="flex items-center">
+              <FiUsers className="w-8 h-8 text-blue-600 mr-4" />
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">Manage Users</h3>
+                <p className="text-gray-600">View and manage all users</p>
+              </div>
+            </div>
           </Link>
-          <Link href="/dashboard/admin/courses/new" className="bg-green-600 text-white p-6 rounded-lg shadow-md hover:bg-green-700 transition">
-            <FiBookOpen className="w-8 h-8 mb-4" />
-            <h3 className="font-semibold">Create Course</h3>
+          
+          <Link
+            href="/dashboard/admin/users/new"
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <div className="flex items-center">
+              <FiUserPlus className="w-8 h-8 text-green-600 mr-4" />
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">Add New User</h3>
+                <p className="text-gray-600">Create a new user account</p>
+              </div>
+            </div>
           </Link>
-          <Link href="/dashboard/admin/reports" className="bg-yellow-600 text-white p-6 rounded-lg shadow-md hover:bg-yellow-700 transition">
-            <FiTrendingUp className="w-8 h-8 mb-4" />
-            <h3 className="font-semibold">View Reports</h3>
-          </Link>
-          <Link href="/dashboard/admin/issues" className="bg-red-600 text-white p-6 rounded-lg shadow-md hover:bg-red-700 transition">
-            <FiAlertCircle className="w-8 h-8 mb-4" />
-            <h3 className="font-semibold">Pending Issues</h3>
-          </Link>
+          
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="flex items-center">
+              <FiBookOpen className="w-8 h-8 text-indigo-600 mr-4" />
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">Course Management</h3>
+                <p className="text-gray-600">Manage courses and content</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="flex items-center">
+              <FiSettings className="w-8 h-8 text-gray-600 mr-4" />
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">System Settings</h3>
+                <p className="text-gray-600">Configure system settings</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

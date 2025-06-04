@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { FiUserPlus, FiArrowLeft } from 'react-icons/fi';
+import { useRouter, useParams } from 'next/navigation';
+import { FiSave, FiArrowLeft } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 
 interface Role {
@@ -12,59 +12,95 @@ interface Role {
   type: string;
 }
 
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  confirmed: boolean;
+  blocked: boolean;
+  organizationID?: string;
+  role: {
+    id: number;
+    name: string;
+    type: string;
+  };
+}
+
 interface UserFormData {
   username: string;
   email: string;
-  password: string;
   role: number;
   confirmed: boolean;
   blocked: boolean;
   organizationID: string;
 }
 
-const NewUserPage = () => {
-  const { jwt, organizationID } = useAuth();
+const EditUserPage = () => {
+  const { jwt } = useAuth();
   const router = useRouter();
+  const params = useParams();
+  const userId = params.id as string;
+
   const [roles, setRoles] = useState<Role[]>([]);
+  const [user, setUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<UserFormData>({
     username: '',
     email: '',
-    password: '',
     role: 0,
     confirmed: true,
     blocked: false,
-    organizationID: organizationID || '',
+    organizationID: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch available roles
+  // Fetch user data and roles
   useEffect(() => {
-    const fetchRoles = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users-permissions/roles`);
-        if (response.ok) {
-          const data = await response.json();
-          setRoles(data.roles);
-          // Set default role to first available role
-          if (data.roles.length > 0) {
-            setFormData(prev => ({ ...prev, role: data.roles[0].id }));
-          }
+        setIsFetching(true);
+
+        // Fetch roles
+        const rolesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users-permissions/roles`);
+        if (rolesResponse.ok) {
+          const rolesData = await rolesResponse.json();
+          setRoles(rolesData.roles);
         }
-      } catch (error) {
-        console.error('Error fetching roles:', error);
+
+        // Fetch user
+        const userResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}?populate=role`, {
+          headers: {
+            'Authorization': `Bearer ${jwt}`,
+          },
+        });
+
+        if (!userResponse.ok) {
+          throw new Error('Failed to fetch user');
+        }
+
+        const userData: User = await userResponse.json();
+        setUser(userData);
+        setFormData({
+          username: userData.username,
+          email: userData.email,
+          role: userData.role?.id || 0,
+          confirmed: userData.confirmed,
+          blocked: userData.blocked,
+          organizationID: userData.organizationID || '',
+        });
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch data');
+        console.error('Error fetching data:', err);
+      } finally {
+        setIsFetching(false);
       }
     };
 
-    fetchRoles();
-  }, []);
-
-  // Update organizationID when it changes from auth
-  useEffect(() => {
-    if (organizationID) {
-      setFormData(prev => ({ ...prev, organizationID }));
+    if (jwt && userId) {
+      fetchData();
     }
-  }, [organizationID]);
+  }, [jwt, userId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,10 +108,10 @@ const NewUserPage = () => {
     setError(null);
 
     try {
-      console.log('Sending user data:', formData);
+      console.log('Updating user data:', formData);
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
-        method: 'POST',
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${jwt}`,
@@ -86,19 +122,39 @@ const NewUserPage = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error response:', errorData);
-        throw new Error(errorData.error?.message || errorData.message || 'Failed to create user');
+        throw new Error(errorData.error?.message || errorData.message || 'Failed to update user');
       }
 
       const data = await response.json();
-      console.log('User created successfully:', data);
+      console.log('User updated successfully:', data);
       router.push('/dashboard/admin/users');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error creating user:', err);
+      console.error('Error updating user:', err);
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (isFetching) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            User not found
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -111,7 +167,7 @@ const NewUserPage = () => {
             <FiArrowLeft className="w-5 h-5 mr-2" />
             Back
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">Add New User</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Edit User</h1>
         </div>
 
         {error && (
@@ -153,23 +209,6 @@ const NewUserPage = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password *
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                required
-                disabled={isLoading}
-                minLength={6}
-              />
-              <p className="mt-1 text-sm text-gray-500">Minimum 6 characters</p>
-            </div>
-
-            <div>
               <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                 Role *
               </label>
@@ -201,7 +240,6 @@ const NewUserPage = () => {
                 onChange={(e) => setFormData({ ...formData, organizationID: e.target.value })}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 disabled={isLoading}
-                placeholder="Leave empty to use current organization"
               />
             </div>
 
@@ -216,7 +254,7 @@ const NewUserPage = () => {
                   disabled={isLoading}
                 />
                 <label htmlFor="confirmed" className="ml-2 block text-sm text-gray-700">
-                  Email confirmed (user can login immediately)
+                  Email confirmed (user can login)
                 </label>
               </div>
 
@@ -232,6 +270,15 @@ const NewUserPage = () => {
                 <label htmlFor="blocked" className="ml-2 block text-sm text-gray-700">
                   Block user (prevent login)
                 </label>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-md">
+              <h3 className="text-sm font-medium text-gray-700 mb-2">Current User Info</h3>
+              <div className="text-sm text-gray-600">
+                <p><strong>ID:</strong> {user.id}</p>
+                <p><strong>Current Role:</strong> {user.role?.name || 'No Role'}</p>
+                <p><strong>Status:</strong> {user.confirmed ? 'Confirmed' : 'Unconfirmed'} {user.blocked ? '(Blocked)' : ''}</p>
               </div>
             </div>
 
@@ -255,12 +302,12 @@ const NewUserPage = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Creating...
+                    Saving...
                   </>
                 ) : (
                   <>
-                    <FiUserPlus className="w-5 h-5 mr-2" />
-                    Create User
+                    <FiSave className="w-5 h-5 mr-2" />
+                    Save Changes
                   </>
                 )}
               </button>
@@ -272,4 +319,4 @@ const NewUserPage = () => {
   );
 };
 
-export default NewUserPage; 
+export default EditUserPage; 

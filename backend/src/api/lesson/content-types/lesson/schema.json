@@ -15,7 +15,7 @@
       "type": "string"
     },
     "content": {
-      "type": "blocks"
+      "type": "text"
     },
     "order": {
       "type": "integer"

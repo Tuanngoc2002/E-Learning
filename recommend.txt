@@ -1,0 +1,35 @@
+#### 1. **Lấy thông tin khóa học hiện tại (`currentCourse`)**
+
+Sử dụng `courseId` để truy xuất dữ liệu của khóa học gốc cần so sánh.
+
+#### 2. **Lấy danh sách khóa học người dùng đã học (nếu có `userId`)**
+
+Để loại bỏ những khóa học đã học ra khỏi danh sách đề xuất.
+
+#### 3. **Lọc ra các khóa học tiềm năng (`filteredCourses`)**
+
+Loại bỏ:
+
+* Khóa học trùng với khóa hiện tại
+* Khóa học đã đăng ký
+* Khóa học trùng tên hoặc `documentId`
+
+#### 4. **Tính điểm tương đồng (`calculateSimilarityScore`)**
+
+Sử dụng các yếu tố để tính điểm:
+
+* **Chuyên mục (category)**: +5 điểm nếu giống
+* **Mức độ khó (difficulty)**: +3 điểm nếu giống
+* **Tags**: +2 điểm mỗi tag trùng
+* **Giá tiền**: tối đa +2 điểm nếu giá tương đồng
+* **Tính phổ biến**:
+
+  * Rating: +`rating` điểm
+  * Số lượng học viên: +`log10(student_count)` (tối đa 3)
+  * Tỷ lệ hoàn thành: +`completion_rate / 100 * 2`
+
+#### 5. **Chấm điểm và sắp xếp các khóa học**
+
+Sau đó chọn **top 4 khóa học có điểm cao nhất**.
+
+#### 6. **Chuẩn hóa điểm (normalize) để tạo `relevance` (mức độ liên quan)**

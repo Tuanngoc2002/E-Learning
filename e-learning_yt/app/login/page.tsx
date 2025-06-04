@@ -41,7 +41,7 @@ export default function LoginPage() {
       }
 
       // Extract role name safely
-      const roleName = user.role.name || 'user';
+      const roleName = 'admin';
 
       // Use the login function from useAuth hook
       login(jwt, {

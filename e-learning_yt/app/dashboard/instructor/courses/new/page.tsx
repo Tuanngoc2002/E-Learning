@@ -74,7 +74,8 @@ export default function CreateCoursePage() {
         throw new Error(errorMsg)
       }
 
-      router.push('/dashboard/instructor/courses/new')
+      router.push('/dashboard/instructor')
+      
       setFormData({
         name: '',
         descriptions: '',
