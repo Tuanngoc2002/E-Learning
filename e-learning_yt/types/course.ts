@@ -52,6 +52,7 @@ export interface CourseResponse {
 
 export interface Lesson {
   id: number;
+  documentId?: string;
   title: string;
   content?: string | null;
   videoUrl?: string | null;

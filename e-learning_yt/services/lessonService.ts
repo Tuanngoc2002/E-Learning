@@ -72,6 +72,9 @@ export const lessonService = {
   async updateLesson(id: number, lessonData: Partial<Omit<Lesson, 'id' | 'course' | 'createdAt' | 'updatedAt' | 'publishedAt'>>, jwt: string): Promise<Lesson> {
     try {
       console.log(`✏️ Updating lesson ${id}:`, lessonData)
+      
+      // Trong Strapi v5, có thể cần dùng documentId thay vì id
+      // Trước tiên thử với id, nếu không được thì sẽ cần documentId
       const response = await fetch(`${API_URL}/api/lessons/${id}`, {
         method: 'PUT',
         headers: {
@@ -84,6 +87,10 @@ export const lessonService = {
       })
 
       if (!response.ok) {
+        // Nếu 404, có thể cần dùng documentId
+        if (response.status === 404) {
+          console.warn(`❌ Lesson ${id} not found with id, this might be Strapi v5 issue requiring documentId`)
+        }
         const errorText = await response.text()
         console.error(`❌ Failed to update lesson ${id}:`, response.status, errorText)
         throw new Error(`Failed to update lesson: ${response.status}`)
@@ -98,9 +105,41 @@ export const lessonService = {
     }
   },
 
+  async updateLessonByDocumentId(documentId: string, lessonData: Partial<Omit<Lesson, 'id' | 'course' | 'createdAt' | 'updatedAt' | 'publishedAt'>>, jwt: string): Promise<Lesson> {
+    try {
+      console.log(`✏️ Updating lesson by documentId ${documentId}:`, lessonData)
+      
+      const response = await fetch(`${API_URL}/api/lessons/${documentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        },
+        body: JSON.stringify({
+          data: lessonData
+        })
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`❌ Failed to update lesson ${documentId}:`, response.status, errorText)
+        throw new Error(`Failed to update lesson: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log(`✅ Lesson ${documentId} updated successfully:`, data.data)
+      return data.data
+    } catch (error) {
+      console.error('Error updating lesson by documentId:', error)
+      throw error
+    }
+  },
+
   async deleteLesson(id: number, jwt: string): Promise<void> {
     try {
       console.log(`🗑️ Deleting lesson ${id}`)
+      
+      // Trong Strapi v5, có thể cần dùng documentId thay vì id
       const response = await fetch(`${API_URL}/api/lessons/${id}`, {
         method: 'DELETE',
         headers: {
@@ -110,6 +149,10 @@ export const lessonService = {
       })
 
       if (!response.ok) {
+        // Nếu 404, có thể cần dùng documentId
+        if (response.status === 404) {
+          console.warn(`❌ Lesson ${id} not found with id, this might be Strapi v5 issue requiring documentId`)
+        }
         const errorText = await response.text()
         console.error(`❌ Failed to delete lesson ${id}:`, response.status, errorText)
         throw new Error(`Failed to delete lesson: ${response.status}`)
@@ -118,6 +161,31 @@ export const lessonService = {
       console.log(`✅ Lesson ${id} deleted successfully`)
     } catch (error) {
       console.error('Error deleting lesson:', error)
+      throw error
+    }
+  },
+
+  async deleteLessonByDocumentId(documentId: string, jwt: string): Promise<void> {
+    try {
+      console.log(`🗑️ Deleting lesson by documentId ${documentId}`)
+      
+      const response = await fetch(`${API_URL}/api/lessons/${documentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwt}`
+        }
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`❌ Failed to delete lesson ${documentId}:`, response.status, errorText)
+        throw new Error(`Failed to delete lesson: ${response.status}`)
+      }
+
+      console.log(`✅ Lesson ${documentId} deleted successfully`)
+    } catch (error) {
+      console.error('Error deleting lesson by documentId:', error)
       throw error
     }
   },

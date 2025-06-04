@@ -134,9 +134,13 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
 
   const removeLesson = async (index: number) => {
     const lesson = lessons[index]
-    if (lesson.id > 0 && jwt) {
+    if (lesson.id && lesson.id < 1000000000000 && jwt) {
       try {
-        await lessonService.deleteLesson(lesson.id, jwt)
+        if (lesson.documentId) {
+          await lessonService.deleteLessonByDocumentId(lesson.documentId, jwt)
+        } else {
+          await lessonService.deleteLesson(lesson.id, jwt)
+        }
       } catch (error) {
         console.error('Error deleting lesson:', error)
         setErrorMessage('Failed to delete lesson')
@@ -152,11 +156,15 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
     try {
       setIsSubmitting(true)
       const promises = lessons.map(async (lesson, index) => {
+        if (!lesson.title?.trim()) {
+          throw new Error(`Lesson ${index + 1} must have a title`)
+        }
+
         if (lesson.id > 1000000000000) { // New lesson (temporary ID)
           const createData = {
-            title: lesson.title,
-            content: lesson.content,
-            videoUrl: lesson.videoUrl,
+            title: lesson.title.trim(),
+            content: lesson.content?.trim() || '',
+            videoUrl: lesson.videoUrl?.trim() || '',
             order: index + 1,
             isFree: lesson.isFree,
             course: parseInt(params.id)
@@ -164,13 +172,18 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
           return lessonService.createLesson(createData, jwt)
         } else {
           const updateData = {
-            title: lesson.title,
-            content: lesson.content,
-            videoUrl: lesson.videoUrl,
+            title: lesson.title.trim(),
+            content: lesson.content?.trim() || '',
+            videoUrl: lesson.videoUrl?.trim() || '',
             order: index + 1,
             isFree: lesson.isFree
           }
-          return lessonService.updateLesson(lesson.id, updateData, jwt)
+          
+          if (lesson.documentId) {
+            return lessonService.updateLessonByDocumentId(lesson.documentId, updateData, jwt)
+          } else {
+            return lessonService.updateLesson(lesson.id, updateData, jwt)
+          }
         }
       })
 

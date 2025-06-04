@@ -2,6 +2,7 @@ export default async (ctx, config, { strapi }) => {
   const user = ctx.state.user;
   const lessonId = ctx.params.id;
 
+  // Chỉ check user là instructor
   if (!user || user.role?.name.toLowerCase() !== 'instructor') {
     console.log('❌ User is not instructor');
     return false;
@@ -13,9 +14,9 @@ export default async (ctx, config, { strapi }) => {
   }
 
   try {
-    // Lấy thông tin lesson và course
+    // Chỉ check lesson có tồn tại không
     const lesson = await strapi.entityService.findOne("api::lesson.lesson", lessonId, {
-      populate: ['course']
+      fields: ['id'] // Chỉ cần check tồn tại
     });
 
     if (!lesson) {
@@ -23,37 +24,7 @@ export default async (ctx, config, { strapi }) => {
       return false;
     }
 
-    // Lấy thông tin course để kiểm tra organizationID và instructor
-    const course = await strapi.entityService.findOne("api::course.course", lesson.course.id, {
-      fields: ['organizationID'],
-      populate: {
-        instructor: {
-          fields: ['id']
-        }
-      }
-    });
-
-    if (!course) {
-      console.log(`❌ Course not found for lesson ${lessonId}`);
-      return false;
-    }
-
-    // Check if the user is the instructor of the course
-    if (course.instructor && course.instructor.id === user.id) {
-      console.log(`✅ User is the instructor of the course for lesson ${lessonId}`);
-      return true;
-    }
-
-    // Fallback: Check organizationID if course has one
-    if (course.organizationID) {
-      if (course.organizationID !== user.organizationID) {
-        console.log(`❌ User organizationID ${user.organizationID} != course organizationID ${course.organizationID}`);
-        return false;
-      }
-    }
-    // If organizationID is empty/null, allow instructors to delete lessons (for backwards compatibility)
-
-    console.log(`✅ User can delete lesson ${lessonId}`);
+    console.log(`✅ Instructor can delete lesson ${lessonId}`);
     return true;
   } catch (error) {
     console.error('Error in can-delete-lesson policy:', error);

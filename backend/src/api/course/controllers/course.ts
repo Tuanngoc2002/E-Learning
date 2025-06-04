@@ -110,9 +110,7 @@ export default factories.createCoreController('api::course.course', ({ strapi })
             await strapi.entityService.create('api::lesson.lesson', {
               data: {
                 ...lesson,
-                course: {
-                  id: newCourse.id,     // ✅ Đúng chuẩn relation manyToOne
-                },
+                course: newCourse.id,  // Sửa: Gán trực tiếp ID thay vì object
               },
             });
           })

@@ -52,6 +52,25 @@ export default function CreateCoursePage() {
         throw new Error('API URL is not configured')
       }
 
+      // Validate lessons - only include lessons with title
+      const validLessons = formData.lessons.filter(lesson => lesson.title.trim() !== '')
+
+      // Prepare course data
+      const courseData = {
+        ...formData,
+        instructor: user?.id,
+        organizationID: organizationID,
+        lessons: validLessons.map((lesson, index) => ({
+          title: lesson.title.trim(),
+          content: lesson.content?.trim() || '',
+          videoUrl: lesson.videoUrl?.trim() || '',
+          order: index + 1,
+          isFree: lesson.isFree || false,
+        }))
+      }
+
+      console.log('📤 Creating course with data:', courseData)
+
       const response = await fetch(`${apiUrl}/api/courses`, {
         method: 'POST',
         headers: {
@@ -59,11 +78,7 @@ export default function CreateCoursePage() {
           'Authorization': `Bearer ${jwt}`
         },
         body: JSON.stringify({
-          data: {
-            ...formData,
-            instructor: user?.id,
-            organizationID: organizationID,
-          },
+          data: courseData,
         }),
       })
 
@@ -74,6 +89,7 @@ export default function CreateCoursePage() {
         throw new Error(errorMsg)
       }
 
+      console.log('✅ Course created successfully:', data)
       router.push('/dashboard/instructor')
       
       setFormData({
