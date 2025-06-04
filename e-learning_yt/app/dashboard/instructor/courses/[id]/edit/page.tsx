@@ -52,13 +52,17 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
         // Fetch lessons separately
         if (jwt) {
           try {
+            console.log('🔍 Fetching lessons for course:', params.id)
             const courseLessons = await lessonService.getLessonsByCourseId(parseInt(params.id), jwt)
             console.log('📚 Fetched lessons with IDs:', courseLessons.map(l => `${l.id} (${l.title})`))
+            console.log('📚 Full lessons data:', courseLessons)
             setLessons(courseLessons)
           } catch (lessonError) {
             console.warn('Could not fetch lessons:', lessonError)
             setLessons([])
           }
+        } else {
+          console.warn('⚠️ No JWT token found for fetching lessons')
         }
       } catch (error) {
         console.error('Error fetching course:', error)

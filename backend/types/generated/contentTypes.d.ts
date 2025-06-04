@@ -382,6 +382,7 @@ export interface ApiChatMessageChatMessage extends Struct.CollectionTypeSchema {
   attributes: {
     content: Schema.Attribute.String & Schema.Attribute.Required;
     course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
+    courseId: Schema.Attribute.String & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -396,10 +397,12 @@ export interface ApiChatMessageChatMessage extends Struct.CollectionTypeSchema {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+    receiverId: Schema.Attribute.String & Schema.Attribute.Required;
     sender: Schema.Attribute.Relation<
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+    senderId: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

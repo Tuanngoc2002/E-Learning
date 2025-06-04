@@ -14,6 +14,18 @@
       "type": "string",
       "required": true
     },
+    "senderId": {
+      "type": "string",
+      "required": true
+    },
+    "receiverId": {
+      "type": "string",
+      "required": true
+    },
+    "courseId": {
+      "type": "string",
+      "required": true
+    },
     "sender": {
       "type": "relation",
       "relation": "manyToOne",

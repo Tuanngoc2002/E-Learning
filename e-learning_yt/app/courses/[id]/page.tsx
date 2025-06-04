@@ -718,22 +718,28 @@ const CourseDetailPage = () => {
         </div>
       )}
 
-      {/* Floating Chat Icon */}
-      <div className="fixed top-72 right-8 z-50">
+      {/* Floating Chat Icon - Fixed to bottom right */}
+      <div className="fixed bottom-24 right-6 z-50">
         {!showChatBox ? (
           <button
             onClick={() => setShowChatBox(true)}
-            className="bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition duration-300"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
           >
             <FaCommentDots className="w-6 h-6" />
           </button>
         ) : (
-          <div className="bg-white rounded-lg shadow-xl w-96">
-            <div className="flex justify-between items-center p-4 border-b">
-              <h3 className="font-semibold">Course Chat</h3>
+          <div className="bg-white rounded-lg shadow-2xl w-80 sm:w-96 border border-gray-200">
+            <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+              <div className="flex items-center">
+                <FaCommentDots className="w-5 h-5 mr-2" />
+                <div>
+                  <h3 className="font-semibold text-sm">Course Chat</h3>
+                  <p className="text-xs opacity-90">Ask instructor</p>
+                </div>
+              </div>
               <button
                 onClick={() => setShowChatBox(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-white hover:text-gray-200 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
               >
                 ×
               </button>

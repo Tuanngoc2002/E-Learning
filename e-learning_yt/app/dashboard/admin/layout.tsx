@@ -32,10 +32,6 @@ const adminNavigation: NavItem[] = [
   { label: 'Course Management', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/admin/courses' },
   { label: 'Enrollment Analytics', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/enrollments' },
   { label: 'Analytics', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/analytics' },
-  { label: 'System Settings', icon: <FiSettings className="w-5 h-5" />, href: '/dashboard/admin/settings' },
-  { label: 'Database', icon: <FiDatabase className="w-5 h-5" />, href: '/dashboard/admin/database' },
-  { label: 'Audit Logs', icon: <FiShield className="w-5 h-5" />, href: '/dashboard/admin/audit' },
-  { label: 'Performance', icon: <FiActivity className="w-5 h-5" />, href: '/dashboard/admin/performance' },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {

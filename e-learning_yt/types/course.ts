@@ -56,6 +56,7 @@ export interface Lesson {
   title: string;
   content?: string | null;
   videoUrl?: string | null;
+  duration?: number; // duration in minutes
   order: number;
   isFree: boolean;
   course?: {

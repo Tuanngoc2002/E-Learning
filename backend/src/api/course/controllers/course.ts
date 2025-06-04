@@ -88,8 +88,32 @@ export default factories.createCoreController('api::course.course', ({ strapi })
       data: ctx.request.body.data,
     });
 
+    // Populate lại course với lessons sau khi update
+    const courseWithLessons = await strapi.entityService.findOne('api::course.course', id, {
+      populate: [
+        'lessons',
+        'instructor',
+        'user_progresses', 
+        'user_activity_logs',
+        'user_course_statuses',
+        'recommendation_results',
+        'user_courses',
+        'exam',
+        'exam.questions'
+      ],
+    });
+
+    // Tính lại student count
+    const studentCount = await strapi.db.query('api::user-course.user-course').count({
+      where: { course: id },
+    });
   
-    return { data: updated };
+    return { 
+      data: {
+        ...courseWithLessons,
+        studentCount
+      }
+    };
   },
   async create(ctx) {
     try {
