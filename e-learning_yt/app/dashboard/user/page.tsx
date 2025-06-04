@@ -1,261 +1,190 @@
 "use client";
 
 import React from 'react';
-import { FiBook, FiClock, FiAward, FiBookmark, FiCalendar, FiPlay, FiDownload, FiMessageCircle } from 'react-icons/fi';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
+import { 
+  FiBook, 
+  FiPlay, 
+  FiStar, 
+  FiClock,
+  FiAward,
+  FiTrendingUp,
+  FiBookmark,
+  FiCalendar,
+  FiTarget
+} from 'react-icons/fi';
 
 const UserDashboard = () => {
-  // Mock data
-  const enrolledCourses = [
-    {
-      id: 1,
-      title: "React Masterclass",
-      instructor: "Sarah Wilson",
-      progress: 75,
-      nextLesson: "Advanced React Hooks",
-      thumbnail: "/courses/react.jpg"
-    },
-    {
-      id: 2,
-      title: "Python for Beginners",
-      instructor: "John Smith",
-      progress: 45,
-      nextLesson: "Working with Lists",
-      thumbnail: "/courses/python.jpg"
-    },
-    {
-      id: 3,
-      title: "UI/UX Design Fundamentals",
-      instructor: "Emily Brown",
-      progress: 90,
-      nextLesson: "Final Project",
-      thumbnail: "/courses/uiux.jpg"
-    }
+  const stats = [
+    { label: 'Enrolled Courses', value: '8', icon: <FiBook className="w-6 h-6" />, color: 'purple', change: '+2 this month' },
+    { label: 'Completed Courses', value: '6', icon: <FiAward className="w-6 h-6" />, color: 'green', change: '+1 this week' },
+    { label: 'Study Hours', value: '142h', icon: <FiClock className="w-6 h-6" />, color: 'blue', change: '+12h this week' },
+    { label: 'Certificates Earned', value: '5', icon: <FiStar className="w-6 h-6" />, color: 'yellow', change: '+1 this month' },
   ];
 
-  const upcomingLessons = [
-    {
-      id: 1,
-      title: "Advanced React Hooks",
-      course: "React Masterclass",
-      date: "Today, 2:00 PM",
-      duration: "1h 30m"
-    },
-    {
-      id: 2,
-      title: "Working with Lists",
-      course: "Python for Beginners",
-      date: "Tomorrow, 10:00 AM",
-      duration: "1h"
-    },
-    {
-      id: 3,
-      title: "Final Project Review",
-      course: "UI/UX Design Fundamentals",
-      date: "Mar 25, 3:00 PM",
-      duration: "2h"
-    }
+  const quickActions = [
+    { label: 'Browse Courses', href: '/courses', icon: <FiTrendingUp className="w-8 h-8" />, color: 'purple' },
+    { label: 'My Courses', href: '/dashboard/user/courses', icon: <FiBook className="w-8 h-8" />, color: 'blue' },
+    { label: 'Study Progress', href: '/dashboard/user/progress', icon: <FiTarget className="w-8 h-8" />, color: 'green' },
+    { label: 'Certificates', href: '/dashboard/user/certificates', icon: <FiAward className="w-8 h-8" />, color: 'yellow' },
   ];
 
-  const achievements = [
-    { id: 1, title: "Quick Learner", description: "Completed first course", icon: "🚀" },
-    { id: 2, title: "Dedicated Student", description: "7-day study streak", icon: "🔥" },
-    { id: 3, title: "Top Performer", description: "Scored 95% in quiz", icon: "🏆" }
+  const currentCourses = [
+    { title: 'React Fundamentals', progress: 75, nextLesson: 'State Management', timeLeft: '2h 30m', instructor: 'Sarah Wilson' },
+    { title: 'JavaScript Advanced', progress: 45, nextLesson: 'Async/Await', timeLeft: '4h 15m', instructor: 'John Smith' },
+    { title: 'CSS Grid & Flexbox', progress: 90, nextLesson: 'Final Project', timeLeft: '1h 20m', instructor: 'Emily Davis' },
   ];
-  const { user, jwt } = useAuth();
+
+  const recommendedCourses = [
+    { title: 'Node.js Backend Development', rating: 4.8, students: '2.3k', price: '$49', instructor: 'Mike Johnson' },
+    { title: 'TypeScript Fundamentals', rating: 4.7, students: '1.8k', price: '$39', instructor: 'Lisa Chen' },
+    { title: 'Vue.js Complete Guide', rating: 4.9, students: '3.1k', price: '$59', instructor: 'David Brown' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* User Header */}
-      <header className="bg-white shadow">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden mr-4">
-                <Image
-                  src="/user-avatar.jpg"
-                  alt="User Avatar"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Student Dashboard</h1>
-                <p className="text-gray-600">Welcome back, {user?.username}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/dashboard/user/notifications"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <span className="relative">
-                  <FiMessageCircle className="w-6 h-6" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    3
-                  </span>
-                </span>
-              </Link>
-              <Link
-                href="/dashboard/user/profile"
-                className="text-blue-600 hover:text-blue-800"
-              >
-                Edit Profile
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div>
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Welcome back, Student!</h1>
+        <p className="text-gray-600 mt-2">Continue your learning journey and achieve your goals.</p>
+      </div>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiBook className="w-8 h-8 text-blue-600 mr-4" />
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {stats.map((stat, index) => (
+          <div key={index} className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-600">Enrolled Courses</p>
-                <h3 className="text-2xl font-bold">{enrolledCourses.length}</h3>
+                <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                <p className="text-sm mt-1 text-green-600">{stat.change}</p>
+              </div>
+              <div className={`p-3 rounded-lg bg-${stat.color}-100 text-${stat.color}-600`}>
+                {stat.icon}
               </div>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiClock className="w-8 h-8 text-green-600 mr-4" />
-              <div>
-                <p className="text-gray-600">Learning Hours</p>
-                <h3 className="text-2xl font-bold">45</h3>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiAward className="w-8 h-8 text-yellow-600 mr-4" />
-              <div>
-                <p className="text-gray-600">Certificates</p>
-                <h3 className="text-2xl font-bold">3</h3>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiBookmark className="w-8 h-8 text-purple-600 mr-4" />
-              <div>
-                <p className="text-gray-600">Saved Courses</p>
-                <h3 className="text-2xl font-bold">12</h3>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Link href="/courses" className="bg-blue-600 text-white p-6 rounded-lg shadow-md hover:bg-blue-700 transition">
-            <FiBook className="w-8 h-8 mb-4" />
-            <h3 className="font-semibold">Browse Courses</h3>
-          </Link>
-          <Link href="/dashboard/user/messages" className="bg-purple-600 text-white p-6 rounded-lg shadow-md hover:bg-purple-700 transition">
-            <FiMessageCircle className="w-8 h-8 mb-4" />
-            <h3 className="font-semibold">Student Messages</h3>
-          </Link>
-          <Link href="/dashboard/user/continue" className="bg-yellow-600 text-white p-6 rounded-lg shadow-md hover:bg-yellow-700 transition">
-            <FiPlay className="w-8 h-8 mb-4" />
-            <h3 className="font-semibold">Continue Learning</h3>
-          </Link>
-          <Link href="/dashboard/user/certificates" className="bg-purple-600 text-white p-6 rounded-lg shadow-md hover:bg-purple-700 transition">
-            <FiDownload className="w-8 h-8 mb-4" />
-            <h3 className="font-semibold">My Certificates</h3>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Current Courses */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">My Courses</h2>
-              <Link href="/dashboard/user/courses" className="text-blue-600 hover:text-blue-800">
-                View All
-              </Link>
-            </div>
-            <div className="space-y-6">
-              {enrolledCourses.map((course) => (
-                <div key={course.id} className="flex space-x-4">
-                  <div className="relative w-24 h-24 flex-shrink-0">
-                    <Image
-                      src={course.thumbnail}
-                      alt={course.title}
-                      fill
-                      className="object-cover rounded-lg"
-                    />
-                  </div>
-                  <div className="flex-grow">
-                    <h3 className="font-semibold mb-1">{course.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2">Instructor: {course.instructor}</p>
-                    <div className="mb-2">
-                      <div className="flex justify-between text-sm text-gray-600 mb-1">
-                        <span>Progress</span>
-                        <span>{course.progress}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-blue-600 h-2 rounded-full"
-                          style={{ width: `${course.progress}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600">Next: {course.nextLesson}</p>
-                  </div>
+      {/* Quick Actions */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {quickActions.map((action, index) => (
+            <Link 
+              key={index}
+              href={action.href}
+              className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow group"
+            >
+              <div className="flex flex-col items-center text-center">
+                <div className={`p-4 rounded-lg bg-${action.color}-100 text-${action.color}-600 group-hover:bg-${action.color}-200 transition-colors mb-4`}>
+                  {action.icon}
                 </div>
-              ))}
-            </div>
+                <h3 className="font-medium text-gray-900">{action.label}</h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Current Courses & Recommendations */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Continue Learning */}
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Continue Learning</h3>
+            <Link 
+              href="/dashboard/user/courses"
+              className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+            >
+              View all →
+            </Link>
           </div>
-
-          {/* Upcoming Lessons */}
-          <div className="space-y-8">
-            {/* Schedule */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold">Upcoming Lessons</h2>
-                <Link href="/dashboard/user/schedule" className="text-blue-600 hover:text-blue-800">
-                  Full Schedule
-                </Link>
-              </div>
-              <div className="space-y-4">
-                {upcomingLessons.map((lesson) => (
-                  <div key={lesson.id} className="flex items-center p-4 border rounded-lg">
-                    <FiCalendar className="w-8 h-8 text-blue-600 mr-4" />
-                    <div>
-                      <h3 className="font-semibold">{lesson.title}</h3>
-                      <p className="text-sm text-gray-600">{lesson.course}</p>
-                      <div className="flex items-center text-sm text-gray-500 mt-1">
-                        <span>{lesson.date}</span>
-                        <span className="mx-2">•</span>
-                        <span>{lesson.duration}</span>
-                      </div>
-                    </div>
+          <div className="space-y-4">
+            {currentCourses.map((course, index) => (
+              <div key={index} className="border rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h4 className="font-medium text-gray-900">{course.title}</h4>
+                    <p className="text-sm text-gray-500">by {course.instructor}</p>
                   </div>
-                ))}
+                  <span className="text-sm text-purple-600 font-medium">{course.progress}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                  <div 
+                    className="bg-purple-600 h-2 rounded-full" 
+                    style={{width: `${course.progress}%`}}
+                  ></div>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">Next: {course.nextLesson}</span>
+                  <span className="text-gray-500 flex items-center">
+                    <FiClock className="w-4 h-4 mr-1" />
+                    {course.timeLeft}
+                  </span>
+                </div>
               </div>
-            </div>
-
-            {/* Achievements */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold mb-6">Recent Achievements</h2>
-              <div className="grid grid-cols-3 gap-4">
-                {achievements.map((achievement) => (
-                  <div key={achievement.id} className="text-center">
-                    <div className="text-4xl mb-2">{achievement.icon}</div>
-                    <h3 className="font-semibold text-sm mb-1">{achievement.title}</h3>
-                    <p className="text-xs text-gray-600">{achievement.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </main>
+
+        {/* Recommended Courses */}
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Recommended for You</h3>
+            <Link 
+              href="/courses"
+              className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+            >
+              Browse all →
+            </Link>
+          </div>
+          <div className="space-y-4">
+            {recommendedCourses.map((course, index) => (
+              <div key={index} className="border rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="font-medium text-gray-900">{course.title}</h4>
+                  <span className="text-lg font-bold text-purple-600">{course.price}</span>
+                </div>
+                <p className="text-sm text-gray-500 mb-3">by {course.instructor}</p>
+                <div className="flex justify-between items-center text-sm">
+                  <div className="flex items-center space-x-4">
+                    <span className="flex items-center text-yellow-500">
+                      <FiStar className="w-4 h-4 mr-1" />
+                      {course.rating}
+                    </span>
+                    <span className="text-gray-500">{course.students} students</span>
+                  </div>
+                  <Link
+                    href={`/courses/${index + 1}`}
+                    className="text-purple-600 hover:text-purple-700 font-medium"
+                  >
+                    View Course
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Learning Goal */}
+      <div className="mt-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 text-white">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xl font-semibold mb-2">Keep up the great work!</h3>
+            <p className="text-purple-100">You're 75% towards your monthly learning goal of 20 hours.</p>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold">15h</p>
+            <p className="text-purple-100">of 20h goal</p>
+          </div>
+        </div>
+        <div className="w-full bg-purple-400 rounded-full h-3 mt-4">
+          <div className="bg-white h-3 rounded-full" style={{width: '75%'}}></div>
+        </div>
+      </div>
     </div>
   );
 };

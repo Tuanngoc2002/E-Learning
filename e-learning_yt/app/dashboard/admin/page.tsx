@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { FiUsers, FiBook, FiDollarSign, FiTrendingUp, FiUserPlus, FiBookOpen, FiAlertCircle, FiSettings } from 'react-icons/fi';
+import { FiUsers, FiBook, FiDollarSign, FiTrendingUp, FiUserPlus, FiBookOpen, FiAlertCircle, FiSettings, FiBarChart2, FiShield, FiDatabase, FiActivity } from 'react-icons/fi';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
@@ -35,6 +35,20 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const {jwt} = useAuth();
+
+  const stats = [
+    { label: 'Total Users', value: '2,547', icon: <FiUsers className="w-6 h-6" />, color: 'blue', change: '+12%' },
+    { label: 'Total Courses', value: '156', icon: <FiBook className="w-6 h-6" />, color: 'green', change: '+8%' },
+    { label: 'Revenue', value: '$45,231', icon: <FiDollarSign className="w-6 h-6" />, color: 'purple', change: '+23%' },
+    { label: 'Active Sessions', value: '1,234', icon: <FiActivity className="w-6 h-6" />, color: 'orange', change: '+5%' },
+  ];
+
+  const quickActions = [
+    { label: 'Manage Users', href: '/dashboard/admin/users', icon: <FiUsers className="w-8 h-8" />, color: 'blue' },
+    { label: 'Course Management', href: '/dashboard/admin/courses', icon: <FiBook className="w-8 h-8" />, color: 'green' },
+    { label: 'View Analytics', href: '/dashboard/admin/analytics', icon: <FiBarChart2 className="w-8 h-8" />, color: 'purple' },
+    { label: 'System Settings', href: '/dashboard/admin/settings', icon: <FiShield className="w-8 h-8" />, color: 'orange' },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,92 +180,50 @@ const AdminDashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiUsers className="w-8 h-8 text-blue-600 mr-4" />
-              <div>
-                <p className="text-gray-600">Total Users</p>
-                <h3 className="text-2xl font-bold">1,234</h3>
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Welcome, Administrator</h1>
+          <p className="text-gray-600 mt-2">Here's what's happening with your e-learning platform today.</p>
+        </div>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-sm border p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
+                  <p className={`text-sm mt-1 ${stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+                    {stat.change} from last month
+                  </p>
+                </div>
+                <div className={`p-3 rounded-lg bg-${stat.color}-100 text-${stat.color}-600`}>
+                  {stat.icon}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiBook className="w-8 h-8 text-green-600 mr-4" />
-              <div>
-                <p className="text-gray-600">Total Courses</p>
-                <h3 className="text-2xl font-bold">85</h3>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiDollarSign className="w-8 h-8 text-yellow-600 mr-4" />
-              <div>
-                <p className="text-gray-600">Total Revenue</p>
-                <h3 className="text-2xl font-bold">$52,489</h3>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiTrendingUp className="w-8 h-8 text-purple-600 mr-4" />
-              <div>
-                <p className="text-gray-600">Monthly Growth</p>
-                <h3 className="text-2xl font-bold">+12.5%</h3>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Link
-            href="/dashboard/admin/users"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
-          >
-            <div className="flex items-center">
-              <FiUsers className="w-8 h-8 text-blue-600 mr-4" />
-              <div>
-                <h3 className="text-lg font-medium text-gray-900">Manage Users</h3>
-                <p className="text-gray-600">View and manage all users</p>
-              </div>
-            </div>
-          </Link>
-          
-          <Link
-            href="/dashboard/admin/users/new"
-            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
-          >
-            <div className="flex items-center">
-              <FiUserPlus className="w-8 h-8 text-green-600 mr-4" />
-              <div>
-                <h3 className="text-lg font-medium text-gray-900">Add New User</h3>
-                <p className="text-gray-600">Create a new user account</p>
-              </div>
-            </div>
-          </Link>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiBookOpen className="w-8 h-8 text-indigo-600 mr-4" />
-              <div>
-                <h3 className="text-lg font-medium text-gray-900">Course Management</h3>
-                <p className="text-gray-600">Manage courses and content</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="flex items-center">
-              <FiSettings className="w-8 h-8 text-gray-600 mr-4" />
-              <div>
-                <h3 className="text-lg font-medium text-gray-900">System Settings</h3>
-                <p className="text-gray-600">Configure system settings</p>
-              </div>
-            </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {quickActions.map((action, index) => (
+              <Link 
+                key={index}
+                href={action.href}
+                className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow group"
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className={`p-4 rounded-lg bg-${action.color}-100 text-${action.color}-600 group-hover:bg-${action.color}-200 transition-colors mb-4`}>
+                    {action.icon}
+                  </div>
+                  <h3 className="font-medium text-gray-900">{action.label}</h3>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -363,6 +335,89 @@ const AdminDashboard = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        {/* Recent Activity & System Health */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Recent Activity */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">New user registered</p>
+                  <p className="text-xs text-gray-500">john.doe@example.com - 5 minutes ago</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">Course "React Basics" published</p>
+                  <p className="text-xs text-gray-500">by Sarah Wilson - 1 hour ago</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">Payment received</p>
+                  <p className="text-xs text-gray-500">$299 for Pro subscription - 2 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">Instructor application</p>
+                  <p className="text-xs text-gray-500">Mike Johnson applied - 3 hours ago</p>
+                </div>
+              </div>
+            </div>
+            <Link 
+              href="/dashboard/admin/audit"
+              className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-4 inline-block"
+            >
+              View all activity →
+            </Link>
+          </div>
+
+          {/* System Health */}
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">System Health</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Server Status</span>
+                <span className="flex items-center text-green-600 text-sm font-medium">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  Online
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Database</span>
+                <span className="flex items-center text-green-600 text-sm font-medium">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  Healthy
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Storage Usage</span>
+                <span className="text-sm font-medium text-gray-900">68% (340GB/500GB)</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Memory Usage</span>
+                <span className="text-sm font-medium text-gray-900">45% (3.6GB/8GB)</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Active Users</span>
+                <span className="text-sm font-medium text-gray-900">1,234 online</span>
+              </div>
+            </div>
+            <Link 
+              href="/dashboard/admin/performance"
+              className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-4 inline-block"
+            >
+              View performance details →
+            </Link>
           </div>
         </div>
       </main>

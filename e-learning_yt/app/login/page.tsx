@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { loginUser } from '@/lib/api';
 import { getCurrentUser } from '@/services/server/getCurrentUser';
 import { useAuth } from '@/hooks/useAuth';
+import { determineUserRole, createRoleObject, mapRoleForRouting } from '@/lib/auth-utils';
 import { FiMail, FiLock, FiBook, FiVideo, FiAward } from 'react-icons/fi';
 
 export default function LoginPage() {
@@ -36,27 +37,43 @@ export default function LoginPage() {
       console.log("User data:", user);
 
       // Ensure we have the role information
-      if (!user || !user.role) {
-        throw new Error("User data or role information is missing");
+      if (!user) {
+        throw new Error("User data is missing");
+      }
+
+      // Ensure user has role object
+      if (!user.role) {
+        console.log("No role found, creating role object based on user info...");
+        const determinedRoleType = determineUserRole(user);
+        user.role = createRoleObject(determinedRoleType);
+        console.log("Created role:", user.role);
       }
 
       // Extract role name safely
-      const roleName = 'admin';
+      const roleName = determineUserRole(user);
+      const mappedRole = mapRoleForRouting(roleName);
+
+      console.log("Determined role name:", roleName);
+      console.log("Mapped role for routing:", mappedRole);
 
       // Use the login function from useAuth hook
       login(jwt, {
         id: user.id,
         username: user.username || user.email || '',
         email: user.email || '',
-        role: roleName,
+        role: mappedRole,
         organizationID: user.organizationID || ''
       });
 
-      // Redirect based on role
-      if (roleName === 'user') {
-        router.push('/');
+      // Redirect based on mapped role
+      if (mappedRole === 'user') {
+        router.push('/dashboard/user');
+      } else if (mappedRole === 'admin') {
+        router.push('/dashboard/admin');
+      } else if (mappedRole === 'instructor') {
+        router.push('/dashboard/instructor');
       } else {
-        router.push(`/dashboard/${roleName}`);
+        router.push('/');
       }
     } catch (err: any) {
       console.error("Login error:", err);

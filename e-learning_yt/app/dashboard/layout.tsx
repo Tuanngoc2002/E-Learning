@@ -1,125 +1,55 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
 import Cookies from 'js-cookie';
-import { 
-  FiHome, 
-  FiBook, 
-  FiUsers, 
-  FiSettings, 
-  FiBarChart2, 
-  FiMessageCircle,
-  FiLogOut,
-  FiUser
-} from 'react-icons/fi';
-
-interface NavItem {
-  label: string;
-  icon: React.ReactNode;
-  href: string;
-  roles: string[];
-}
-
-const navigation: NavItem[] = [
-  { label: 'Dashboard', icon: <FiHome className="w-6 h-6" />, href: '/dashboard', roles: ['admin', 'instructor', 'user'] },
-  { label: 'Courses', icon: <FiBook className="w-6 h-6" />, href: '/dashboard/courses', roles: ['admin', 'instructor', 'user'] },
-  { label: 'Users', icon: <FiUsers className="w-6 h-6" />, href: '/dashboard/admin/users', roles: ['admin'] },
-  { label: 'Analytics', icon: <FiBarChart2 className="w-6 h-6" />, href: '/dashboard/analytics', roles: ['admin', 'instructor'] },
-  { label: 'Messages', icon: <FiMessageCircle className="w-6 h-6" />, href: '/dashboard/messages', roles: ['admin', 'instructor', 'user'] },
-  { label: 'Settings', icon: <FiSettings className="w-6 h-6" />, href: '/dashboard/settings', roles: ['admin', 'instructor', 'user'] },
-];
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const [userRole, setUserRole] = useState<string>('');
-  const [userName, setUserName] = useState<string>('');
 
   useEffect(() => {
-    const role = Cookies.get('userRole');
-    if (!role) {
+    const userRole = Cookies.get('userRole');
+
+    console.log('Dashboard Layout - User role:', userRole);
+    console.log('Dashboard Layout - Current pathname:', pathname);
+    
+    if (!userRole) {
       router.push('/login');
       return;
     }
-    setUserRole(role);
 
-    // Set mock user name based on role
-    switch (role) {
-      case 'admin':
-        setUserName('Admin User');
-        break;
-      case 'instructor':
-        setUserName('Professor Smith');
-        break;
-      case 'user':
-        setUserName('Alex Student');
-        break;
+    // Only redirect if we're exactly at /dashboard (not at specific role dashboard)
+    if (pathname === '/dashboard') {
+      console.log('Redirecting from /dashboard to role-specific dashboard');
+      switch (userRole) {
+        case 'admin':
+          router.push('/dashboard/admin');
+          break;
+        case 'instructor':
+          router.push('/dashboard/instructor');
+          break;
+        case 'user':
+          router.push('/dashboard/user');
+          break;
+        default:
+          router.push('/login');
+          break;
+      }
     }
-  }, [router]);
+  }, [router, pathname]);
 
-  const handleLogout = () => {
-    Cookies.remove('userRole');
-    Cookies.remove('isAuthenticated');
-    router.push('/login');
-  };
-
-  const filteredNavigation = navigation.filter(item => item.roles.includes(userRole));
-
-  return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="pt-[12vh]">
-        <div className="flex">
-          <div className="w-64 min-h-screen bg-white shadow-lg">
-            <div className="p-4 border-b">
-              <div className="flex items-center space-x-3">
-                <div className="relative w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                  <FiUser className="w-6 h-6 text-gray-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">{userName}</p>
-                  <p className="text-sm text-gray-500 capitalize">{userRole}</p>
-                </div>
-              </div>
-            </div>
-
-            <nav className="p-4">
-              {filteredNavigation.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={`flex items-center space-x-3 px-4 py-2 rounded-lg mb-1 transition-colors ${
-                    pathname === item.href
-                      ? 'bg-indigo-50 text-indigo-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {item.icon}
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </nav>
-
-            <div className="p-4 border-t">
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg w-full transition-colors"
-              >
-                <FiLogOut className="w-5 h-5" />
-                <span>Logout</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="flex-1 p-8">
-            {children}
-          </div>
-        </div>
+  // If we're at exactly /dashboard, show loading while redirecting
+  if (pathname === '/dashboard') {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // For all other dashboard paths, render children normally
+  return <>{children}</>;
 };
 
 export default DashboardLayout; 

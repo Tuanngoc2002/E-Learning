@@ -1,62 +1,88 @@
 import axios from "axios";
+import { determineUserRole, createRoleObject } from "@/lib/auth-utils";
 
 export const getCurrentUser = async (jwt: string) => {
   try {
-    const res = await axios.get("http://localhost:1337/api/users/me?populate=*", {
+    // First, get the basic user data
+    const res = await axios.get("http://localhost:1337/api/users/me", {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
     });
     
-    // Log the response to debug
     console.log("Current user response:", res.data);
     
-    // Check if the response has the expected structure
     if (!res.data) {
       throw new Error("User data is missing from response");
     }
     
-    // Extract user data and ensure it has the required fields
     const userData = res.data;
     
-    // If role is not directly on the user object, check if it's in a nested structure
-    if (!userData.role) {
-      console.log("Role not found directly on user object, checking nested structure");
+    // For Strapi users-permissions, role is usually at userData.role but may not be populated
+    // Let's first check if role exists and has the right structure
+    if (userData.role && userData.role.id) {
+      console.log("User role found directly:", userData.role);
+      return userData;
+    }
+    
+    // If role is not populated, we need to get the user's role ID from the JWT or fetch it separately
+    console.log("Role not found directly, fetching user's role...");
+    
+    try {
+      // Try to get user role by fetching from users endpoint with populate
+      const userWithRoleRes = await axios.get(`http://localhost:1337/api/users/${userData.id}?populate=role`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
       
-      // Check if role is in a nested structure (common in Strapi responses)
-      if (userData.attributes && userData.attributes.role) {
-        userData.role = userData.attributes.role;
-      } else if (userData.data && userData.data.attributes && userData.data.attributes.role) {
-        userData.role = userData.data.attributes.role;
+      console.log("User with role response:", userWithRoleRes.data);
+      
+      if (userWithRoleRes.data && userWithRoleRes.data.role) {
+        userData.role = userWithRoleRes.data.role;
+        return userData;
       }
+    } catch (userError) {
+      console.warn("Could not fetch user with role:", userError);
     }
     
-    // If we still don't have role information, try to fetch it separately
-    if (!userData.role) {
-      console.log("Role not found in user data, attempting to fetch role separately");
-      try {
-        const roleRes = await axios.get("http://localhost:1337/api/users/me?populate=role", {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
+    // If we still don't have role, try to get all roles and determine user's role
+    try {
+      console.log("Attempting to fetch roles and determine user role...");
+      
+      // Get all roles
+      const rolesRes = await axios.get("http://localhost:1337/api/users-permissions/roles");
+      console.log("Available roles:", rolesRes.data);
+      
+      if (rolesRes.data && rolesRes.data.roles) {
+        // Use utility function to determine role type
+        const roleType = determineUserRole(userData);
         
-        console.log("Role response:", roleRes.data);
+        // Find matching role from available roles
+        const matchedRole = rolesRes.data.roles.find((role: any) => role.type === roleType);
         
-        if (roleRes.data && roleRes.data.role) {
-          userData.role = roleRes.data.role;
-        } else if (roleRes.data && roleRes.data.data && roleRes.data.data.attributes && roleRes.data.data.attributes.role) {
-          userData.role = roleRes.data.data.attributes.role;
+        if (matchedRole) {
+          userData.role = matchedRole;
+          console.log("Assigned role based on user pattern:", matchedRole);
+          return userData;
         }
-      } catch (roleError) {
-        console.error("Error fetching role separately:", roleError);
+        
+        // Last resort: assign first available role
+        if (rolesRes.data.roles.length > 0) {
+          userData.role = rolesRes.data.roles[0];
+          console.log("Assigned first available role:", rolesRes.data.roles[0]);
+        }
       }
+    } catch (rolesError) {
+      console.error("Error fetching roles:", rolesError);
     }
     
-    // If we still don't have role information, set a default role
+    // Final fallback - create a default role object based on user info
     if (!userData.role) {
-      console.log("Setting default role as 'user'");
-      userData.role = { name: 'user' };
+      console.log("Creating fallback role based on user info");
+      const roleType = determineUserRole(userData);
+      userData.role = createRoleObject(roleType);
+      console.log("Created fallback role:", userData.role);
     }
     
     return userData;
