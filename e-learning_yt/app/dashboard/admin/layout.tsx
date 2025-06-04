@@ -16,7 +16,8 @@ import {
   FiUser,
   FiShield,
   FiDatabase,
-  FiTrendingUp
+  FiTrendingUp,
+  FiActivity
 } from 'react-icons/fi';
 
 interface NavItem {
@@ -27,9 +28,14 @@ interface NavItem {
 
 const adminNavigation: NavItem[] = [
   { label: 'Dashboard', icon: <FiHome className="w-5 h-5" />, href: '/dashboard/admin' },
-  { label: 'Course Management', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/admin/courses' },
   { label: 'User Management', icon: <FiUsers className="w-5 h-5" />, href: '/dashboard/admin/users' },
-  { label: 'Analytics & Reports', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/analytics' },
+  { label: 'Course Management', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/admin/courses' },
+  { label: 'Enrollment Analytics', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/enrollments' },
+  { label: 'Analytics', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/analytics' },
+  { label: 'System Settings', icon: <FiSettings className="w-5 h-5" />, href: '/dashboard/admin/settings' },
+  { label: 'Database', icon: <FiDatabase className="w-5 h-5" />, href: '/dashboard/admin/database' },
+  { label: 'Audit Logs', icon: <FiShield className="w-5 h-5" />, href: '/dashboard/admin/audit' },
+  { label: 'Performance', icon: <FiActivity className="w-5 h-5" />, href: '/dashboard/admin/performance' },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {

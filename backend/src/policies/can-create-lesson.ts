@@ -16,18 +16,33 @@ export default async (ctx, config, { strapi }) => {
     try {
       // Lấy thông tin khóa học
       const course = await strapi.entityService.findOne("api::course.course", courseId, {
-        fields: ['organizationID']
+        fields: ['organizationID'],
+        populate: {
+          instructor: {
+            fields: ['id']
+          }
+        }
       });
   
       if (!course) {
         console.log(`❌ Course ${courseId} not found`);
         return false;
       }
-  
-      if (course.organizationID !== user.organizationID) {
-        console.log(`❌ User organizationID ${user.organizationID} != course organizationID ${course.organizationID}`);
-        return false;
+
+      // Check if the user is the instructor of the course
+      if (course.instructor && course.instructor.id === user.id) {
+        console.log(`✅ User is the instructor of course ${courseId}`);
+        return true;
       }
+
+      // Fallback: Check organizationID if course has one
+      if (course.organizationID) {
+        if (course.organizationID !== user.organizationID) {
+          console.log(`❌ User organizationID ${user.organizationID} != course organizationID ${course.organizationID}`);
+          return false;
+        }
+      }
+      // If organizationID is empty/null, allow instructors to create lessons (for backwards compatibility)
   
       console.log(`✅ User can create lesson in course ${courseId}`);
       return true;

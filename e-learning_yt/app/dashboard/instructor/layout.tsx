@@ -34,8 +34,6 @@ const instructorNavigation: NavItem[] = [
   { label: 'Analytics', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/instructor/analytics' },
   { label: 'Reviews & Ratings', icon: <FiStar className="w-5 h-5" />, href: '/dashboard/instructor/reviews' },
   { label: 'Messages', icon: <FiMessageCircle className="w-5 h-5" />, href: '/dashboard/instructor/messages' },
-  { label: 'Schedule', icon: <FiCalendar className="w-5 h-5" />, href: '/dashboard/instructor/schedule' },
-  { label: 'Settings', icon: <FiSettings className="w-5 h-5" />, href: '/dashboard/instructor/settings' },
 ];
 
 const InstructorLayout = ({ children }: { children: React.ReactNode }) => {

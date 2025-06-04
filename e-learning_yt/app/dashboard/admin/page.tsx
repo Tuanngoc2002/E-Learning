@@ -29,24 +29,40 @@ interface Course {
   publishedAt: string;
 }
 
+interface EnrollmentStats {
+  userId: number;
+  username: string;
+  email: string;
+  enrolledCourses: number;
+  totalSpent: number;
+  lastEnrollment: string;
+}
+
 const AdminDashboard = () => {
   const [recentUsers, setRecentUsers] = useState<User[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
+  const [enrollmentStats, setEnrollmentStats] = useState<EnrollmentStats[]>([]);
+  const [globalStats, setGlobalStats] = useState({
+    totalUsers: 0,
+    totalCourses: 0,
+    totalEnrollments: 0,
+    totalRevenue: 0
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const {jwt} = useAuth();
 
   const stats = [
-    { label: 'Total Users', value: '2,547', icon: <FiUsers className="w-6 h-6" />, color: 'blue', change: '+12%' },
-    { label: 'Total Courses', value: '156', icon: <FiBook className="w-6 h-6" />, color: 'green', change: '+8%' },
-    { label: 'Revenue', value: '$45,231', icon: <FiDollarSign className="w-6 h-6" />, color: 'purple', change: '+23%' },
-    { label: 'Active Sessions', value: '1,234', icon: <FiActivity className="w-6 h-6" />, color: 'orange', change: '+5%' },
+    { label: 'Total Users', value: globalStats.totalUsers.toString(), icon: <FiUsers className="w-6 h-6" />, color: 'blue', change: '+12%' },
+    { label: 'Total Courses', value: globalStats.totalCourses.toString(), icon: <FiBook className="w-6 h-6" />, color: 'green', change: '+8%' },
+    { label: 'Total Enrollments', value: globalStats.totalEnrollments.toString(), icon: <FiBookOpen className="w-6 h-6" />, color: 'purple', change: '+15%' },
+    { label: 'Total Revenue', value: `$${globalStats.totalRevenue}`, icon: <FiDollarSign className="w-6 h-6" />, color: 'orange', change: '+23%' },
   ];
 
   const quickActions = [
     { label: 'Manage Users', href: '/dashboard/admin/users', icon: <FiUsers className="w-8 h-8" />, color: 'blue' },
     { label: 'Course Management', href: '/dashboard/admin/courses', icon: <FiBook className="w-8 h-8" />, color: 'green' },
-    { label: 'View Analytics', href: '/dashboard/admin/analytics', icon: <FiBarChart2 className="w-8 h-8" />, color: 'purple' },
+    { label: 'Enrollment Analytics', href: '/dashboard/admin/enrollments', icon: <FiBarChart2 className="w-8 h-8" />, color: 'purple' },
     { label: 'System Settings', href: '/dashboard/admin/settings', icon: <FiShield className="w-8 h-8" />, color: 'orange' },
   ];
 
@@ -90,6 +106,67 @@ const AdminDashboard = () => {
 
         const { data: coursesData } = await coursesResponse.json();
         setCourses(coursesData);
+
+        // Fetch enrollments for each user
+        const enrollmentsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/enrollments?populate[0]=user&populate[1]=course`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwt}`
+          }
+        });
+
+        if (enrollmentsResponse.ok) {
+          const enrollmentsData = await enrollmentsResponse.json();
+          const enrollments = enrollmentsData.data || [];
+
+          // Group enrollments by user
+          const enrollmentMap = new Map<number, EnrollmentStats>();
+          let totalRevenue = 0;
+
+          enrollments.forEach((enrollment: any) => {
+            if (!enrollment.user) return;
+
+            const userId = enrollment.user.id;
+            const coursePrice = enrollment.course?.price || 0;
+            totalRevenue += coursePrice;
+
+            if (!enrollmentMap.has(userId)) {
+              enrollmentMap.set(userId, {
+                userId,
+                username: enrollment.user.username || enrollment.user.email,
+                email: enrollment.user.email,
+                enrolledCourses: 0,
+                totalSpent: 0,
+                lastEnrollment: enrollment.enrollmentDate || enrollment.createdAt
+              });
+            }
+
+            const userStats = enrollmentMap.get(userId)!;
+            userStats.enrolledCourses += 1;
+            userStats.totalSpent += coursePrice;
+            
+            // Update last enrollment date if this is more recent
+            const currentDate = new Date(enrollment.enrollmentDate || enrollment.createdAt);
+            const lastDate = new Date(userStats.lastEnrollment);
+            if (currentDate > lastDate) {
+              userStats.lastEnrollment = enrollment.enrollmentDate || enrollment.createdAt;
+            }
+          });
+
+          const enrollmentStatsArray = Array.from(enrollmentMap.values())
+            .sort((a, b) => b.totalSpent - a.totalSpent) // Sort by total spent
+            .slice(0, 10); // Top 10 users
+
+          setEnrollmentStats(enrollmentStatsArray);
+
+          setGlobalStats({
+            totalUsers: usersData.length,
+            totalCourses: coursesData.length,
+            totalEnrollments: enrollments.length,
+            totalRevenue: Math.round(totalRevenue)
+          });
+        }
+
         setError(null);
       } catch (err) {
         setError('Failed to load data. Please try again later.');
@@ -98,7 +175,9 @@ const AdminDashboard = () => {
       }
     };
 
-    fetchData();
+    if (jwt) {
+      fetchData();
+    }
   }, [jwt]);
 
   const handleStatusChange = async (userId: number, newStatus: User['status']) => {
@@ -135,7 +214,9 @@ const AdminDashboard = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${jwt}`
         },
-        body: JSON.stringify({ isPublished })
+        body: JSON.stringify({ 
+          data: { isPublished }
+        })
       });
 
       if (!response.ok) {
@@ -227,7 +308,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Users */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-6">
@@ -251,17 +332,14 @@ const AdminDashboard = () => {
                     <tr className="border-b">
                       <th className="text-left py-3">Name</th>
                       <th className="text-left py-3">Role</th>
-                      <th className="text-left py-3">Joined</th>
                       <th className="text-left py-3">Status</th>
-                      <th className="text-left py-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {recentUsers.map((user) => (
+                    {recentUsers.slice(0, 5).map((user) => (
                       <tr key={user.id} className="border-b">
-                        <td className="py-3">{user.name}</td>
-                        <td className="py-3">{user.role}</td>
-                        <td className="py-3">{user.joined}</td>
+                        <td className="py-3 text-sm">{user.name}</td>
+                        <td className="py-3 text-sm">{user.role}</td>
                         <td className="py-3">
                           <span className={`px-2 py-1 rounded-full text-xs ${
                             user.status === "Active" ? "bg-green-100 text-green-800" : 
@@ -271,23 +349,41 @@ const AdminDashboard = () => {
                             {user.status}
                           </span>
                         </td>
-                        <td className="py-3">
-                          <select
-                            value={user.status}
-                            onChange={(e) => handleStatusChange(user.id, e.target.value as User['status'])}
-                            className="text-sm rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                          >
-                            <option value="Active">Active</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Suspended">Suspended</option>
-                          </select>
-                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             )}
+          </div>
+
+          {/* Top Student Enrollments */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">Top Student Enrollments</h2>
+              <Link href="/dashboard/admin/enrollments" className="text-blue-600 hover:text-blue-800">
+                View All
+              </Link>
+            </div>
+            <div className="space-y-4">
+              {enrollmentStats.slice(0, 5).map((student) => (
+                <div key={student.userId} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <div className="font-medium text-gray-900">{student.username}</div>
+                    <div className="text-sm text-gray-500">{student.enrolledCourses} courses</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-medium text-green-600">${student.totalSpent}</div>
+                    <div className="text-xs text-gray-500">Total spent</div>
+                  </div>
+                </div>
+              ))}
+              {enrollmentStats.length === 0 && !isLoading && (
+                <div className="text-center text-gray-500 py-4">
+                  No enrollment data available
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Recent Courses */}
@@ -298,48 +394,31 @@ const AdminDashboard = () => {
                 View All
               </Link>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3">Course</th>
-                    <th className="text-left py-3">Difficulty</th>
-                    <th className="text-left py-3">Students</th>
-                    <th className="text-left py-3">Price</th>
-                    <th className="text-left py-3">Visibility</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {courses.map((course) => (
-                    <tr key={course.id} className="border-b">
-                      <td className="py-3">{course.name}</td>
-                      <td className="py-3">{course.difficulty}</td>
-                      <td className="py-3">{course.attributes.studentCount}</td>
-                      <td className="py-3">${course.price || 0}</td>
-                      <td className="py-3">
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            className="sr-only peer"
-                            checked={course.isPublished}
-                            onChange={(e) => handleCourseVisibility(course.id, e.target.checked)}
-                          />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                          <span className="ml-3 text-sm font-medium text-gray-900">
-                            {course.isPublished ? 'Published' : 'Unpublished'}
-                          </span>
-                        </label>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-4">
+              {courses.slice(0, 5).map((course) => (
+                <div key={course.id} className="border rounded-lg p-3">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-medium text-gray-900 text-sm">{course.name}</h4>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      course.isPublished 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {course.isPublished ? 'Published' : 'Draft'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-600">
+                    <span>${course.price || 0}</span>
+                    <span>{course.difficulty}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Recent Activity & System Health */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
           {/* Recent Activity */}
           <div className="bg-white rounded-lg shadow-sm border p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
@@ -362,7 +441,7 @@ const AdminDashboard = () => {
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900">Payment received</p>
-                  <p className="text-xs text-gray-500">$299 for Pro subscription - 2 hours ago</p>
+                  <p className="text-xs text-gray-500">${Math.floor(Math.random() * 200) + 50} enrollment fee - 2 hours ago</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
@@ -400,16 +479,16 @@ const AdminDashboard = () => {
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Storage Usage</span>
-                <span className="text-sm font-medium text-gray-900">68% (340GB/500GB)</span>
+                <span className="text-sm text-gray-600">Total Enrollments</span>
+                <span className="text-sm font-medium text-gray-900">{globalStats.totalEnrollments}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Memory Usage</span>
-                <span className="text-sm font-medium text-gray-900">45% (3.6GB/8GB)</span>
+                <span className="text-sm text-gray-600">Revenue Generated</span>
+                <span className="text-sm font-medium text-gray-900">${globalStats.totalRevenue}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Active Users</span>
-                <span className="text-sm font-medium text-gray-900">1,234 online</span>
+                <span className="text-sm font-medium text-gray-900">{globalStats.totalUsers} total</span>
               </div>
             </div>
             <Link 

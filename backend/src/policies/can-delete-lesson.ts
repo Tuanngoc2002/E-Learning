@@ -23,9 +23,14 @@ export default async (ctx, config, { strapi }) => {
       return false;
     }
 
-    // Lấy thông tin course để kiểm tra organizationID
+    // Lấy thông tin course để kiểm tra organizationID và instructor
     const course = await strapi.entityService.findOne("api::course.course", lesson.course.id, {
-      fields: ['organizationID']
+      fields: ['organizationID'],
+      populate: {
+        instructor: {
+          fields: ['id']
+        }
+      }
     });
 
     if (!course) {
@@ -33,10 +38,20 @@ export default async (ctx, config, { strapi }) => {
       return false;
     }
 
-    if (course.organizationID !== user.organizationID) {
-      console.log(`❌ User organizationID ${user.organizationID} != course organizationID ${course.organizationID}`);
-      return false;
+    // Check if the user is the instructor of the course
+    if (course.instructor && course.instructor.id === user.id) {
+      console.log(`✅ User is the instructor of the course for lesson ${lessonId}`);
+      return true;
     }
+
+    // Fallback: Check organizationID if course has one
+    if (course.organizationID) {
+      if (course.organizationID !== user.organizationID) {
+        console.log(`❌ User organizationID ${user.organizationID} != course organizationID ${course.organizationID}`);
+        return false;
+      }
+    }
+    // If organizationID is empty/null, allow instructors to delete lessons (for backwards compatibility)
 
     console.log(`✅ User can delete lesson ${lessonId}`);
     return true;

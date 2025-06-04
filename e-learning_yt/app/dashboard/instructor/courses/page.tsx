@@ -14,7 +14,7 @@ interface Course {
   isPublished: boolean;
   attributes: {
     studentCount: number;
-    rating?: number;
+    rating?: number | null;
     lessonCount?: number;
   };
   createdAt: string;
@@ -56,8 +56,10 @@ const InstructorCoursesPage = () => {
       setLoading(true);
       let url = `${process.env.NEXT_PUBLIC_API_URL}/api/courses?populate=lessons&pagination[page]=${page}&pagination[pageSize]=10`;
       
-      // Filter by instructor (assuming instructor field exists on course)
-      // url += `&filters[instructor][id][$eq]=${user?.id}`;
+      // Filter by instructor - only get courses created by the logged-in instructor
+      if (user?.id) {
+        url += `&filters[instructor][id][$eq]=${user.id}`;
+      }
       
       if (search) {
         url += `&filters[name][$containsi]=${search}`;
@@ -87,8 +89,8 @@ const InstructorCoursesPage = () => {
         ...course,
         attributes: {
           ...course.attributes,
-          studentCount: course.attributes?.studentCount || Math.floor(Math.random() * 100),
-          rating: course.attributes?.rating || parseFloat((4 + Math.random()).toFixed(1)),
+          studentCount: course.attributes?.studentCount || 0,
+          rating: course.attributes?.rating || null,
           lessonCount: course.lessons?.length || 0
         }
       }));
@@ -104,10 +106,10 @@ const InstructorCoursesPage = () => {
   };
 
   useEffect(() => {
-    if (jwt) {
+    if (jwt && user?.id) {
       fetchCourses();
     }
-  }, [jwt]);
+  }, [jwt, user]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -348,7 +350,7 @@ const InstructorCoursesPage = () => {
                     <div className="text-lg font-bold text-yellow-600">
                       <div className="flex items-center justify-center">
                         <FiStar className="w-4 h-4 mr-1" />
-                        {course.attributes?.rating || 'N/A'}
+                        {course.attributes?.rating ? course.attributes.rating.toFixed(1) : 'N/A'}
                       </div>
                     </div>
                     <div className="text-xs text-gray-500">Rating</div>
@@ -371,17 +373,6 @@ const InstructorCoursesPage = () => {
                   >
                     <FiEdit2 className="w-4 h-4 mr-1" />
                     Edit
-                  </button>
-                  <button
-                    onClick={() => handlePublishToggle(course.id, course.isPublished)}
-                    className={`px-3 py-2 text-sm rounded transition-colors ${
-                      course.isPublished 
-                        ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' 
-                        : 'bg-green-100 text-green-800 hover:bg-green-200'
-                    }`}
-                    title={course.isPublished ? 'Unpublish course' : 'Publish course'}
-                  >
-                    {course.isPublished ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                   </button>
                   <button
                     onClick={() => handleDeleteCourse(course.id)}
