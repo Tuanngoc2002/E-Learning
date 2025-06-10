@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { FiSave, FiX, FiAlertCircle } from 'react-icons/fi'
 import { cookies } from 'next/dist/client/components/headers'
@@ -14,6 +14,7 @@ interface CourseFormData {
   price: number
   isPublished: boolean
   organizationID: string
+  prestige: number | string
   lessons: {
     title: string
     content: string | null
@@ -23,8 +24,25 @@ interface CourseFormData {
   }[]
 }
 
+interface Course {
+  id: number
+  name: string
+  instructor: {
+    id: number
+    username: string
+    email: string
+  }
+  prestige: {
+    data: Array<{
+      id: number
+      name: string
+    }>
+  }
+}
+
 export default function CreateCoursePage() {
   const router = useRouter()
+  const [courses, setCourses] = useState<Course[]>([])
   
   const [formData, setFormData] = useState<CourseFormData>({
     name: '',
@@ -33,12 +51,41 @@ export default function CreateCoursePage() {
     price: 0,
     isPublished: false,
     organizationID: '',
+    prestige: '',
     lessons: [],
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
   const { user, jwt, organizationID } = useAuth()
   console.log(organizationID)
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses?populate=instructor`,
+          {
+            headers: {
+              'Authorization': `Bearer ${jwt}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch courses');
+        }
+
+        const data = await response.json();
+        setCourses(data.data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+
+    if (jwt) {
+      fetchCourses();
+    }
+  }, [jwt]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -99,6 +146,7 @@ export default function CreateCoursePage() {
         price: 0,
         isPublished: false,
         organizationID: '',
+        prestige: '',
         lessons: [],
       })
     } catch (error) {
@@ -241,6 +289,26 @@ export default function CreateCoursePage() {
                   <option value="easy">Easy</option>
                   <option value="medium">Medium</option>
                   <option value="hard">Hard</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="prestige" className="block text-sm font-medium text-gray-700 mb-1">
+                  Prestige
+                </label>
+                <select
+                  id="prestige"
+                  name="prestige"
+                  value={formData.prestige}
+                  onChange={handleChange}
+                  className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                >
+                  <option value="">Select a course prestige</option>
+                  {courses.map((course) => (
+                    <option key={course.id} value={course.id}>
+                      {course.name} - Instructor: {course.instructor?.username || 'Unknown'}
+                    </option>
+                  ))}
                 </select>
               </div>
 

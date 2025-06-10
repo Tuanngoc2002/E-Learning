@@ -12,9 +12,7 @@ interface Course {
   difficulty: string;
   price: number | null;
   isPublished: boolean;
-  attributes: {
-    studentCount: number;
-  };
+  studentCount: number;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
@@ -182,13 +180,7 @@ const AdminCoursesPage = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Course Management</h1>
-          <button
-            onClick={() => router.push('/dashboard/admin/courses/new')}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <FiPlus className="w-5 h-5 mr-2" />
-            Add New Course
-          </button>
+          
         </div>
 
         {error && (
@@ -270,7 +262,7 @@ const AdminCoursesPage = () => {
               <FiUsers className="w-8 h-8 text-purple-600 mr-4" />
               <div>
                 <div className="text-2xl font-bold text-purple-600">
-                  {courses.reduce((total, course) => total + (course.attributes?.studentCount || 0), 0)}
+                  {courses.reduce((total, course) => total + (course.studentCount || 0), 0)}
                 </div>
                 <div className="text-sm text-gray-500">Total Students</div>
               </div>
@@ -337,7 +329,7 @@ const AdminCoursesPage = () => {
                     {course.price ? `$${course.price}` : 'Free'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {course.attributes?.studentCount || 0}
+                    {course.studentCount || 0}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

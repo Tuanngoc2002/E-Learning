@@ -49,20 +49,26 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
           organizationID: course.organizationID,
         })
 
-        // Fetch lessons separately
-        if (jwt) {
-          try {
-            console.log('🔍 Fetching lessons for course:', params.id)
-            const courseLessons = await lessonService.getLessonsByCourseId(parseInt(params.id), jwt)
-            console.log('📚 Fetched lessons with IDs:', courseLessons.map(l => `${l.id} (${l.title})`))
-            console.log('📚 Full lessons data:', courseLessons)
-            setLessons(courseLessons)
-          } catch (lessonError) {
-            console.warn('Could not fetch lessons:', lessonError)
-            setLessons([])
-          }
+        // Set lessons from course data if available
+        if (course.lessons && course.lessons.length > 0) {
+          console.log('📚 Setting lessons from course data:', course.lessons)
+          setLessons(course.lessons)
         } else {
-          console.warn('⚠️ No JWT token found for fetching lessons')
+          // Fallback to fetching lessons separately if not included in course data
+          if (jwt) {
+            try {
+              console.log('🔍 Fetching lessons for course:', params.id)
+              const courseLessons = await lessonService.getLessonsByCourseId(parseInt(params.id), jwt)
+              console.log('📚 Fetched lessons with IDs:', courseLessons.map(l => `${l.id} (${l.title})`))
+              console.log('📚 Full lessons data:', courseLessons)
+              setLessons(courseLessons)
+            } catch (lessonError) {
+              console.warn('Could not fetch lessons:', lessonError)
+              setLessons([])
+            }
+          } else {
+            console.warn('⚠️ No JWT token found for fetching lessons')
+          }
         }
       } catch (error) {
         console.error('Error fetching course:', error)

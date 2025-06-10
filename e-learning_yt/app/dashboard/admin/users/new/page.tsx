@@ -42,7 +42,11 @@ const NewUserPage = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users-permissions/roles`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users-permissions/roles`, {
+          headers: {
+            'Authorization': `Bearer ${jwt}`,
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setRoles(data.roles);
@@ -57,7 +61,7 @@ const NewUserPage = () => {
     };
 
     fetchRoles();
-  }, []);
+  }, [jwt]);
 
   // Update organizationID when it changes from auth
   useEffect(() => {

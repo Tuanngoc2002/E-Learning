@@ -108,7 +108,7 @@ const AdminDashboard = () => {
         setCourses(coursesData);
 
         // Fetch enrollments for each user
-        const enrollmentsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/enrollments?populate[0]=user&populate[1]=course`, {
+        const enrollmentsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/findAll?populate[0]=user&populate[1]=course`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${jwt}`

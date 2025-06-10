@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ratings",
+  "info": {
+    "singularName": "rating",
+    "pluralName": "ratings",
+    "displayName": "Rating"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "stars": {
+      "type": "integer"
+    },
+    "comments": {
+      "type": "string"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "ratings"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::course.course",
+      "inversedBy": "ratings"
+    }
+  }
+}

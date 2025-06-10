@@ -12,8 +12,8 @@ interface Course {
   difficulty: string;
   price: number | null;
   isPublished: boolean;
+  studentCount: number;
   attributes: {
-    studentCount: number;
     rating?: number | null;
     lessonCount?: number;
   };
@@ -89,7 +89,7 @@ const InstructorCoursesPage = () => {
         ...course,
         attributes: {
           ...course.attributes,
-          studentCount: course.attributes?.studentCount || 0,
+          studentCount: course.studentCount || 0,
           rating: course.attributes?.rating || null,
           lessonCount: course.lessons?.length || 0
         }
@@ -111,37 +111,13 @@ const InstructorCoursesPage = () => {
     }
   }, [jwt, user]);
 
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchCourses(1, searchTerm, filterDifficulty, filterStatus);
   };
 
-  const handlePublishToggle = async (courseId: number, currentStatus: boolean) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${jwt}`,
-        },
-        body: JSON.stringify({
-          data: {
-            isPublished: !currentStatus
-          }
-        }),
-      });
 
-      if (!response.ok) {
-        throw new Error(`Failed to ${currentStatus ? 'unpublish' : 'publish'} course`);
-      }
-
-      // Refresh courses list
-      fetchCourses(pagination.page, searchTerm, filterDifficulty, filterStatus);
-    } catch (err) {
-      console.error(`Error ${currentStatus ? 'unpublishing' : 'publishing'} course:`, err);
-      setError(err instanceof Error ? err.message : `Failed to ${currentStatus ? 'unpublish' : 'publish'} course`);
-    }
-  };
 
   const handleDeleteCourse = async (courseId: number) => {
     if (!confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
@@ -293,7 +269,7 @@ const InstructorCoursesPage = () => {
               <FiUsers className="w-8 h-8 text-purple-600 mr-4" />
               <div>
                 <div className="text-2xl font-bold text-purple-600">
-                  {courses.reduce((total, course) => total + (course.attributes?.studentCount || 0), 0)}
+                  {courses.reduce((total, course) => total + (course.studentCount || 0), 0)}
                 </div>
                 <div className="text-sm text-gray-500">Total Students</div>
               </div>
@@ -339,7 +315,7 @@ const InstructorCoursesPage = () => {
                 
                 <div className="grid grid-cols-3 gap-4 mb-4 text-center">
                   <div>
-                    <div className="text-lg font-bold text-blue-600">{course.attributes?.studentCount || 0}</div>
+                    <div className="text-lg font-bold text-blue-600">{course.studentCount || 0}</div>
                     <div className="text-xs text-gray-500">Students</div>
                   </div>
                   <div>

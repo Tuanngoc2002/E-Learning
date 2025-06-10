@@ -62,7 +62,11 @@ const EditUserPage = () => {
         setIsFetching(true);
 
         // Fetch roles
-        const rolesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users-permissions/roles`);
+        const rolesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users-permissions/roles`, {
+          headers: {
+            'Authorization': `Bearer ${jwt}`,
+          },
+        });
         if (rolesResponse.ok) {
           const rolesData = await rolesResponse.json();
           setRoles(rolesData.roles);

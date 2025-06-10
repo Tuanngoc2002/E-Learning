@@ -12,6 +12,14 @@ import { useSearchParams } from 'next/navigation';
 import { useComments } from '@/hooks/useComments';
 import ChatBox from '@/components/molecules/Chatbox';
 import RecommendedCourses from '@/components/organisms/RecommendedCourses';
+import { Course } from '@/types/course';
+
+interface UserCourse {
+  id: number;
+  userId: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const CourseDetailPage = () => {
   const params = useParams();
@@ -32,16 +40,22 @@ const CourseDetailPage = () => {
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [editingComment, setEditingComment] = useState<number | null>(null);
   const [editContent, setEditContent] = useState('');
+  const {user: userAuth}= useAuth();
+  console.log(userAuth?.id);
+  const [newRating, setNewRating] = useState<number | null>(null);
+  const [newRatingComment, setNewRatingComment] = useState('');
+  const [ratingError, setRatingError] = useState<string | null>(null);
 
   // Check enrollment status from course data
   useEffect(() => {
-    console.log(course);
-    if (course && course.user_courses && course.user_courses.length > 0) {
+    console.log('Course:', course);
+    console.log('User:', userAuth);
+    if (userAuth?.id && course?.user_courses?.some(uc => Number(uc.userId) === Number(userAuth.id))) {
       setIsEnrolled(true);
     } else {
       setIsEnrolled(false);
     }
-  }, [course]);
+  }, [course, userAuth?.id]);
 
   // Nếu có lỗi 404, chuyển hướng đến trang danh sách khóa học
   useEffect(() => {
@@ -178,6 +192,42 @@ const CourseDetailPage = () => {
     }
   };
 
+  const handleAddRating = async () => {
+    if (!course || !newRating) return;
+    
+    setRatingError(null);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ratings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+          data: {
+            stars: newRating,
+            comments: newRatingComment,
+            course: course.id
+          }
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || data.error || 'Failed to add rating');
+      }
+
+      // Reset form
+      setNewRating(null);
+      setNewRatingComment('');
+      // Refresh course data to get updated ratings
+      window.location.reload();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add rating';
+      setRatingError(errorMessage);
+    }
+  };
 
   if (loading) {
     return (
@@ -377,6 +427,16 @@ const CourseDetailPage = () => {
                 >
                   Comments
                 </button>
+                <button
+                  onClick={() => setActiveTab('ratings')}
+                  className={`${
+                    activeTab === 'ratings'
+                      ? 'border-indigo-500 text-indigo-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                >
+                  Ratings
+                </button>
               </nav>
             </div>
 
@@ -442,6 +502,126 @@ const CourseDetailPage = () => {
                       </div>
                     </div>
                   )}
+                </div>
+              ) : activeTab === 'ratings' ? (
+                // Ratings Tab Content
+                <div className="p-6">
+                  <div className="space-y-6">
+                    {/* Average Rating */}
+                    <div className="bg-white rounded-lg p-6 border border-gray-200">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center">
+                          <div className="text-4xl font-bold text-indigo-600 mr-4">
+                            {course.ratings && course.ratings.length > 0 
+                              ? (course.ratings.reduce((acc: number, rating) => acc + rating.stars, 0) / course.ratings.length).toFixed(1)
+                              : '0.0'}
+                          </div>
+                          <div>
+                            <div className="flex items-center">
+                              {[...Array(5)].map((_, index) => (
+                                <FaStar
+                                  key={index}
+                                  className={`w-5 h-5 ${
+                                    index < (course.ratings && course.ratings.length > 0
+                                      ? Math.round(course.ratings.reduce((acc: number, rating) => acc + rating.stars, 0) / course.ratings.length)
+                                      : 0)
+                                      ? 'text-yellow-400'
+                                      : 'text-gray-300'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {course.ratings?.length || 0} ratings
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Rating Form */}
+                    {isEnrolled && (
+                      <div className="bg-white rounded-lg p-6 border border-gray-200">
+                        <h3 className="text-lg font-semibold mb-4">Rate this course</h3>
+                        {ratingError && (
+                          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                            {ratingError}
+                          </div>
+                        )}
+                        <div className="flex items-center mb-4">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              onClick={() => setNewRating(star)}
+                              className="focus:outline-none"
+                            >
+                              <FaStar
+                                className={`w-6 h-6 ${
+                                  star <= (newRating || 0)
+                                    ? 'text-yellow-400'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                        <textarea
+                          value={newRatingComment}
+                          onChange={(e) => setNewRatingComment(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          rows={3}
+                          placeholder="Write your review..."
+                        ></textarea>
+                        <button
+                          onClick={handleAddRating}
+                          disabled={!newRating}
+                          className="mt-2 bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300 disabled:bg-indigo-400"
+                        >
+                          Submit Rating
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Ratings List */}
+                    <div className="space-y-4">
+                      {course.ratings?.length === 0 ? (
+                        <div className="text-gray-500 text-center">No ratings yet</div>
+                      ) : (
+                        course.ratings?.map((rating) => (
+                          <div key={rating.id} className="bg-white rounded-lg p-4 border border-gray-200">
+                            <div className="flex items-start space-x-3">
+                              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <span className="text-indigo-600 font-semibold">
+                                  {rating.user?.username?.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-2">
+                                    <span className="font-medium">{rating.user?.username}</span>
+                                    <span className="text-sm text-gray-500">
+                                      {new Date(rating.createdAt).toLocaleDateString()}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center">
+                                    {[...Array(5)].map((_, index) => (
+                                      <FaStar
+                                        key={index}
+                                        className={`w-4 h-4 ${
+                                          index < rating.stars ? 'text-yellow-400' : 'text-gray-300'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                                <p className="mt-2 text-gray-600">{rating.comments}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
                 </div>
               ) : (
                 // Comments Tab Content

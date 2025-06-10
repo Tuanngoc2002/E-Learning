@@ -6,6 +6,10 @@ export interface Course {
   price: number;
   isPublished: boolean;
   organizationID: string;
+  prestige: {
+    id: number;
+    name: string;
+  };
   instructor: {
     id: number;
     username: string;
@@ -15,7 +19,9 @@ export interface Course {
   lessons?: Lesson[];
   user_courses?: {
     id: number;
-    enrolledAt: string;
+    userId: number;
+    createdAt: string;
+    updatedAt: string;
   }[];
   exam?: {
     id: number;
@@ -29,6 +35,18 @@ export interface Course {
       correctAnswer: string;
     }[];
   };
+  ratings?: {
+    id: number;
+    stars: number;
+    comments: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+      id: number;
+      username: string;
+      email: string;
+    };
+  }[];
   createdAt: string;
   updatedAt: string;
   publishedAt: string;

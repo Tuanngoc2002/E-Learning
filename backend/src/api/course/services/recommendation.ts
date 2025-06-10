@@ -17,6 +17,15 @@ interface Course {
     documentId: string;
     enrolledAt: string;
   }>;
+  ratings?: Array<{
+    id: number;
+    stars: number;
+    comments: string;
+    user: {
+      id: number;
+      username: string;
+    };
+  }>;
 }
 
 interface Filter {
@@ -56,7 +65,10 @@ const calculateSimilarityScore = (course1: Course, course2: Course): number => {
   }
 
   // Popularity factors
-  if (course2.rating) score += course2.rating;
+  if (course2.ratings && course2.ratings.length > 0) {
+    const avgRating = course2.ratings.reduce((acc, rating) => acc + rating.stars, 0) / course2.ratings.length;
+    score += avgRating;
+  }
   if (course2.students_count) score += Math.min(3, Math.log10(course2.students_count));
   if (course2.completion_rate) score += (course2.completion_rate / 100) * 2;
 
@@ -89,7 +101,15 @@ const getRecommendedCourses = async (courseId: number, userId?: number) => {
 
     // Get all potential courses
     const allCourses = await strapi.db.query('api::course.course').findMany({
-      populate: ['category', 'tags', 'difficulty_level', 'thumbnail', 'instructor', 'user_courses']
+      populate: [
+        'category', 
+        'tags', 
+        'difficulty_level', 
+        'thumbnail', 
+        'instructor', 
+        'user_courses',
+        'ratings'
+      ]
     }) as Course[];
 
     // Filter out enrolled and duplicate courses

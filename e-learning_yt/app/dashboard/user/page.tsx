@@ -174,7 +174,7 @@ const UserDashboard = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xl font-semibold mb-2">Keep up the great work!</h3>
-            <p className="text-purple-100">You're 75% towards your monthly learning goal of 20 hours.</p>
+            <p className="text-purple-100">You are 75% towards your monthly learning goal of 20 hours.</p>
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold">15h</p>

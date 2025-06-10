@@ -54,7 +54,7 @@ const AdminEnrollmentsPage = () => {
   const fetchEnrollments = async (page = 1, search = '', status = 'all') => {
     try {
       setLoading(true);
-      let url = `${process.env.NEXT_PUBLIC_API_URL}/api/enrollments?populate[0]=user&populate[1]=course&populate[2]=course.instructor&pagination[page]=${page}&pagination[pageSize]=20`;
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/findAll?&pagination[page]=${page}&pagination[pageSize]=20`;
       
       if (search) {
         url += `&filters[$or][0][user][username][$containsi]=${search}&filters[$or][1][user][email][$containsi]=${search}&filters[$or][2][course][name][$containsi]=${search}`;

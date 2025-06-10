@@ -83,7 +83,7 @@ const InstructorDashboard = () => {
       for (const course of instructorCourses) {
         try {
           const enrollmentResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/enrollments?filters[course][id][$eq]=${course.id}`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/findAll?filters[course][id][$eq]=${course.id}`,
             {
               headers: {
                 'Authorization': `Bearer ${jwt}`,
@@ -149,7 +149,7 @@ const InstructorDashboard = () => {
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.username}!</h1>
-        <p className="text-gray-600 mt-2">Here's how your courses are performing today.</p>
+        <p className="text-gray-600 mt-2">Here is how your courses are performing today.</p>
       </div>
 
       {/* Statistics Cards */}

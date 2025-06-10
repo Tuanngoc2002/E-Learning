@@ -2,19 +2,28 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiBook, FiClock, FiPlay, FiPlus, FiSearch } from 'react-icons/fi';
+import { FiBook, FiClock, FiPlay, FiPlus, FiSearch, FiCheck, FiArrowRight, FiLock, FiStar } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 import Image from 'next/image';
 
 interface Course {
   id: number;
   name: string;
-  descriptions: string;
+  descriptions: string | null;
   difficulty: string;
   price: number | null;
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;
+  prestige?: {
+    data?: Array<{
+      id: number;
+      name: string;
+    }>;
+  };
+  attributes?: {
+    studentCount: number;
+  };
 }
 
 interface EnrolledCourse extends Course {
@@ -23,25 +32,110 @@ interface EnrolledCourse extends Course {
   user_courses?: any[];
 }
 
+interface RoadmapNode {
+  course: Course;
+  level: number;
+  isCompleted: boolean;
+  isEnrolled: boolean;
+  children: RoadmapNode[];
+  isRecommended: boolean;
+}
+
 const UserCoursesPage = () => {
   const { jwt, user } = useAuth();
   const router = useRouter();
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
   const [availableCourses, setAvailableCourses] = useState<Course[]>([]);
+  const [roadmap, setRoadmap] = useState<RoadmapNode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'enrolled' | 'available'>('enrolled');
+  const [activeTab, setActiveTab] = useState<'enrolled' | 'available' | 'roadmap'>('enrolled');
   const [searchTerm, setSearchTerm] = useState('');
+
+  const buildRoadmap = (enrolled: EnrolledCourse[], available: Course[]): RoadmapNode[] => {
+    // Tạo map để tra cứu nhanh
+    const courseMap = new Map<number, Course>();
+    [...enrolled, ...available].forEach(course => {
+      courseMap.set(course.id, course);
+    });
+
+    // Tìm tất cả các khóa học liên quan (enrolled + các dependent)
+    const relevantCourses = new Set<number>();
+    enrolled.forEach(course => relevantCourses.add(course.id));
+    available.forEach(course => relevantCourses.add(course.id));
+
+    // Hàm tìm dependent (khóa học phụ thuộc vào courseId)
+    const findDependentCourses = (courseId: number): Course[] => {
+      return [...enrolled, ...available].filter(course =>
+        course.prestige?.data?.some(p => p.id === courseId)
+      );
+    };
+
+    // Tìm root: không có prerequisite hoặc prerequisite không nằm trong hệ thống
+    const filteredCourses = [...enrolled, ...available].filter(course => relevantCourses.has(course.id));
+    const rootCourses = filteredCourses.filter(course => {
+      if (!course.prestige?.data || course.prestige.data.length === 0) return true;
+      // Nếu tất cả prerequisite không nằm trong hệ thống thì cũng là root
+      return course.prestige.data.every(p => !courseMap.has(p.id));
+    });
+
+    // Đệ quy vẽ cây roadmap từ root, chỉ duyệt dependent để tránh lặp
+    const buildTree = (course: Course, level: number, visited: Set<number>): RoadmapNode => {
+      if (visited.has(course.id)) {
+        return {
+          course,
+          level,
+          isCompleted: enrolled.some(ec => ec.id === course.id && (ec.progress || 0) >= 100),
+          isEnrolled: enrolled.some(ec => ec.id === course.id),
+          children: [],
+          isRecommended: false
+        };
+      }
+      visited.add(course.id);
+
+      const isCompleted = enrolled.some(ec => ec.id === course.id && (ec.progress || 0) >= 100);
+      const isEnrolled = enrolled.some(ec => ec.id === course.id);
+
+      // Chỉ duyệt dependent (khóa học phụ thuộc vào khóa này)
+      const dependentCourses = findDependentCourses(course.id);
+      const children = dependentCourses
+        .filter(c => relevantCourses.has(c.id) && !visited.has(c.id))
+        .map(c => buildTree(c, level + 1, new Set(visited)));
+
+      // Đề xuất nếu: chưa học, đã publish, đủ điều kiện prerequisite
+      const isRecommended = !isEnrolled &&
+        course.isPublished &&
+        (!course.prestige?.data ||
+          course.prestige.data.every(p =>
+            enrolled.some(ec => ec.id === p.id && (ec.progress || 0) >= 100)
+          )
+        );
+
+      return {
+        course,
+        level,
+        isCompleted,
+        isEnrolled,
+        children,
+        isRecommended
+      };
+    };
+
+    // Vẽ cây từ tất cả root
+    const roadmap = rootCourses.map(course => buildTree(course, 0, new Set()));
+    return roadmap;
+  };
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
-        let enrolledData: any = { data: [] }; // Initialize with default value
+        let enrolledData: any = { data: [] };
+        let enrolledCoursesList: EnrolledCourse[] = [];
 
-        // Fetch enrolled courses
+        // Fetch enrolled courses with prestige data
         const enrolledResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/user-courses?populate=course&filters[user][id][$eq]=${user?.id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/enrolled?populate[course][populate]=prestige`,
           {
             headers: {
               'Authorization': `Bearer ${jwt}`,
@@ -51,18 +145,27 @@ const UserCoursesPage = () => {
 
         if (enrolledResponse.ok) {
           enrolledData = await enrolledResponse.json();
-          const courses = enrolledData.data.map((enrollment: any) => ({
-            ...enrollment.course,
-            progress: enrollment.progress || 0,
-            lastAccessed: enrollment.lastAccessed,
-            user_courses: [enrollment]
-          }));
-          setEnrolledCourses(courses);
+          console.log('Enrolled data:', enrolledData);
+          enrolledCoursesList = enrolledData.data.map((enrollment: any) => {
+            const course = {
+              ...enrollment.course,
+              progress: enrollment.progress || 0,
+              lastAccessed: enrollment.lastAccessed,
+              user_courses: [enrollment]
+            };
+            console.log('Enrolled course prestige:', {
+              id: course.id,
+              name: course.name,
+              prestige: course.prestige
+            });
+            return course;
+          });
+          setEnrolledCourses(enrolledCoursesList);
         }
 
-        // Fetch all available published courses
+        // Fetch all available published courses with prestige data
         const availableResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/courses?filters[isPublished][$eq]=true&populate=user_courses`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses?filters[isPublished][$eq]=true&populate=prestige`,
           {
             headers: {
               'Authorization': `Bearer ${jwt}`,
@@ -72,12 +175,39 @@ const UserCoursesPage = () => {
 
         if (availableResponse.ok) {
           const availableData = await availableResponse.json();
-          // Filter out courses the user is already enrolled in
+          console.log('Available data raw:', availableData);
+          
+          // Log the first course to see its structure
+          if (availableData.data && availableData.data.length > 0) {
+            console.log('First course structure:', {
+              id: availableData.data[0].id,
+              name: availableData.data[0].name,
+              attributes: availableData.data[0].attributes,
+              prestige: availableData.data[0].prestige
+            });
+          }
+
           const enrolledCourseIds = new Set(enrolledData.data?.map((e: any) => e.course.id) || []);
           const notEnrolledCourses = availableData.data.filter((course: Course) => 
             !enrolledCourseIds.has(course.id)
           );
+
+          // Log each course's prestige data
+          notEnrolledCourses.forEach((course: Course) => {
+            console.log('Course prestige data:', {
+              id: course.id,
+              name: course.name,
+              prestige: course.prestige,
+              rawData: course
+            });
+          });
+
           setAvailableCourses(notEnrolledCourses);
+          
+          // Build and set roadmap
+          const roadmapData = buildRoadmap(enrolledCoursesList, notEnrolledCourses);
+          console.log('Setting roadmap:', roadmapData);
+          setRoadmap(roadmapData);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch courses');
@@ -102,12 +232,12 @@ const UserCoursesPage = () => {
 
   const filteredAvailableCourses = availableCourses.filter(course =>
     course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.descriptions.toLowerCase().includes(searchTerm.toLowerCase())
+    course.descriptions?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredEnrolledCourses = enrolledCourses.filter(course =>
     course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.descriptions.toLowerCase().includes(searchTerm.toLowerCase())
+    course.descriptions?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getDifficultyColor = (difficulty: string) => {
@@ -130,6 +260,80 @@ const UserCoursesPage = () => {
       day: 'numeric'
     });
   };
+
+  // Helper: Lấy tất cả các nhánh từ root đến lá trong roadmap tree
+  const getAllPathsFromRootToLeaf = (node: RoadmapNode, path: RoadmapNode[] = []): RoadmapNode[][] => {
+    const newPath = [...path, node];
+    if (!node.children || node.children.length === 0) {
+      return [newPath];
+    }
+    return node.children.flatMap(child => getAllPathsFromRootToLeaf(child, newPath));
+  };
+
+  // Render một nhánh theo chiều ngang dạng card
+  const renderHorizontalPath = (path: RoadmapNode[]) => (
+    <div className="flex items-center space-x-4 overflow-x-auto py-4 px-6 bg-gray-50 rounded-xl border border-blue-200 shadow mb-4" key={path.map(n => n.course.id).join('-')}>
+      {path.map((node, idx) => (
+        <React.Fragment key={node.course.id}>
+          <div className={`min-w-[220px] max-w-[240px] h-[210px] flex flex-col justify-between p-4 rounded-xl shadow border-2
+            ${node.isCompleted ? 'border-green-500 bg-green-50'
+              : node.isEnrolled ? 'border-blue-500 bg-blue-50'
+              : node.isRecommended ? 'border-yellow-500 bg-yellow-50'
+              : 'border-gray-300 bg-gray-50'}`}>
+            <div>
+              <div className="flex items-center mb-2">
+                {/* Icon trạng thái */}
+                {node.isCompleted ? <FiCheck className="text-green-500" />
+                  : node.isEnrolled ? <FiPlay className="text-blue-500" />
+                  : node.isRecommended ? <FiStar className="text-yellow-500" />
+                  : <FiLock className="text-gray-400" />}
+                <span className="ml-2 font-bold line-clamp-1">{node.course.name}</span>
+              </div>
+              <div className="text-xs text-gray-500 line-clamp-2 mb-2">{node.course.descriptions}</div>
+            </div>
+            <div>
+              <div className="flex items-center space-x-2 mb-1">
+                {node.course.difficulty && (
+                  <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full ${getDifficultyColor(node.course.difficulty)}`}>
+                    {node.course.difficulty}
+                  </span>
+                )}
+                {node.course.price !== null && (
+                  <span className="text-xs font-medium text-blue-600">
+                    {node.course.price === 0 ? 'Miễn phí' : `$${node.course.price}`}
+                  </span>
+                )}
+              </div>
+              {node.course.prestige?.data && (
+                <div className="flex items-center text-xs text-gray-600">
+                  <FiBook className="w-3 h-3 mr-1" />
+                  <span>ĐK: {node.course.prestige.data.map(p => p.name).join(', ')}</span>
+                </div>
+              )}
+              {!node.isEnrolled && node.course.isPublished && (
+                <button
+                  onClick={() => handleCourseClick(node.course.id)}
+                  className={`mt-2 px-3 py-1 rounded text-white text-xs font-medium transition-colors duration-200 w-full ${
+                    node.isRecommended 
+                      ? 'bg-yellow-500 hover:bg-yellow-600' 
+                      : 'bg-blue-600 hover:bg-blue-700'
+                  }`}
+                >
+                  {node.isRecommended ? 'Học ngay' : 'Đăng ký'}
+                </button>
+              )}
+            </div>
+          </div>
+          {/* Đường nối giữa các card */}
+          {idx < path.length - 1 && (
+            <div className="flex-shrink-0">
+              <FiArrowRight className="w-6 h-6 text-gray-400" />
+            </div>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
 
   if (loading) {
     return (
@@ -205,7 +409,17 @@ const UserCoursesPage = () => {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              My Courses ({enrolledCourses.length})
+              Khóa học của tôi ({enrolledCourses.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('roadmap')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'roadmap'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Lộ trình học tập
             </button>
             <button
               onClick={() => setActiveTab('available')}
@@ -215,7 +429,7 @@ const UserCoursesPage = () => {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Available Courses ({availableCourses.length})
+              Khóa học có sẵn ({availableCourses.length})
             </button>
           </nav>
         </div>
@@ -298,6 +512,46 @@ const UserCoursesPage = () => {
                   </div>
                 </div>
               ))
+            )}
+          </div>
+        )}
+
+        {activeTab === 'roadmap' && (
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">Lộ trình học tập của bạn</h2>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="text-sm text-gray-600">Đã hoàn thành</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                  <span className="text-sm text-gray-600">Đang học</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <span className="text-sm text-gray-600">Đề xuất</span>
+                </div>
+              </div>
+            </div>
+            {roadmap.length === 0 ? (
+              <div className="text-center py-12">
+                <FiBook className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg">
+                  Chưa có lộ trình học tập. Hãy bắt đầu bằng việc đăng ký một khóa học!
+                </p>
+                <button
+                  onClick={() => setActiveTab('available')}
+                  className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                >
+                  Xem khóa học có sẵn
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                {roadmap.flatMap(root => getAllPathsFromRootToLeaf(root)).map(renderHorizontalPath)}
+              </div>
             )}
           </div>
         )}

@@ -1,11 +1,13 @@
 import { Course, CourseResponse, Lesson } from '@/types/course';
+import Cookies from 'js-cookie';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_API_TOKEN;
+const token = Cookies.get('jwt');
 
 const headers = {
   'Content-Type': 'application/json',
-  Authorization: `Bearer ${API_TOKEN}`,
+  Authorization: `Bearer ${token}`,
 };
 
 export const courseService = {

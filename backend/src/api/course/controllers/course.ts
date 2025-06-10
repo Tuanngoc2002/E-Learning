@@ -6,26 +6,59 @@ import { factories } from '@strapi/strapi'
 
 export default factories.createCoreController('api::course.course', ({ strapi }) => ({
   async find(ctx) {
-
+    // Override the default find method to include prestige data
     const { data, meta } = await super.find(ctx);
-    const enrichedData = await Promise.all(
+    
+    // Get the populated data with prestige
+    const populatedData = await Promise.all(
       data.map(async (course) => {
         const courseId = course.id;
+
+        // Get the full course data with prestige
+        const fullCourse = await strapi.entityService.findOne('api::course.course', courseId, {
+          populate: ['prestige', 'instructor', 'lessons']
+        }) as any;
 
         const studentCount = await strapi.db.query('api::user-course.user-course').count({
           where: { course: courseId },
         });
 
-        return {
-          ...course,
-          attributes: {
-            ...course.attributes,
-            studentCount, // 👈 Chèn số lượng student vào attributes
-          },
+        // Return the course data with student count
+        const courseData = {
+          id: fullCourse.id,
+          name: fullCourse.name,
+          descriptions: fullCourse.descriptions,
+          difficulty: fullCourse.difficulty,
+          price: fullCourse.price,
+          isPublished: fullCourse.isPublished,
+          createdAt: fullCourse.createdAt,
+          updatedAt: fullCourse.updatedAt,
+          studentCount,
+          lessons: fullCourse.lessons,
+          instructor: fullCourse.instructor ? {
+            id: fullCourse.instructor.id,
+            username: fullCourse.instructor.username,
+            email: fullCourse.instructor.email
+          } : null
         };
+
+        // Add prestige data if it exists
+        if (fullCourse.prestige) {
+          Object.assign(courseData, {
+            prestige: {
+              data: fullCourse.prestige.map((p: any) => ({
+                id: p.id,
+                name: p.name
+              }))
+            }
+          });
+        }
+
+        return courseData;
       })
     );
-    return { data: enrichedData, meta };
+
+    return { data: populatedData, meta };
   },
   async findOne(ctx) {
     const { id } = ctx.params;
@@ -39,10 +72,13 @@ export default factories.createCoreController('api::course.course', ({ strapi })
         'user_course_statuses',
         'recommendation_results',
         'user_courses',
+        'user_courses.user',
         'exam',
-        'exam.questions'
+        'prestige',
+        'exam.questions',
+        'ratings',
       ],
-    });
+    }) as any;
 
     if (!entity) {
       return ctx.notFound();
@@ -52,10 +88,35 @@ export default factories.createCoreController('api::course.course', ({ strapi })
       where: { course: id },
     });
 
+    // Transform user_courses to include user IDs
+    const userCourses = entity.user_courses ? entity.user_courses.map((uc: any) => ({
+      id: uc.id,
+      userId: uc.user?.id,
+      status: uc.status,
+      createdAt: uc.createdAt,
+      updatedAt: uc.updatedAt
+    })) : [];
+
+    // Transform ratings to include user information
+    const ratings = entity.ratings ? entity.ratings.map((rating: any) => ({
+      id: rating.id,
+      stars: rating.stars,
+      comments: rating.comments,
+      createdAt: rating.createdAt,
+      updatedAt: rating.updatedAt,
+      user: rating.user ? {
+        id: rating.user.id,
+        username: rating.user.username,
+        email: rating.user.email
+      } : null
+    })) : [];
+
     return {
       data: {
         ...entity,
-        studentCount, // 👈 Trả về số lượng học viên
+        studentCount,
+        user_courses: userCourses,
+        ratings: ratings
       },
     };
   },

@@ -44,5 +44,44 @@ export default factories.createCoreController('api::user-course.user-course', ({
     console.log("✅ Đăng ký thành công:", result);
 
     return ctx.created({ data: result });
+
+    const enrolledCourses = await strapi.entityService.findMany('api::user-course.user-course', {
+      filters: {
+        user: user.id
+      },
+      populate: ['course']
+    });
+
+    return ctx.send({ data: enrolledCourses });
+  },
+
+  async enrolled(ctx) {
+    const user = ctx.state.user;
+    
+    if (!user) {
+      return ctx.unauthorized('User not found');
+    }
+
+    const enrolledCourses = await strapi.entityService.findMany('api::user-course.user-course', {
+      filters: {
+        user: user.id
+      },
+      populate: ['course']
+    });
+
+    return ctx.send({ data: enrolledCourses });
+  },
+
+  async findAll(ctx) {
+    try {
+      const enrollments = await strapi.entityService.findMany('api::user-course.user-course', {
+        populate: ['user', 'course']
+      });
+
+      return ctx.send({ data: enrollments });
+    } catch (error) {
+      console.error('Error fetching all enrollments:', error);
+      return ctx.badRequest('Failed to fetch enrollments');
+    }
   }
 }));

@@ -461,6 +461,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       'api::chat-message.chat-message'
     >;
     comments: Schema.Attribute.Relation<'oneToMany', 'api::comment.comment'>;
+    courses: Schema.Attribute.Relation<'manyToMany', 'api::course.course'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -481,8 +482,10 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     name: Schema.Attribute.String;
     organizationID: Schema.Attribute.String;
+    prestige: Schema.Attribute.Relation<'manyToMany', 'api::course.course'>;
     price: Schema.Attribute.Float;
     publishedAt: Schema.Attribute.DateTime;
+    ratings: Schema.Attribute.Relation<'oneToMany', 'api::rating.rating'>;
     recommendation_results: Schema.Attribute.Relation<
       'oneToMany',
       'api::recommendation-result.recommendation-result'
@@ -575,6 +578,40 @@ export interface ApiLessonLesson extends Struct.CollectionTypeSchema {
       'api::user-progress.user-progress'
     >;
     videoUrl: Schema.Attribute.String;
+  };
+}
+
+export interface ApiRatingRating extends Struct.CollectionTypeSchema {
+  collectionName: 'ratings';
+  info: {
+    displayName: 'Rating';
+    pluralName: 'ratings';
+    singularName: 'rating';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    comments: Schema.Attribute.String;
+    course: Schema.Attribute.Relation<'manyToOne', 'api::course.course'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::rating.rating'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    stars: Schema.Attribute.Integer;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -1254,6 +1291,7 @@ export interface PluginUsersPermissionsUser
     password: Schema.Attribute.Password & Schema.Attribute.Required;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    ratings: Schema.Attribute.Relation<'oneToMany', 'api::rating.rating'>;
     recommendation_results: Schema.Attribute.Relation<
       'oneToMany',
       'api::recommendation-result.recommendation-result'
@@ -1303,6 +1341,7 @@ declare module '@strapi/strapi' {
       'api::course.course': ApiCourseCourse;
       'api::exam.exam': ApiExamExam;
       'api::lesson.lesson': ApiLessonLesson;
+      'api::rating.rating': ApiRatingRating;
       'api::recommendation-result.recommendation-result': ApiRecommendationResultRecommendationResult;
       'api::user-activity-log.user-activity-log': ApiUserActivityLogUserActivityLog;
       'api::user-course-status.user-course-status': ApiUserCourseStatusUserCourseStatus;

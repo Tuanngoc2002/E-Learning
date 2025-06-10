@@ -94,6 +94,24 @@
       "relation": "oneToMany",
       "target": "api::comment.comment",
       "mappedBy": "course"
+    },
+    "prestige": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::course.course",
+      "inversedBy": "courses"
+    },
+    "courses": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::course.course",
+      "mappedBy": "prestige"
+    },
+    "ratings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rating.rating",
+      "mappedBy": "course"
     }
   }
 }

@@ -79,7 +79,7 @@ const InstructorStudentsPage = () => {
       const enrollmentsPromises = courseIds.map(async (courseId: number) => {
         try {
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/enrollments?populate[0]=user&populate[1]=course&filters[course][id][$eq]=${courseId}`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/findAll?populate[0]=user&populate[1]=course&filters[course][id][$eq]=${courseId}`,
             {
               headers: {
                 'Authorization': `Bearer ${jwt}`,
@@ -117,17 +117,21 @@ const InstructorStudentsPage = () => {
             enrolledCourses: 0,
             totalPaid: 0,
             averageProgress: 0,
-            joinDate: enrollment.user.createdAt || enrollment.enrollmentDate,
+            joinDate: enrollment.user.createdAt || enrollment.enrolledAt,
             enrollments: []
           });
         }
         
         const student = studentMap.get(userId)!;
-        student.enrolledCourses += 1;
-        student.totalPaid += coursePrice;
+        // Only count unique course enrollments
+        const isNewCourse = !student.enrollments.some(e => e.course.id === enrollment.course.id);
+        if (isNewCourse) {
+          student.enrolledCourses += 1;
+          student.totalPaid += coursePrice;
+        }
         student.enrollments.push({
           id: enrollment.id,
-          enrollmentDate: enrollment.enrollmentDate || enrollment.createdAt,
+          enrollmentDate: enrollment.enrolledAt || enrollment.createdAt,
           progress: enrollment.progress || Math.floor(Math.random() * 100),
           status: enrollment.status || 'active',
           user: enrollment.user,
@@ -176,6 +180,7 @@ const InstructorStudentsPage = () => {
     student.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  console.log(students, "students")
 
   if (loading) {
     return (

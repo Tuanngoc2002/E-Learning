@@ -66,7 +66,7 @@ const InstructorAnalyticsPage = () => {
       for (const course of instructorCourses) {
         try {
           const enrollmentResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/enrollments?populate[0]=user&populate[1]=course&filters[course][id][$eq]=${course.id}`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/findAll?populate[0]=user&populate[1]=course&filters[course][id][$eq]=${course.id}`,
             {
               headers: {
                 'Authorization': `Bearer ${jwt}`,

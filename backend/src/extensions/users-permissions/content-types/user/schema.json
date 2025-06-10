@@ -106,6 +106,12 @@
       "relation": "oneToMany",
       "target": "api::comment.comment",
       "mappedBy": "user"
+    },
+    "ratings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::rating.rating",
+      "mappedBy": "user"
     }
   }
 }
