@@ -3,7 +3,10 @@ export default () => ({
     config: {
       provider: 'local',
       providerOptions: {
-        sizeLimit: 100 * 1024 * 1024, // 100MB
+        providerOptions: {
+            apiKey: process.env.STRAPI_CLOUD_API_KEY,
+            // ... các option khác
+          },
       },
     },
   },
