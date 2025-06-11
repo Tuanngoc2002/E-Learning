@@ -179,7 +179,7 @@ const AdminCoursesPage = () => {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Course Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Quản lý khóa học</h1>
           
         </div>
 
@@ -197,7 +197,7 @@ const AdminCoursesPage = () => {
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search courses by name..."
+                  placeholder="Tìm kiếm khóa học theo tên..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -230,7 +230,7 @@ const AdminCoursesPage = () => {
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              Search
+              Tìm kiếm
             </button>
           </form>
         </div>
@@ -242,7 +242,7 @@ const AdminCoursesPage = () => {
               <FiBook className="w-8 h-8 text-blue-600 mr-4" />
               <div>
                 <div className="text-2xl font-bold text-blue-600">{pagination.total}</div>
-                <div className="text-sm text-gray-500">Total Courses</div>
+                <div className="text-sm text-gray-500">Tổng số khóa học</div>
               </div>
             </div>
           </div>
@@ -253,7 +253,7 @@ const AdminCoursesPage = () => {
                 <div className="text-2xl font-bold text-green-600">
                   {courses.filter(c => c.isPublished).length}
                 </div>
-                <div className="text-sm text-gray-500">Published</div>
+                <div className="text-sm text-gray-500">Đang hoạt động</div>
               </div>
             </div>
           </div>
@@ -264,7 +264,7 @@ const AdminCoursesPage = () => {
                 <div className="text-2xl font-bold text-purple-600">
                   {courses.reduce((total, course) => total + (course.studentCount || 0), 0)}
                 </div>
-                <div className="text-sm text-gray-500">Total Students</div>
+                <div className="text-sm text-gray-500">Tổng số học viên</div>
               </div>
             </div>
           </div>
@@ -275,7 +275,7 @@ const AdminCoursesPage = () => {
                 <div className="text-2xl font-bold text-yellow-600">
                   ${courses.reduce((total, course) => total + (course.price || 0), 0).toFixed(0)}
                 </div>
-                <div className="text-sm text-gray-500">Total Revenue</div>
+                <div className="text-sm text-gray-500">Tổng doanh thu</div>
               </div>
             </div>
           </div>
@@ -287,25 +287,25 @@ const AdminCoursesPage = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Course
+                  Khóa học
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Difficulty
+                  Độ khó
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
+                  Giá
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Students
+                  Học viên
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
+                  Trạng thái
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Created
+                  Ngày tạo
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
+                  Hành động
                 </th>
               </tr>
             </thead>
@@ -346,21 +346,21 @@ const AdminCoursesPage = () => {
                       <button
                         onClick={() => router.push(`/dashboard/admin/courses/${course.id}/edit`)}
                         className="text-blue-600 hover:text-blue-900"
-                        title="Edit course"
+                        title="Sửa khóa học"
                       >
                         <FiEdit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handlePublishToggle(course.id, course.isPublished)}
                         className={`${course.isPublished ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`}
-                        title={course.isPublished ? 'Unpublish course' : 'Publish course'}
+                        title={course.isPublished ? 'Bỏ xuất bản khóa học' : 'Xuất bản khóa học'}
                       >
                         {course.isPublished ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={() => handleDeleteCourse(course.id)}
                         className="text-red-600 hover:text-red-900"
-                        title="Delete course"
+                        title="Xóa khóa học"
                       >
                         <FiTrash2 className="w-4 h-4" />
                       </button>
@@ -373,7 +373,7 @@ const AdminCoursesPage = () => {
 
           {courses.length === 0 && !loading && (
             <div className="text-center py-12">
-              <p className="text-gray-500">No courses found.</p>
+              <p className="text-gray-500">Không tìm thấy khóa học.</p>
             </div>
           )}
         </div>
@@ -387,7 +387,7 @@ const AdminCoursesPage = () => {
                 disabled={pagination.page === 1}
                 className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Previous
+                Trước
               </button>
               
               {Array.from({ length: pagination.pageCount }, (_, i) => i + 1).map((page) => (
@@ -409,7 +409,7 @@ const AdminCoursesPage = () => {
                 disabled={pagination.page === pagination.pageCount}
                 className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Next
+                Tiếp
               </button>
             </nav>
           </div>

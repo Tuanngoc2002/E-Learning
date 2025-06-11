@@ -204,8 +204,8 @@ const InstructorStudentsPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">My Students</h1>
-        <p className="text-gray-600 mt-2">Track student enrollments and progress across your courses</p>
+        <h1 className="text-3xl font-bold text-gray-900">Học viên của tôi</h1>
+        <p className="text-gray-600 mt-2">Theo dõi đăng ký và tiến trình học của học viên</p>
       </div>
 
       {/* Stats Cards */}
@@ -215,7 +215,7 @@ const InstructorStudentsPage = () => {
             <FiUsers className="w-8 h-8 text-blue-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-blue-600">{stats.totalStudents}</div>
-              <div className="text-sm text-gray-500">Total Students</div>
+              <div className="text-sm text-gray-500">Tổng số học viên</div>
             </div>
           </div>
         </div>
@@ -225,7 +225,7 @@ const InstructorStudentsPage = () => {
             <FiBook className="w-8 h-8 text-green-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-green-600">{stats.totalEnrollments}</div>
-              <div className="text-sm text-gray-500">Total Enrollments</div>
+              <div className="text-sm text-gray-500">Tổng số đăng ký</div>
             </div>
           </div>
         </div>
@@ -235,7 +235,7 @@ const InstructorStudentsPage = () => {
             <FiDollarSign className="w-8 h-8 text-yellow-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-yellow-600">${stats.totalRevenue}</div>
-              <div className="text-sm text-gray-500">Total Revenue</div>
+              <div className="text-sm text-gray-500">Tổng doanh thu</div>
             </div>
           </div>
         </div>
@@ -245,7 +245,7 @@ const InstructorStudentsPage = () => {
             <FiTrendingUp className="w-8 h-8 text-purple-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-purple-600">{stats.averageProgress}%</div>
-              <div className="text-sm text-gray-500">Avg Progress</div>
+              <div className="text-sm text-gray-500">Trung bình tiến trình</div>
             </div>
           </div>
         </div>
@@ -257,7 +257,7 @@ const InstructorStudentsPage = () => {
           <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search students by name or email..."
+            placeholder="Tìm kiếm học viên theo tên hoặc email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
@@ -271,12 +271,12 @@ const InstructorStudentsPage = () => {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Student</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Courses Enrolled</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Total Paid</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Avg Progress</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Join Date</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Actions</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Học viên</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Khóa học đăng ký</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Tổng thanh toán</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Trung bình tiến trình</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Ngày tham gia</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Hành động</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">

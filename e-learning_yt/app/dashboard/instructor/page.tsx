@@ -120,10 +120,10 @@ const InstructorDashboard = () => {
   }, [jwt, user]);
 
   const quickActions = [
-    { label: 'Create New Course', href: '/dashboard/instructor/courses/new', icon: <FiPlus className="w-8 h-8" />, color: 'green' },
-    { label: 'Manage Courses', href: '/dashboard/instructor/courses', icon: <FiEdit3 className="w-8 h-8" />, color: 'blue' },
-    { label: 'View Analytics', href: '/dashboard/instructor/analytics', icon: <FiBarChart2 className="w-8 h-8" />, color: 'purple' },
-    { label: 'My Students', href: '/dashboard/instructor/students', icon: <FiUsers className="w-8 h-8" />, color: 'orange' },
+    { label: 'Tạo khóa học mới', href: '/dashboard/instructor/courses/new', icon: <FiPlus className="w-8 h-8" />, color: 'green' },
+    { label: 'Quản lý khóa học', href: '/dashboard/instructor/courses', icon: <FiEdit3 className="w-8 h-8" />, color: 'blue' },
+    { label: 'Xem thống kê', href: '/dashboard/instructor/analytics', icon: <FiBarChart2 className="w-8 h-8" />, color: 'purple' },
+    { label: 'Học viên', href: '/dashboard/instructor/students', icon: <FiUsers className="w-8 h-8" />, color: 'orange' },
   ];
 
   if (loading) {
@@ -148,8 +148,8 @@ const InstructorDashboard = () => {
     <div>
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.username}!</h1>
-        <p className="text-gray-600 mt-2">Here is how your courses are performing today.</p>
+        <h1 className="text-3xl font-bold text-gray-900">Chào mừng bạn trở lại, {user?.username}!</h1>
+        <p className="text-gray-600 mt-2">Đây là cách khóa học của bạn đang hoạt động hôm nay.</p>
       </div>
 
       {/* Statistics Cards */}
@@ -157,9 +157,9 @@ const InstructorDashboard = () => {
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">My Courses</p>
+              <p className="text-sm font-medium text-gray-600">Khóa học của tôi</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{stats.totalCourses}</p>
-              <p className="text-sm mt-1 text-green-600">{stats.publishedCourses} published</p>
+              <p className="text-sm mt-1 text-green-600">{stats.publishedCourses} đã xuất bản</p>
             </div>
             <div className="p-3 rounded-lg bg-green-100 text-green-600">
               <FiBook className="w-6 h-6" />
@@ -170,9 +170,9 @@ const InstructorDashboard = () => {
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Students</p>
+              <p className="text-sm font-medium text-gray-600">Tổng số học viên</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{stats.totalStudents}</p>
-              <p className="text-sm mt-1 text-green-600">Across all courses</p>
+              <p className="text-sm mt-1 text-green-600">Trên tất cả khóa học</p>
             </div>
             <div className="p-3 rounded-lg bg-blue-100 text-blue-600">
               <FiUsers className="w-6 h-6" />
@@ -183,9 +183,9 @@ const InstructorDashboard = () => {
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Average Rating</p>
+              <p className="text-sm font-medium text-gray-600">Trung bình đánh giá</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{stats.avgRating}</p>
-              <p className="text-sm mt-1 text-green-600">From student reviews</p>
+              <p className="text-sm mt-1 text-green-600">Từ đánh giá của học viên</p>
             </div>
             <div className="p-3 rounded-lg bg-yellow-100 text-yellow-600">
               <FiStar className="w-6 h-6" />
@@ -196,9 +196,9 @@ const InstructorDashboard = () => {
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
+              <p className="text-sm font-medium text-gray-600">Tổng doanh thu</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">${stats.totalRevenue}</p>
-              <p className="text-sm mt-1 text-green-600">Course pricing</p>
+              <p className="text-sm mt-1 text-green-600">Giá khóa học</p>
             </div>
             <div className="p-3 rounded-lg bg-purple-100 text-purple-600">
               <FiDollarSign className="w-6 h-6" />
@@ -209,7 +209,7 @@ const InstructorDashboard = () => {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Hành động nhanh</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {quickActions.map((action, index) => (
             <Link 
@@ -232,7 +232,7 @@ const InstructorDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Courses</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Khóa học gần đây</h3>
             <Link 
               href="/dashboard/instructor/courses"
               className="text-green-600 hover:text-green-700 text-sm font-medium"
@@ -271,13 +271,13 @@ const InstructorDashboard = () => {
             {courses.length === 0 && (
               <div className="text-center py-8 text-gray-500">
                 <FiBook className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                <p>No courses yet. Create your first course!</p>
+                <p>Không có khóa học nào. Tạo khóa học đầu tiên của bạn!</p>
                 <Link 
                   href="/dashboard/instructor/courses/new"
                   className="inline-flex items-center mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
                 >
                   <FiPlus className="w-4 h-4 mr-2" />
-                  Create Course
+                  Tạo khóa học
                 </Link>
               </div>
             )}
@@ -286,11 +286,11 @@ const InstructorDashboard = () => {
 
         {/* Performance Overview */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance Overview</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Tổng quan hiệu suất</h3>
           <div className="space-y-6">
             <div>
               <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Course Completion</span>
+                <span>Hoàn thành khóa học</span>
                 <span>85%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -300,7 +300,7 @@ const InstructorDashboard = () => {
             
             <div>
               <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Student Satisfaction</span>
+                <span>Sự hài lòng của học viên</span>
                 <span>92%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -310,7 +310,7 @@ const InstructorDashboard = () => {
 
             <div>
               <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Course Engagement</span>
+                <span>Sự tương tác của học viên</span>
                 <span>78%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -324,7 +324,7 @@ const InstructorDashboard = () => {
             className="inline-flex items-center mt-6 text-green-600 hover:text-green-700 text-sm font-medium"
           >
             <FiTrendingUp className="w-4 h-4 mr-2" />
-            View detailed analytics →
+            Xem chi tiết thống kê →
           </Link>
         </div>
       </div>

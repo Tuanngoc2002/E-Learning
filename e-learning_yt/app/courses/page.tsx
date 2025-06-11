@@ -169,16 +169,16 @@ const CoursesPage = () => {
 
           {/* Call to Action */}
           <div className="bg-indigo-900 text-white rounded-lg p-8 text-center mt-16">
-            <h2 className="text-3xl font-bold mb-4">Can&apos;t Find What You&apos;re Looking For?</h2>
+            <h2 className="text-3xl font-bold mb-4">Không tìm thấy những gì bạn đang tìm kiếm?</h2>
             <p className="mb-6 max-w-2xl mx-auto">
-              Contact us to learn more about our courses or to request a specific topic.
-              We&apos;re always adding new courses to meet our students&apos; needs.
+              Liên hệ chúng tôi để tìm hiểu thêm về khóa học của chúng tôi hoặc yêu cầu một chủ đề cụ thể.
+              Chúng tôi luôn thêm khóa học mới để đáp ứng nhu cầu của học viên.
             </p>
             <Link 
               href="/contact"
               className="inline-block bg-pink-600 text-white py-3 px-8 rounded-lg hover:bg-pink-700 transition duration-300"
             >
-              Contact Us
+              Liên hệ
             </Link>
           </div>
         </div>

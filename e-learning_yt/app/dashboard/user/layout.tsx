@@ -27,15 +27,13 @@ interface NavItem {
 }
 
 const userNavigation: NavItem[] = [
-  { label: 'Dashboard', icon: <FiHome className="w-5 h-5" />, href: '/dashboard/user' },
-  { label: 'My Courses', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/user/courses' },
-  { label: 'Browse Courses', icon: <FiTrendingUp className="w-5 h-5" />, href: '/courses' },
-  { label: 'My Progress', icon: <FiPlay className="w-5 h-5" />, href: '/dashboard/user/progress' },
-  { label: 'Bookmarks', icon: <FiBookmark className="w-5 h-5" />, href: '/dashboard/user/bookmarks' },
-  { label: 'Certificates', icon: <FiAward className="w-5 h-5" />, href: '/dashboard/user/certificates' },
-  { label: 'Study Schedule', icon: <FiCalendar className="w-5 h-5" />, href: '/dashboard/user/schedule' },
-  { label: 'Messages', icon: <FiMessageCircle className="w-5 h-5" />, href: '/dashboard/user/messages' },
-  { label: 'Profile Settings', icon: <FiSettings className="w-5 h-5" />, href: '/dashboard/user/settings' },
+  { label: 'Bảng điều khiển', icon: <FiHome className="w-5 h-5" />, href: '/dashboard/user' },
+  { label: 'Khóa học của tôi', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/user/courses' },
+  { label: 'Khám phá khóa học', icon: <FiTrendingUp className="w-5 h-5" />, href: '/courses' },
+  { label: 'Tiến trình học tập', icon: <FiPlay className="w-5 h-5" />, href: '/dashboard/user/progress' },
+  { label: 'Chứng chỉ', icon: <FiAward className="w-5 h-5" />, href: '/dashboard/user/certificates' },
+  { label: 'Tin nhắn', icon: <FiMessageCircle className="w-5 h-5" />, href: '/dashboard/user/messages' },
+  { label: 'Hồ sơ cá nhân', icon: <FiUser className="w-5 h-5" />, href: '/dashboard/user/profile' },
 ];
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {

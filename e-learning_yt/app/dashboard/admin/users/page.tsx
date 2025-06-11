@@ -176,13 +176,13 @@ const UsersPage = () => {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Quản lý người dùng</h1>
           <button
             onClick={() => router.push('/dashboard/admin/users/new')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <FiUserPlus className="w-5 h-5 mr-2" />
-            Add New User
+            Thêm người dùng mới
           </button>
         </div>
 
@@ -199,7 +199,7 @@ const UsersPage = () => {
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search users by username..."
+                placeholder="Tìm kiếm người dùng theo tên người dùng..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -209,7 +209,7 @@ const UsersPage = () => {
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              Search
+              Tìm kiếm
             </button>
           </form>
         </div>
@@ -220,22 +220,22 @@ const UsersPage = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  User
+                  Người dùng
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Role
+                  Vai trò
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
+                  Trạng thái
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Organization
+                  Tổ chức
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Created
+                  Ngày tạo
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
+                  Hành động
                 </th>
               </tr>
             </thead>
@@ -258,17 +258,17 @@ const UsersPage = () => {
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         user.confirmed ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {user.confirmed ? 'Confirmed' : 'Unconfirmed'}
+                        {user.confirmed ? 'Đã xác thực' : 'Chưa xác thực'}
                       </span>
                       {user.blocked && (
                         <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                          Blocked
+                          Đã khóa
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {user.organizationID || 'None'}
+                    {user.organizationID || 'Không có'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {formatDate(user.createdAt)}
@@ -278,21 +278,21 @@ const UsersPage = () => {
                       <button
                         onClick={() => router.push(`/dashboard/admin/users/${user.id}/edit`)}
                         className="text-blue-600 hover:text-blue-900"
-                        title="Edit user"
+                        title="Sửa người dùng"
                       >
                         <FiEdit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleBlockUser(user.id, !user.blocked)}
                         className={`${user.blocked ? 'text-green-600 hover:text-green-900' : 'text-yellow-600 hover:text-yellow-900'}`}
-                        title={user.blocked ? 'Unblock user' : 'Block user'}
+                        title={user.blocked ? 'Mở khóa người dùng' : 'Khóa người dùng'}
                       >
                         {user.blocked ? <FiEye className="w-4 h-4" /> : <FiEyeOff className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user.id)}
                         className="text-red-600 hover:text-red-900"
-                        title="Delete user"
+                        title="Xóa người dùng"
                       >
                         <FiTrash2 className="w-4 h-4" />
                       </button>
@@ -305,7 +305,7 @@ const UsersPage = () => {
 
           {users.length === 0 && !loading && (
             <div className="text-center py-12">
-              <p className="text-gray-500">No users found.</p>
+              <p className="text-gray-500">Không tìm thấy người dùng.</p>
             </div>
           )}
         </div>
@@ -314,25 +314,25 @@ const UsersPage = () => {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white p-4 rounded-lg shadow">
             <div className="text-2xl font-bold text-blue-600">{users.length}</div>
-            <div className="text-sm text-gray-500">Total Users</div>
+            <div className="text-sm text-gray-500">Tổng số người dùng</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
             <div className="text-2xl font-bold text-green-600">
               {users.filter(u => u.confirmed).length}
             </div>
-            <div className="text-sm text-gray-500">Confirmed</div>
+            <div className="text-sm text-gray-500">Đã xác thực</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
             <div className="text-2xl font-bold text-red-600">
               {users.filter(u => u.blocked).length}
             </div>
-            <div className="text-sm text-gray-500">Blocked</div>
+            <div className="text-sm text-gray-500">Đã khóa</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow">
             <div className="text-2xl font-bold text-purple-600">
               {users.filter(u => u.role?.name === 'instructor').length}
             </div>
-            <div className="text-sm text-gray-500">Instructors</div>
+            <div className="text-sm text-gray-500">Giáo viên</div>
           </div>
         </div>
       </div>

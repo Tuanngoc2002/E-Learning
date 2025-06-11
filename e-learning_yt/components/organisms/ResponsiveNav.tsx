@@ -9,11 +9,11 @@ import { useRouter, usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
 
 const navLinks = [
-  { id: 1, label: 'Home', url: '/' },
-  { id: 2, label: 'Courses', url: '/courses' },
-  { id: 3, label: 'About', url: '/about' },
-  { id: 4, label: 'Contact', url: '/contact' },
-  { id: 5, label: 'Testimonial', url: '/testimonial' },
+  { id: 1, label: 'Trang chủ', url: '/' },
+  { id: 2, label: 'Khóa học', url: '/courses' },
+  { id: 3, label: 'Về chúng tôi', url: '/about' },
+  { id: 4, label: 'Liên hệ', url: '/contact' },
+  { id: 5, label: 'Đánh giá', url: '/testimonial' },
 ];
 
 const ResponsiveNav = () => {

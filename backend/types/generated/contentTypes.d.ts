@@ -468,6 +468,10 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     descriptions: Schema.Attribute.Text;
     difficulty: Schema.Attribute.Enumeration<['easy', 'medium', 'hard']>;
     exam: Schema.Attribute.Relation<'oneToOne', 'api::exam.exam'>;
+    image: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
     instructor: Schema.Attribute.Relation<
       'manyToOne',
       'plugin::users-permissions.user'

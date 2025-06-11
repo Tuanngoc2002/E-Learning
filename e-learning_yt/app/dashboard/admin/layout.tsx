@@ -27,11 +27,11 @@ interface NavItem {
 }
 
 const adminNavigation: NavItem[] = [
-  { label: 'Dashboard', icon: <FiHome className="w-5 h-5" />, href: '/dashboard/admin' },
-  { label: 'User Management', icon: <FiUsers className="w-5 h-5" />, href: '/dashboard/admin/users' },
-  { label: 'Course Management', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/admin/courses' },
-  { label: 'Enrollment Analytics', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/enrollments' },
-  { label: 'Analytics', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/analytics' },
+  { label: 'Bảng điều khiển', icon: <FiHome className="w-5 h-5" />, href: '/dashboard/admin' },
+  { label: 'Quản lý người dùng', icon: <FiUsers className="w-5 h-5" />, href: '/dashboard/admin/users' },
+  { label: 'Quản lý khóa học', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/admin/courses' },
+  { label: 'Phân tích đăng ký', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/enrollments' },
+  { label: 'Thống kê', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/admin/analytics' },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {

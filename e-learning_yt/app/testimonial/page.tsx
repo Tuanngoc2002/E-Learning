@@ -13,7 +13,7 @@ const testimonials = [
     name: "Sarah Johnson",
     role: "Web Development Student",
     image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80",
-    content: "The courses here have completely transformed my career path. The instructors are incredibly knowledgeable and supportive. I went from knowing nothing about web development to landing my dream job in just 6 months!",
+    content: "Khóa học ở đây đã hoàn toàn biến đổi con đường nghề nghiệp của tôi. Các giáo viên rất thông minh và hỗ trợ. Tôi đã từ không biết gì về phát triển web đến việc xin được công việc mơ ước của mình trong vòng 6 tháng!",
     rating: 5
   },
   {
@@ -21,7 +21,7 @@ const testimonials = [
     name: "Michael Chen",
     role: "Data Science Professional",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    content: "The data science curriculum is comprehensive and up-to-date with industry standards. The hands-on projects really helped me understand complex concepts. Highly recommended for anyone looking to break into data science.",
+    content: "Chương trình học khoa học dữ liệu là toàn diện và cập nhật theo tiêu chuẩn ngành công nghiệp. Các dự án thực tế thực sự giúp tôi hiểu các khái niệm phức tạp. Rất đáng để bất kỳ ai đang tìm kiếm để bắt đầu trong khoa học dữ liệu.",
     rating: 5
   },
   {
@@ -29,7 +29,7 @@ const testimonials = [
     name: "Emily Rodriguez",
     role: "UX Design Student",
     image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-    content: "The UX design course exceeded my expectations. The practical assignments and feedback from industry professionals were invaluable. I now have a strong portfolio and confidence in my design skills.",
+    content: "Khóa học thiết kế UX vượt xa mong đợi của tôi. Các nhiệm vụ thực tế và phản hồi từ các chuyên gia ngành công nghiệp là vô giá. Tôi bây giờ có một portfolio mạnh mẽ và tự tin trong kỹ năng thiết kế của mình.",
     rating: 4
   },
   {
@@ -37,7 +37,7 @@ const testimonials = [
     name: "David Kim",
     role: "Mobile App Developer",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-    content: "Learning mobile app development here was a game-changer. The step-by-step approach and real-world projects helped me understand the entire development process. I'm now successfully freelancing!",
+    content: "Học phát triển ứng dụng di động ở đây là một game-changer. Phương pháp từng bước và các dự án thực tế giúp tôi hiểu toàn bộ quá trình phát triển. Tôi đã thành công trong việc tự do!",
     rating: 5
   },
   {
@@ -45,7 +45,7 @@ const testimonials = [
     name: "Lisa Thompson",
     role: "Digital Marketing Student",
     image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80",
-    content: "The digital marketing courses are fantastic! They cover everything from SEO to social media marketing. The instructors share real case studies and current industry insights. Worth every penny!",
+    content: "Khóa học marketing số là tuyệt vời! Chúng đề cập đến mọi thứ từ SEO đến marketing truyền thông. Các giáo viên chia sẻ các nghiên cứu thực tế và các thông tin ngành công nghiệp hiện tại. Đáng giá mỗi đồng!",
     rating: 5
   },
   {
@@ -53,7 +53,7 @@ const testimonials = [
     name: "James Wilson",
     role: "Cybersecurity Professional",
     image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-    content: "The cybersecurity program is intense but extremely rewarding. The labs and practical exercises prepared me well for real-world scenarios. I'm now working as a security analyst at a major tech company.",
+    content: "Chương trình bảo mật thông tin là căng thẳng nhưng rất thưởng thức. Các bài tập thực hành và các bài tập thực tế chuẩn bị tôi tốt cho các tình huống thực tế. Tôi bây giờ đang làm việc như một phân tích viên bảo mật tại một công ty công nghệ lớn.",
     rating: 5
   }
 ];
@@ -62,9 +62,9 @@ const TestimonialPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       <PageHero
-        title="Student Success Stories"
-        description="Discover how our platform has transformed careers and lives."
-        currentPage="Testimonials"
+        title="Câu chuyện thành công của học viên"
+        description="Khám phá cách nền tảng của chúng tôi đã biến đổi sự nghiệp và cuộc sống của họ."
+        currentPage="Câu chuyện thành công"
       />
 
       {/* Featured Testimonial */}
@@ -78,8 +78,8 @@ const TestimonialPage = () => {
                 ))}
               </div>
               <blockquote className="text-2xl font-light italic">
-                "This platform changed my life. The quality of education and support is unmatched. 
-                I went from a complete beginner to a confident professional in just months."
+                &quot;Nền tảng này đã biến đổi cuộc sống của tôi. Chất lượng giáo dục và hỗ trợ là vô địch. 
+                Tôi đã từ một người hoàn toàn không biết đến một người có tự tin trong vài tháng.&quot;
               </blockquote>
               <div className="flex items-center space-x-4 pt-4">
                 <div className="relative w-16 h-16 rounded-full overflow-hidden">
@@ -123,7 +123,7 @@ const TestimonialPage = () => {
                   ))}
                 </div>
                 <blockquote className="text-gray-700 mb-6 italic">
-                  "{testimonial.content}"
+                  &quot;{testimonial.content}&quot;
                 </blockquote>
                 <div className="flex items-center border-t pt-6">
                   <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 ring-2 ring-blue-100">

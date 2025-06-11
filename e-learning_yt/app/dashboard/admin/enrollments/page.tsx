@@ -177,15 +177,15 @@ const AdminEnrollmentsPage = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Enrollment Management</h1>
-          <p className="text-gray-600 mt-2">Monitor student enrollments and revenue across all courses</p>
+          <h1 className="text-3xl font-bold text-gray-900">Quản lý đăng ký</h1>
+          <p className="text-gray-600 mt-2">Theo dõi đăng ký học viên và doanh thu trên tất cả khóa học</p>
         </div>
         <button
           onClick={exportData}
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
           <FiDownload className="w-4 h-4 mr-2" />
-          Export Data
+          Xuất dữ liệu
         </button>
       </div>
 
@@ -196,7 +196,7 @@ const AdminEnrollmentsPage = () => {
             <FiBook className="w-8 h-8 text-blue-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-blue-600">{stats.totalEnrollments}</div>
-              <div className="text-sm text-gray-500">Total Enrollments</div>
+              <div className="text-sm text-gray-500">Tổng số đăng ký</div>
             </div>
           </div>
         </div>
@@ -206,7 +206,7 @@ const AdminEnrollmentsPage = () => {
             <FiDollarSign className="w-8 h-8 text-green-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-green-600">${stats.totalRevenue}</div>
-              <div className="text-sm text-gray-500">Total Revenue</div>
+              <div className="text-sm text-gray-500">Tổng doanh thu</div>
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@ const AdminEnrollmentsPage = () => {
             <FiUsers className="w-8 h-8 text-purple-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-purple-600">{stats.avgEnrollmentsPerUser}</div>
-              <div className="text-sm text-gray-500">Avg/Student</div>
+              <div className="text-sm text-gray-500">Trung bình/Học viên</div>
             </div>
           </div>
         </div>
@@ -226,7 +226,7 @@ const AdminEnrollmentsPage = () => {
             <FiTrendingUp className="w-8 h-8 text-orange-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-orange-600">{stats.completionRate}%</div>
-              <div className="text-sm text-gray-500">Completion Rate</div>
+              <div className="text-sm text-gray-500">Tỷ lệ hoàn thành</div>
             </div>
           </div>
         </div>
@@ -236,7 +236,7 @@ const AdminEnrollmentsPage = () => {
             <FiCalendar className="w-8 h-8 text-yellow-600 mr-4" />
             <div>
               <div className="text-2xl font-bold text-yellow-600">+{stats.monthlyGrowth}%</div>
-              <div className="text-sm text-gray-500">Monthly Growth</div>
+              <div className="text-sm text-gray-500">Tăng trưởng hàng tháng</div>
             </div>
           </div>
         </div>
@@ -256,7 +256,7 @@ const AdminEnrollmentsPage = () => {
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search by student name, email, or course..."
+                placeholder="Tìm kiếm theo tên học viên, email, hoặc khóa học..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -269,18 +269,18 @@ const AdminEnrollmentsPage = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
-            <option value="paused">Paused</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="all">Tất cả trạng thái</option>
+            <option value="active">Đang hoạt động</option>
+            <option value="completed">Đã hoàn thành</option>
+            <option value="paused">Đã tạm dừng</option>
+            <option value="cancelled">Đã hủy</option>
           </select>
 
           <button
             type="submit"
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Search
+            Tìm kiếm
           </button>
         </form>
       </div>
@@ -291,13 +291,13 @@ const AdminEnrollmentsPage = () => {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Student</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Course</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Instructor</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Price</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Enrollment Date</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Progress</th>
-                <th className="text-left py-3 px-6 font-medium text-gray-500">Status</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Học viên</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Khóa học</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Giáo viên</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Giá</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Ngày đăng ký</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Tiến trình</th>
+                <th className="text-left py-3 px-6 font-medium text-gray-500">Trạng thái</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -351,9 +351,9 @@ const AdminEnrollmentsPage = () => {
         {enrollments.length === 0 && !loading && (
           <div className="text-center py-12">
             <FiBook className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No enrollments found</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy đăng ký</h3>
             <p className="text-gray-500">
-              {searchTerm ? 'Try adjusting your search criteria.' : 'Enrollments will appear here when students enroll in courses.'}
+              {searchTerm ? 'Thử điều chỉnh các tiêu chí tìm kiếm.' : 'Đăng ký sẽ xuất hiện ở đây khi học viên đăng ký khóa học.'}
             </p>
           </div>
         )}
@@ -368,7 +368,7 @@ const AdminEnrollmentsPage = () => {
               disabled={pagination.page === 1}
               className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Previous
+              Trước
             </button>
             
             {Array.from({ length: Math.min(pagination.pageCount, 10) }, (_, i) => i + 1).map((page) => (
@@ -390,7 +390,7 @@ const AdminEnrollmentsPage = () => {
               disabled={pagination.page === pagination.pageCount}
               className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Next
+              Tiếp
             </button>
           </nav>
         </div>

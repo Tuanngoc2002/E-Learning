@@ -16,7 +16,7 @@ export default factories.createCoreController('api::course.course', ({ strapi })
 
         // Get the full course data with prestige
         const fullCourse = await strapi.entityService.findOne('api::course.course', courseId, {
-          populate: ['prestige', 'instructor', 'lessons']
+          populate: ['prestige', 'instructor', 'lessons', 'image']
         }) as any;
 
         const studentCount = await strapi.db.query('api::user-course.user-course').count({
@@ -35,6 +35,7 @@ export default factories.createCoreController('api::course.course', ({ strapi })
           updatedAt: fullCourse.updatedAt,
           studentCount,
           lessons: fullCourse.lessons,
+          image: fullCourse.image || null,
           instructor: fullCourse.instructor ? {
             id: fullCourse.instructor.id,
             username: fullCourse.instructor.username,
@@ -77,6 +78,7 @@ export default factories.createCoreController('api::course.course', ({ strapi })
         'prestige',
         'exam.questions',
         'ratings',
+        'image',
       ],
     }) as any;
 

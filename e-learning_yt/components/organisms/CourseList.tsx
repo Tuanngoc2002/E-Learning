@@ -4,6 +4,41 @@ import { FaStar, FaUsers, FaClock } from 'react-icons/fa';
 import { useCourses } from '@/hooks/useCourses';
 import { useState } from 'react';
 
+interface ImageFormat {
+  url: string;
+  width: number;
+  height: number;
+  size: number;
+}
+
+interface CourseImage {
+  id: number;
+  url: string;
+  formats?: {
+    large?: ImageFormat;
+    medium?: ImageFormat;
+    small?: ImageFormat;
+    thumbnail?: ImageFormat;
+  };
+}
+
+interface Course {
+  id: number;
+  name: string;
+  descriptions: string | null;
+  difficulty: string;
+  price: number;
+  isPublished: boolean;
+  studentCount: number;
+  lessons: any[];
+  image: CourseImage[] | null;
+  instructor: {
+    id: number;
+    username: string;
+    email: string;
+  } | null;
+}
+
 interface CourseListProps {
   searchQuery: string;
   difficulty?: string;
@@ -22,6 +57,8 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
     minPrice,
     maxPrice
   });
+  console.log(courses);
+  // const imgUrl = process.env.NEXT_PUBLIC_API_URL + courses[0].image.url;
 
   if (loading) {
     return (
@@ -53,11 +90,14 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 transform hover:-translate-y-1"
           >
             <div className="relative h-48">
-              <Image
-                src="/images/course-placeholder.jpg"
+              <img
+                src={course.image && course.image[0] 
+                  ? `${process.env.NEXT_PUBLIC_API_URL}${course.image[0].formats?.medium?.url || course.image[0].url}`
+                  : '/images/course-placeholder.jpg'}
                 alt={course.name}
-                fill
-                className="object-cover"
+                width={500}
+                height={300}
+                className="object-cover w-full h-full"
               />
               <div className="absolute top-4 right-4 bg-white px-2 py-1 rounded text-sm font-semibold">
                 ${course.price}
@@ -80,7 +120,7 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
                 </div>
                 <div className="flex items-center">
                   <FaClock className="mr-2" />
-                  {course.lessons?.reduce((acc, lesson) => acc + lesson.duration, 0) || 0} mins
+                  {course.lessons?.reduce((acc, lesson) => acc + (lesson.duration || 0), 0) || 0} mins
                 </div>
               </div>
               <div className="flex justify-between items-center">

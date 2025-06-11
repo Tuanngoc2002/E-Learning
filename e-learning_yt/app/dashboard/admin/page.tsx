@@ -50,7 +50,7 @@ const AdminDashboard = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const {jwt} = useAuth();
+  const { jwt } = useAuth();
 
   const stats = [
     { label: 'Total Users', value: globalStats.totalUsers.toString(), icon: <FiUsers className="w-6 h-6" />, color: 'blue', change: '+12%' },
@@ -60,10 +60,10 @@ const AdminDashboard = () => {
   ];
 
   const quickActions = [
-    { label: 'Manage Users', href: '/dashboard/admin/users', icon: <FiUsers className="w-8 h-8" />, color: 'blue' },
-    { label: 'Course Management', href: '/dashboard/admin/courses', icon: <FiBook className="w-8 h-8" />, color: 'green' },
-    { label: 'Enrollment Analytics', href: '/dashboard/admin/enrollments', icon: <FiBarChart2 className="w-8 h-8" />, color: 'purple' },
-    { label: 'System Settings', href: '/dashboard/admin/settings', icon: <FiShield className="w-8 h-8" />, color: 'orange' },
+    { label: 'Quản lý người dùng', href: '/dashboard/admin/users', icon: <FiUsers className="w-8 h-8" />, color: 'blue' },
+    { label: 'Quản lý khóa học', href: '/dashboard/admin/courses', icon: <FiBook className="w-8 h-8" />, color: 'green' },
+    { label: 'Phân tích đăng ký', href: '/dashboard/admin/enrollments', icon: <FiBarChart2 className="w-8 h-8" />, color: 'purple' },
+    { label: 'Cài đặt hệ thống', href: '/dashboard/admin/settings', icon: <FiShield className="w-8 h-8" />, color: 'orange' },
   ];
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
             'Authorization': `Bearer ${jwt}`
           }
         });
-        
+
         if (!usersResponse.ok) {
           throw new Error('Failed to fetch users');
         }
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
           joined: new Date(user.createdAt).toISOString().split('T')[0],
           status: user.blocked ? 'Suspended' : user.confirmed ? 'Active' : 'Pending'
         }));
-        
+
         setRecentUsers(formattedUsers);
 
         // Fetch courses
@@ -144,7 +144,7 @@ const AdminDashboard = () => {
             const userStats = enrollmentMap.get(userId)!;
             userStats.enrolledCourses += 1;
             userStats.totalSpent += coursePrice;
-            
+
             // Update last enrollment date if this is more recent
             const currentDate = new Date(enrollment.enrollmentDate || enrollment.createdAt);
             const lastDate = new Date(userStats.lastEnrollment);
@@ -196,8 +196,8 @@ const AdminDashboard = () => {
         throw new Error('Failed to update user status');
       }
 
-      setRecentUsers(users => 
-        users.map(user => 
+      setRecentUsers(users =>
+        users.map(user =>
           user.id === userId ? { ...user, status: newStatus } : user
         )
       );
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${jwt}`
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           data: { isPublished }
         })
       });
@@ -223,8 +223,8 @@ const AdminDashboard = () => {
         throw new Error('Failed to update course visibility');
       }
 
-      setCourses(courses => 
-        courses.map(course => 
+      setCourses(courses =>
+        courses.map(course =>
           course.id === courseId ? { ...course, isPublished } : course
         )
       );
@@ -249,8 +249,9 @@ const AdminDashboard = () => {
                 />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-                <p className="text-gray-600">Welcome back, Admin</p>
+                <h1 className="text-2xl font-bold text-gray-900">Bảng điều khiển quản trị viên</h1>
+                <h2 className="text-gray-600 font-bold">Chào mừng trở lại, Admin</h2>
+                <p className="text-gray-600 mt-2">Đây là những gì đang xảy ra với nền tảng học tập kĩ thuật số của bạn hôm nay.</p>
               </div>
             </div>
             <button className="p-2 text-gray-600 hover:text-gray-900">
@@ -261,11 +262,7 @@ const AdminDashboard = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome, Administrator</h1>
-          <p className="text-gray-600 mt-2">Here's what's happening with your e-learning platform today.</p>
-        </div>
+        
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -276,7 +273,7 @@ const AdminDashboard = () => {
                   <p className="text-sm font-medium text-gray-600">{stat.label}</p>
                   <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
                   <p className={`text-sm mt-1 ${stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                    {stat.change} from last month
+                    {stat.change} từ tháng trước
                   </p>
                 </div>
                 <div className={`p-3 rounded-lg bg-${stat.color}-100 text-${stat.color}-600`}>
@@ -289,10 +286,10 @@ const AdminDashboard = () => {
 
         {/* Quick Actions */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Hành động nhanh</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {quickActions.map((action, index) => (
-              <Link 
+              <Link
                 key={index}
                 href={action.href}
                 className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow group"
@@ -312,9 +309,9 @@ const AdminDashboard = () => {
           {/* Recent Users */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Recent Users</h2>
+              <h2 className="text-xl font-bold">Người dùng gần đây</h2>
               <Link href="/dashboard/admin/users" className="text-blue-600 hover:text-blue-800">
-                View All
+                Xem tất cả
               </Link>
             </div>
             {isLoading ? (
@@ -330,9 +327,9 @@ const AdminDashboard = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left py-3">Name</th>
-                      <th className="text-left py-3">Role</th>
-                      <th className="text-left py-3">Status</th>
+                      <th className="text-left py-3">Tên</th>
+                      <th className="text-left py-3">Vai trò</th>
+                      <th className="text-left py-3">Trạng thái</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -341,11 +338,10 @@ const AdminDashboard = () => {
                         <td className="py-3 text-sm">{user.name}</td>
                         <td className="py-3 text-sm">{user.role}</td>
                         <td className="py-3">
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            user.status === "Active" ? "bg-green-100 text-green-800" : 
-                            user.status === "Pending" ? "bg-yellow-100 text-yellow-800" : 
-                            "bg-red-100 text-red-800"
-                          }`}>
+                          <span className={`px-2 py-1 rounded-full text-xs ${user.status === "Active" ? "bg-green-100 text-green-800" :
+                              user.status === "Pending" ? "bg-yellow-100 text-yellow-800" :
+                                "bg-red-100 text-red-800"
+                            }`}>
                             {user.status}
                           </span>
                         </td>
@@ -360,9 +356,9 @@ const AdminDashboard = () => {
           {/* Top Student Enrollments */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Top Student Enrollments</h2>
+              <h2 className="text-xl font-bold">Đăng ký học viên</h2>
               <Link href="/dashboard/admin/enrollments" className="text-blue-600 hover:text-blue-800">
-                View All
+                Xem tất cả
               </Link>
             </div>
             <div className="space-y-4">
@@ -370,17 +366,17 @@ const AdminDashboard = () => {
                 <div key={student.userId} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                   <div>
                     <div className="font-medium text-gray-900">{student.username}</div>
-                    <div className="text-sm text-gray-500">{student.enrolledCourses} courses</div>
+                    <div className="text-sm text-gray-500">{student.enrolledCourses} khóa học</div>
                   </div>
                   <div className="text-right">
                     <div className="font-medium text-green-600">${student.totalSpent}</div>
-                    <div className="text-xs text-gray-500">Total spent</div>
+                    <div className="text-xs text-gray-500">Tổng thanh toán</div>
                   </div>
                 </div>
               ))}
               {enrollmentStats.length === 0 && !isLoading && (
                 <div className="text-center text-gray-500 py-4">
-                  No enrollment data available
+                  Không có dữ liệu đăng ký
                 </div>
               )}
             </div>
@@ -389,9 +385,9 @@ const AdminDashboard = () => {
           {/* Recent Courses */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Recent Courses</h2>
+              <h2 className="text-xl font-bold">Khóa học gần đây</h2>
               <Link href="/dashboard/admin/courses" className="text-blue-600 hover:text-blue-800">
-                View All
+                Xem tất cả
               </Link>
             </div>
             <div className="space-y-4">
@@ -399,12 +395,11 @@ const AdminDashboard = () => {
                 <div key={course.id} className="border rounded-lg p-3">
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="font-medium text-gray-900 text-sm">{course.name}</h4>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      course.isPublished 
-                        ? 'bg-green-100 text-green-800' 
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${course.isPublished
+                        ? 'bg-green-100 text-green-800'
                         : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {course.isPublished ? 'Published' : 'Draft'}
+                      }`}>
+                      {course.isPublished ? 'Xuất bản' : 'Nháp'}
                     </span>
                   </div>
                   <div className="flex justify-between text-xs text-gray-600">
@@ -421,81 +416,81 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
           {/* Recent Activity */}
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Hoạt động gần đây</h3>
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">New user registered</p>
-                  <p className="text-xs text-gray-500">john.doe@example.com - 5 minutes ago</p>
+                  <p className="text-sm font-medium text-gray-900">Người dùng mới đã đăng ký</p>
+                  <p className="text-xs text-gray-500">john.doe@example.com - 5 phút trước</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Course "React Basics" published</p>
-                  <p className="text-xs text-gray-500">by Sarah Wilson - 1 hour ago</p>
+                  <p className="text-sm font-medium text-gray-900">Khóa học &quot;React Basics&quot; đã được xuất bản</p>
+                  <p className="text-xs text-gray-500">bởi Sarah Wilson - 1 giờ trước</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Payment received</p>
-                  <p className="text-xs text-gray-500">${Math.floor(Math.random() * 200) + 50} enrollment fee - 2 hours ago</p>
+                  <p className="text-sm font-medium text-gray-900">Thanh toán đã nhận</p>
+                  <p className="text-xs text-gray-500">${Math.floor(Math.random() * 200) + 50} phí đăng ký - 2 giờ trước</p>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Instructor application</p>
-                  <p className="text-xs text-gray-500">Mike Johnson applied - 3 hours ago</p>
+                  <p className="text-sm font-medium text-gray-900">Đơn đăng ký giáo viên</p>
+                  <p className="text-xs text-gray-500">Mike Johnson đã đăng ký - 3 giờ trước</p>
                 </div>
               </div>
             </div>
-            <Link 
+            <Link
               href="/dashboard/admin/audit"
               className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-4 inline-block"
             >
-              View all activity →
+              Xem tất cả hoạt động →
             </Link>
           </div>
 
           {/* System Health */}
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">System Health</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Tình trạng hệ thống</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Server Status</span>
+                <span className="text-sm text-gray-600">Trạng thái máy chủ</span>
                 <span className="flex items-center text-green-600 text-sm font-medium">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                   Online
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Database</span>
+                <span className="text-sm text-gray-600">Cơ sở dữ liệu</span>
                 <span className="flex items-center text-green-600 text-sm font-medium">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
                   Healthy
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Total Enrollments</span>
+                <span className="text-sm text-gray-600">Tổng đăng ký</span>
                 <span className="text-sm font-medium text-gray-900">{globalStats.totalEnrollments}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Revenue Generated</span>
+                <span className="text-sm text-gray-600">Doanh thu tạo ra</span>
                 <span className="text-sm font-medium text-gray-900">${globalStats.totalRevenue}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Active Users</span>
+                <span className="text-sm text-gray-600">Người dùng hoạt động</span>
                 <span className="text-sm font-medium text-gray-900">{globalStats.totalUsers} total</span>
               </div>
             </div>
-            <Link 
+            <Link
               href="/dashboard/admin/performance"
               className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-4 inline-block"
             >
-              View performance details →
+              Xem chi tiết hiệu suất →
             </Link>
           </div>
         </div>

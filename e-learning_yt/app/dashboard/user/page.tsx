@@ -13,6 +13,7 @@ import {
   FiCalendar,
   FiTarget
 } from 'react-icons/fi';
+import { useAuth } from '@/hooks/useAuth';
 
 const UserDashboard = () => {
   const stats = [
@@ -23,10 +24,10 @@ const UserDashboard = () => {
   ];
 
   const quickActions = [
-    { label: 'Browse Courses', href: '/courses', icon: <FiTrendingUp className="w-8 h-8" />, color: 'purple' },
-    { label: 'My Courses', href: '/dashboard/user/courses', icon: <FiBook className="w-8 h-8" />, color: 'blue' },
-    { label: 'Study Progress', href: '/dashboard/user/progress', icon: <FiTarget className="w-8 h-8" />, color: 'green' },
-    { label: 'Certificates', href: '/dashboard/user/certificates', icon: <FiAward className="w-8 h-8" />, color: 'yellow' },
+    { label: 'Xem khóa học', href: '/courses', icon: <FiTrendingUp className="w-8 h-8" />, color: 'purple' },
+    { label: 'Khóa học của tôi', href: '/dashboard/user/courses', icon: <FiBook className="w-8 h-8" />, color: 'blue' },
+    { label: 'Tiến trình học', href: '/dashboard/user/progress', icon: <FiTarget className="w-8 h-8" />, color: 'green' },
+    { label: 'Chứng chỉ', href: '/dashboard/user/certificates', icon: <FiAward className="w-8 h-8" />, color: 'yellow' },
   ];
 
   const currentCourses = [
@@ -40,13 +41,14 @@ const UserDashboard = () => {
     { title: 'TypeScript Fundamentals', rating: 4.7, students: '1.8k', price: '$39', instructor: 'Lisa Chen' },
     { title: 'Vue.js Complete Guide', rating: 4.9, students: '3.1k', price: '$59', instructor: 'David Brown' },
   ];
+  const { user } = useAuth();
 
   return (
     <div>
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Welcome back, Student!</h1>
-        <p className="text-gray-600 mt-2">Continue your learning journey and achieve your goals.</p>
+        <h1 className="text-3xl font-bold text-gray-900">Chào mừng, Học viên {user?.username}!</h1>
+        <p className="text-gray-600 mt-2">Tiếp tục hành trình học tập của bạn và đạt được mục tiêu của bạn.</p>
       </div>
 
       {/* Statistics Cards */}
@@ -69,7 +71,7 @@ const UserDashboard = () => {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Hành động nhanh</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {quickActions.map((action, index) => (
             <Link 
@@ -93,12 +95,12 @@ const UserDashboard = () => {
         {/* Continue Learning */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Continue Learning</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Tiếp tục học</h3>
             <Link 
               href="/dashboard/user/courses"
               className="text-purple-600 hover:text-purple-700 text-sm font-medium"
             >
-              View all →
+              Xem tất cả →
             </Link>
           </div>
           <div className="space-y-4">
@@ -132,12 +134,12 @@ const UserDashboard = () => {
         {/* Recommended Courses */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recommended for You</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Khuyến nghị cho bạn</h3>
             <Link 
               href="/courses"
               className="text-purple-600 hover:text-purple-700 text-sm font-medium"
             >
-              Browse all →
+              Xem tất cả →
             </Link>
           </div>
           <div className="space-y-4">
@@ -154,13 +156,13 @@ const UserDashboard = () => {
                       <FiStar className="w-4 h-4 mr-1" />
                       {course.rating}
                     </span>
-                    <span className="text-gray-500">{course.students} students</span>
+                    <span className="text-gray-500">{course.students} học viên</span>
                   </div>
                   <Link
                     href={`/courses/${index + 1}`}
                     className="text-purple-600 hover:text-purple-700 font-medium"
                   >
-                    View Course
+                    Xem khóa học
                   </Link>
                 </div>
               </div>
@@ -173,12 +175,12 @@ const UserDashboard = () => {
       <div className="mt-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-semibold mb-2">Keep up the great work!</h3>
-            <p className="text-purple-100">You are 75% towards your monthly learning goal of 20 hours.</p>
+            <h3 className="text-xl font-semibold mb-2">Tiếp tục làm tốt!</h3>
+            <p className="text-purple-100">Bạn đã hoàn thành 75% của mục tiêu học tập hàng tháng của bạn.</p>
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold">15h</p>
-            <p className="text-purple-100">of 20h goal</p>
+            <p className="text-purple-100">trên 20h mục tiêu hàng tháng</p>
           </div>
         </div>
         <div className="w-full bg-purple-400 rounded-full h-3 mt-4">

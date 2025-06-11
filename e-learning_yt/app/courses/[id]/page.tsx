@@ -282,12 +282,14 @@ const CourseDetailPage = () => {
             {/* Course Info */}
             <div className="md:col-span-2">
               <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-                <div className="relative h-64">
-                  <Image
-                    src="/images/course-placeholder.jpg"
+                <div className="relative h-100">
+                  <img
+                    src={course.image && course.image[0] 
+                      ? `${process.env.NEXT_PUBLIC_API_URL}${course.image[0].formats?.medium?.url || course.image[0].url}`
+                      : '/images/course-placeholder.jpg'}
                     alt={course.name}
-                    fill
-                    className="object-cover"
+                    
+                    className="object-cover w-full h-full"
                   />
                 </div>
                 <div className="p-6">

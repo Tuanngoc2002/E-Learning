@@ -22,12 +22,6 @@ const ProfilePage = () => {
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
-    // if (!isAuthenticated) {
-    //   router.push('/login');
-    //   return;
-    // }
-
-    // Load user data into form
     if (user) {
       setFormData({
         username: user.username || '',
@@ -35,7 +29,7 @@ const ProfilePage = () => {
         avatar: '',
       });
     }
-  }, [user, router]);
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -64,41 +58,47 @@ const ProfilePage = () => {
         throw new Error('Failed to update profile');
       }
 
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
-      
-      // Update cookies with new user data
+      setMessage({ type: 'success', text: 'Hồ sơ đã được cập nhật thành công!' });
       if (formData.username) {
         document.cookie = `userName=${formData.username}; path=/`;
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to update profile. Please try again.' });
+      setMessage({ type: 'error', text: 'Cập nhật thất bại. Vui lòng thử lại.' });
       console.error('Profile update error:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  if ( !user) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-600"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Edit Profile</h1>
-      
-      {message.text && (
-        <div className={`p-4 mb-6 rounded-md ${
-          message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-          {message.text}
-        </div>
-      )}
-      
-      <div className="bg-white rounded-lg shadow-md p-6 max-w-2xl">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <label htmlFor="username" className="block text-gray-700 font-medium mb-2">
-              Full Name
+    <div className="flex justify-center py-12 px-4">
+      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-xl">
+        <h1 className="text-3xl font-bold text-center mb-6 text-blue-800">Chỉnh sửa hồ sơ</h1>
+
+        {message.text && (
+          <div
+            className={`mb-6 px-4 py-3 rounded-lg text-sm font-medium ${
+              message.type === 'success'
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="username" className="block text-gray-700 font-semibold mb-1">
+              Họ và tên
             </label>
             <input
               type="text"
@@ -106,14 +106,14 @@ const ProfilePage = () => {
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
-          
-          <div className="mb-6">
-            <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
-              Email Address
+
+          <div>
+            <label htmlFor="email" className="block text-gray-700 font-semibold mb-1">
+              Email
             </label>
             <input
               type="email"
@@ -121,14 +121,14 @@ const ProfilePage = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
-          
-          <div className="mb-6">
-            <label htmlFor="avatar" className="block text-gray-700 font-medium mb-2">
-              Profile Picture URL
+
+          <div>
+            <label htmlFor="avatar" className="block text-gray-700 font-semibold mb-1">
+              URL ảnh đại diện
             </label>
             <input
               type="text"
@@ -136,15 +136,15 @@ const ProfilePage = () => {
               name="avatar"
               value={formData.avatar}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://example.com/avatar.jpg"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
             {formData.avatar && (
-              <div className="mt-2">
-                <img 
-                  src={formData.avatar} 
-                  alt="Profile preview" 
-                  className="w-20 h-20 rounded-full object-cover"
+              <div className="mt-4 flex justify-center">
+                <img
+                  src={formData.avatar}
+                  alt="Profile preview"
+                  className="w-24 h-24 rounded-full border object-cover hover:scale-105 transition-transform"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = '/default-avatar.png';
                   }}
@@ -152,21 +152,21 @@ const ProfilePage = () => {
               </div>
             )}
           </div>
-          
-          <div className="flex justify-between">
+
+          <div className="flex justify-between pt-4">
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-gray-700"
             >
-              Cancel
+              Huỷ
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+              className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
-              {isLoading ? 'Saving...' : 'Save Changes'}
+              {isLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
             </button>
           </div>
         </form>
@@ -175,4 +175,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage; 
+export default ProfilePage;

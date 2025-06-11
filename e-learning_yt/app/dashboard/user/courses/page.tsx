@@ -24,6 +24,14 @@ interface Course {
   attributes?: {
     studentCount: number;
   };
+  image?: Array<{
+    url: string;
+    formats?: {
+      medium?: {
+        url: string;
+      };
+    };
+  }>;
 }
 
 interface EnrolledCourse extends Course {
@@ -176,7 +184,7 @@ const UserCoursesPage = () => {
         if (availableResponse.ok) {
           const availableData = await availableResponse.json();
           console.log('Available data raw:', availableData);
-          
+
           // Log the first course to see its structure
           if (availableData.data && availableData.data.length > 0) {
             console.log('First course structure:', {
@@ -188,7 +196,7 @@ const UserCoursesPage = () => {
           }
 
           const enrolledCourseIds = new Set(enrolledData.data?.map((e: any) => e.course.id) || []);
-          const notEnrolledCourses = availableData.data.filter((course: Course) => 
+          const notEnrolledCourses = availableData.data.filter((course: Course) =>
             !enrolledCourseIds.has(course.id)
           );
 
@@ -203,7 +211,7 @@ const UserCoursesPage = () => {
           });
 
           setAvailableCourses(notEnrolledCourses);
-          
+
           // Build and set roadmap
           const roadmapData = buildRoadmap(enrolledCoursesList, notEnrolledCourses);
           console.log('Setting roadmap:', roadmapData);
@@ -278,15 +286,15 @@ const UserCoursesPage = () => {
           <div className={`min-w-[220px] max-w-[240px] h-[210px] flex flex-col justify-between p-4 rounded-xl shadow border-2
             ${node.isCompleted ? 'border-green-500 bg-green-50'
               : node.isEnrolled ? 'border-blue-500 bg-blue-50'
-              : node.isRecommended ? 'border-yellow-500 bg-yellow-50'
-              : 'border-gray-300 bg-gray-50'}`}>
+                : node.isRecommended ? 'border-yellow-500 bg-yellow-50'
+                  : 'border-gray-300 bg-gray-50'}`}>
             <div>
               <div className="flex items-center mb-2">
                 {/* Icon trạng thái */}
                 {node.isCompleted ? <FiCheck className="text-green-500" />
                   : node.isEnrolled ? <FiPlay className="text-blue-500" />
-                  : node.isRecommended ? <FiStar className="text-yellow-500" />
-                  : <FiLock className="text-gray-400" />}
+                    : node.isRecommended ? <FiStar className="text-yellow-500" />
+                      : <FiLock className="text-gray-400" />}
                 <span className="ml-2 font-bold line-clamp-1">{node.course.name}</span>
               </div>
               <div className="text-xs text-gray-500 line-clamp-2 mb-2">{node.course.descriptions}</div>
@@ -313,11 +321,10 @@ const UserCoursesPage = () => {
               {!node.isEnrolled && node.course.isPublished && (
                 <button
                   onClick={() => handleCourseClick(node.course.id)}
-                  className={`mt-2 px-3 py-1 rounded text-white text-xs font-medium transition-colors duration-200 w-full ${
-                    node.isRecommended 
-                      ? 'bg-yellow-500 hover:bg-yellow-600' 
+                  className={`mt-2 px-3 py-1 rounded text-white text-xs font-medium transition-colors duration-200 w-full ${node.isRecommended
+                      ? 'bg-yellow-500 hover:bg-yellow-600'
                       : 'bg-blue-600 hover:bg-blue-700'
-                  }`}
+                    }`}
                 >
                   {node.isRecommended ? 'Học ngay' : 'Đăng ký'}
                 </button>
@@ -347,13 +354,13 @@ const UserCoursesPage = () => {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Courses</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Khóa học của tôi</h1>
           <button
             onClick={() => router.push('/courses')}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <FiPlus className="w-5 h-5 mr-2" />
-            Browse All Courses
+            Xem tất cả khóa học
           </button>
         </div>
 
@@ -370,7 +377,7 @@ const UserCoursesPage = () => {
               <FiBook className="w-8 h-8 text-blue-600 mr-4" />
               <div>
                 <div className="text-2xl font-bold text-blue-600">{enrolledCourses.length}</div>
-                <div className="text-sm text-gray-500">Enrolled Courses</div>
+                <div className="text-sm text-gray-500">Khóa học đã đăng ký</div>
               </div>
             </div>
           </div>
@@ -381,7 +388,7 @@ const UserCoursesPage = () => {
                 <div className="text-2xl font-bold text-green-600">
                   {enrolledCourses.reduce((total, course) => total + (course.progress || 0), 0)}%
                 </div>
-                <div className="text-sm text-gray-500">Avg Progress</div>
+                <div className="text-sm text-gray-500">Trung bình tiến trình</div>
               </div>
             </div>
           </div>
@@ -392,7 +399,7 @@ const UserCoursesPage = () => {
                 <div className="text-2xl font-bold text-purple-600">
                   {enrolledCourses.filter(c => (c.progress || 0) === 100).length}
                 </div>
-                <div className="text-sm text-gray-500">Completed</div>
+                <div className="text-sm text-gray-500">Đã hoàn thành</div>
               </div>
             </div>
           </div>
@@ -403,31 +410,28 @@ const UserCoursesPage = () => {
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('enrolled')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'enrolled'
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'enrolled'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
+                }`}
             >
               Khóa học của tôi ({enrolledCourses.length})
             </button>
             <button
               onClick={() => setActiveTab('roadmap')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'roadmap'
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'roadmap'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
+                }`}
             >
               Lộ trình học tập
             </button>
             <button
               onClick={() => setActiveTab('available')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'available'
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'available'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
+                }`}
             >
               Khóa học có sẵn ({availableCourses.length})
             </button>
@@ -440,7 +444,7 @@ const UserCoursesPage = () => {
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search courses..."
+              placeholder="Tìm kiếm khóa học..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
@@ -460,18 +464,21 @@ const UserCoursesPage = () => {
                   onClick={() => setActiveTab('available')}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
                 >
-                  Browse Available Courses
+                  Xem khóa học có sẵn
                 </button>
               </div>
             ) : (
               filteredEnrolledCourses.map((course) => (
                 <div key={course.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="relative h-48">
-                    <Image
-                      src="/images/course-placeholder.jpg"
+                    <img
+                      src={course.image && course.image[0]
+                        ? `${process.env.NEXT_PUBLIC_API_URL}${course.image[0].formats?.medium?.url || course.image[0].url}`
+                        : '/images/course-placeholder.jpg'}
                       alt={course.name}
-                      fill
-                      className="object-cover"
+                      width={500}
+                      height={300}
+                      className="object-cover w-full h-full"
                     />
                     <div className="absolute top-2 right-2">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getDifficultyColor(course.difficulty)}`}>
@@ -482,7 +489,7 @@ const UserCoursesPage = () => {
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">{course.name}</h3>
                     <p className="text-gray-600 mb-4 text-sm line-clamp-2">{course.descriptions}</p>
-                    
+
                     {/* Progress Bar */}
                     <div className="mb-4">
                       <div className="flex justify-between text-sm text-gray-600 mb-1">
@@ -517,43 +524,46 @@ const UserCoursesPage = () => {
         )}
 
         {activeTab === 'roadmap' && (
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-gray-900">Lộ trình học tập của bạn</h2>
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
+              <h2 className="text-3xl font-semibold text-gray-900">📚 Lộ trình học tập của bạn</h2>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-sm text-gray-600">Đã hoàn thành</span>
+                  <span className="text-sm text-gray-700">Đã hoàn thành</span>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-sm text-gray-600">Đang học</span>
+                  <span className="text-sm text-gray-700">Đang học</span>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <span className="text-sm text-gray-600">Đề xuất</span>
+                  <span className="text-sm text-gray-700">Đề xuất</span>
                 </div>
               </div>
             </div>
+
             {roadmap.length === 0 ? (
-              <div className="text-center py-12">
-                <FiBook className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg">
-                  Chưa có lộ trình học tập. Hãy bắt đầu bằng việc đăng ký một khóa học!
+              <div className="flex flex-col items-center justify-center text-center py-16 bg-gray-50 rounded-xl">
+                <FiBook className="w-16 h-16 text-gray-400 mb-4" />
+                <p className="text-gray-500 text-lg font-medium mb-2">
+                  Chưa có lộ trình học tập nào
                 </p>
+                <p className="text-gray-500">Hãy bắt đầu bằng việc đăng ký một khóa học phù hợp!</p>
                 <button
                   onClick={() => setActiveTab('available')}
-                  className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  className="mt-6 px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-all duration-300"
                 >
-                  Xem khóa học có sẵn
+                  📖 Xem khóa học có sẵn
                 </button>
               </div>
             ) : (
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {roadmap.flatMap(root => getAllPathsFromRootToLeaf(root)).map(renderHorizontalPath)}
               </div>
             )}
           </div>
+
         )}
 
         {activeTab === 'available' && (
@@ -568,11 +578,14 @@ const UserCoursesPage = () => {
               filteredAvailableCourses.map((course) => (
                 <div key={course.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="relative h-48">
-                    <Image
-                      src="/images/course-placeholder.jpg"
+                    <img
+                      src={course.image && course.image[0]
+                        ? `${process.env.NEXT_PUBLIC_API_URL}${course.image[0].formats?.medium?.url || course.image[0].url}`
+                        : '/images/course-placeholder.jpg'}
                       alt={course.name}
-                      fill
-                      className="object-cover"
+                      width={500}
+                      height={300}
+                      className="object-cover w-full h-full"
                     />
                     <div className="absolute top-2 right-2">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getDifficultyColor(course.difficulty)}`}>
@@ -583,7 +596,7 @@ const UserCoursesPage = () => {
                   <div className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">{course.name}</h3>
                     <p className="text-gray-600 mb-4 text-sm line-clamp-2">{course.descriptions}</p>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-bold text-blue-600">
                         {course.price ? `$${course.price}` : 'Free'}

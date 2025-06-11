@@ -28,12 +28,12 @@ interface NavItem {
 
 const instructorNavigation: NavItem[] = [
   { label: 'Dashboard', icon: <FiHome className="w-5 h-5" />, href: '/dashboard/instructor' },
-  { label: 'My Courses', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/instructor/courses' },
-  { label: 'Create Course', icon: <FiEdit3 className="w-5 h-5" />, href: '/dashboard/instructor/courses/new' },
-  { label: 'Students', icon: <FiUsers className="w-5 h-5" />, href: '/dashboard/instructor/students' },
-  { label: 'Analytics', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/instructor/analytics' },
-  { label: 'Reviews & Ratings', icon: <FiStar className="w-5 h-5" />, href: '/dashboard/instructor/reviews' },
-  { label: 'Messages', icon: <FiMessageCircle className="w-5 h-5" />, href: '/dashboard/instructor/messages' },
+  { label: 'Khóa học của tôi', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/instructor/courses' },
+  { label: 'Tạo khóa học', icon: <FiEdit3 className="w-5 h-5" />, href: '/dashboard/instructor/courses/new' },
+  { label: 'Học viên', icon: <FiUsers className="w-5 h-5" />, href: '/dashboard/instructor/students' },
+  { label: 'Thống kê', icon: <FiBarChart2 className="w-5 h-5" />, href: '/dashboard/instructor/analytics' },
+  { label: 'Đánh giá & Nhận xét', icon: <FiStar className="w-5 h-5" />, href: '/dashboard/instructor/reviews' },
+  { label: 'Tin nhắn', icon: <FiMessageCircle className="w-5 h-5" />, href: '/dashboard/instructor/messages' },
 ];
 
 const InstructorLayout = ({ children }: { children: React.ReactNode }) => {
