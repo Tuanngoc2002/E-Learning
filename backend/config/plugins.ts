@@ -1,12 +1,11 @@
 export default () => ({
   upload: {
     config: {
-      provider: 'local',
+      provider: 'strapi-provider-upload-strapi-cloud',
       providerOptions: {
-        providerOptions: {
-            apiKey: process.env.STRAPI_CLOUD_API_KEY,
-            // ... các option khác
-          },
+        apiKey: process.env.STRAPI_CLOUD_API_KEY,
+        apiSecret: process.env.STRAPI_CLOUD_API_SECRET,
+        // Các cấu hình khác nếu cần
       },
     },
   },
