@@ -85,9 +85,9 @@ const NewCoursePage = () => {
             className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
           >
             <FiArrowLeft className="w-5 h-5 mr-2" />
-            Back
+            Quay lại
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">Create New Course</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Tạo khóa học mới</h1>
         </div>
 
         {error && (
@@ -100,7 +100,7 @@ const NewCoursePage = () => {
           <div className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Course Name *
+                Tên khóa học *
               </label>
               <input
                 type="text"
@@ -111,13 +111,13 @@ const NewCoursePage = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
                 disabled={isLoading}
-                placeholder="Enter course name"
+                placeholder="Nhập tên khóa học"
               />
             </div>
 
             <div>
               <label htmlFor="descriptions" className="block text-sm font-medium text-gray-700 mb-2">
-                Course Description *
+                Mô tả khóa học *
               </label>
               <textarea
                 id="descriptions"
@@ -128,14 +128,14 @@ const NewCoursePage = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
                 disabled={isLoading}
-                placeholder="Enter course description"
+                placeholder="Nhập mô tả khóa học"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-2">
-                  Difficulty Level *
+                  Độ khó *
                 </label>
                 <select
                   id="difficulty"
@@ -146,15 +146,15 @@ const NewCoursePage = () => {
                   required
                   disabled={isLoading}
                 >
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
+                  <option value="easy">Dễ</option>
+                  <option value="medium">Trung bình</option>
+                  <option value="hard">Khó</option>
                 </select>
               </div>
 
               <div>
                 <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                  Price (USD)
+                  Giá (USD)
                 </label>
                 <input
                   type="number"
@@ -166,9 +166,9 @@ const NewCoursePage = () => {
                   step="0.01"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={isLoading}
-                  placeholder="Leave empty for free course"
+                  placeholder="Để trống để làm khóa học miễn phí"
                 />
-                <p className="mt-1 text-sm text-gray-500">Leave empty to make the course free</p>
+                <p className="mt-1 text-sm text-gray-500">Để trống để làm khóa học miễn phí</p>
               </div>
             </div>
 
@@ -183,7 +183,7 @@ const NewCoursePage = () => {
                 disabled={isLoading}
               />
               <label htmlFor="isPublished" className="ml-2 block text-sm text-gray-700">
-                Publish course immediately
+                Xuất bản khóa học ngay lập tức
               </label>
             </div>
 
@@ -195,7 +195,7 @@ const NewCoursePage = () => {
                   className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={isLoading}
                 >
-                  Cancel
+                  Hủy
                 </button>
                 <button
                   type="submit"
@@ -208,12 +208,12 @@ const NewCoursePage = () => {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Creating...
+                      Đang tạo...
                     </>
                   ) : (
                     <>
                       <FiSave className="w-5 h-5 mr-2" />
-                      Create Course
+                      Tạo khóa học
                     </>
                   )}
                 </button>
@@ -223,16 +223,16 @@ const NewCoursePage = () => {
         </form>
 
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <h3 className="text-lg font-medium text-blue-900 mb-2">Next Steps</h3>
+          <h3 className="text-lg font-medium text-blue-900 mb-2">Bước tiếp theo</h3>
           <p className="text-blue-700 mb-4">
-            After creating the course, you'll be able to:
+            Sau khi tạo khóa học, bạn có thể:
           </p>
           <ul className="list-disc list-inside text-blue-700 space-y-1">
-            <li>Add lessons and course content</li>
-            <li>Upload course materials and videos</li>
-            <li>Set up course assessments and quizzes</li>
-            <li>Manage student enrollments</li>
-            <li>Monitor course analytics</li>
+            <li>Thêm bài học và nội dung khóa học</li>
+            <li>Tải lên tài liệu và video khóa học</li>
+            <li>Thiết lập bài kiểm tra và bài tập khóa học</li>
+            <li>Quản lý đăng ký học sinh</li>
+            <li>Theo dõi thống kê khóa học</li>
           </ul>
         </div>
       </div>

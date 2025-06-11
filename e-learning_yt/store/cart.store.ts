@@ -11,8 +11,8 @@ interface CartState {
   isLoading: boolean
   error: string | null
   addToCart: (course: Course) => void
-  removeFromCart: (courseId: string) => void
-  updateQuantity: (courseId: string, quantity: number) => void
+  removeFromCart: (courseId: number) => void
+  updateQuantity: (courseId: number, quantity: number) => void
   clearCart: () => void
   getTotal: () => number
 }
@@ -40,13 +40,13 @@ export const useCartStore = create<CartState>((set, get) => ({
     })
   },
 
-  removeFromCart: (courseId) => {
+  removeFromCart: (courseId: number) => {
     set((state) => ({
       items: state.items.filter((item) => item.course.id !== courseId),
     }))
   },
 
-  updateQuantity: (courseId, quantity) => {
+  updateQuantity: (courseId: number, quantity: number) => {
     if (quantity < 1) return
     set((state) => ({
       items: state.items.map((item) =>

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import { enrollmentService } from '@/services/enrollmentService';
+import { enrollmentService, UserCourse } from '@/services/enrollmentService';
 import { useAuth } from './useAuth';
-import { Course } from '@/types/course';
 
 export const useEnrollment = (courseId?: number) => {
   const { isAuthenticated, user, jwt } = useAuth();
   const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<UserCourse[]>([]);
 
   // Check if user is enrolled in a specific course
   useEffect(() => {
@@ -19,8 +18,8 @@ export const useEnrollment = (courseId?: number) => {
       }
 
       try {
-        const enrolled = await enrollmentService.checkEnrollment(courseId, user.id);
-        setIsEnrolled(enrolled);
+        const enrolled = await enrollmentService.checkEnrollmentStatus(courseId, Number(user.id), jwt);
+        setIsEnrolled(!!enrolled);
       } catch (err) {
         console.error('Error checking enrollment status:', err);
         setIsEnrolled(false);
@@ -39,7 +38,7 @@ export const useEnrollment = (courseId?: number) => {
       }
 
       try {
-        const courses = await enrollmentService.getUserEnrollments(user.id);
+        const courses = await enrollmentService.getUserEnrollments(Number(user.id), jwt);
         setEnrolledCourses(courses);
       } catch (err) {
         console.error('Error fetching enrolled courses:', err);
@@ -61,18 +60,12 @@ export const useEnrollment = (courseId?: number) => {
     setError(null);
 
     try {
-      const result = await enrollmentService.enrollInCourse(courseId, user.id);
-      
-      if (result.success) {
-        setIsEnrolled(true);
-        // Refresh enrolled courses
-        const courses = await enrollmentService.getUserEnrollments(user.id);
-        setEnrolledCourses(courses);
-        return true;
-      } else {
-        setError(result.message);
-        return false;
-      }
+      await enrollmentService.enrollInCourse(courseId, jwt);
+      setIsEnrolled(true);
+      // Refresh enrolled courses
+      const courses = await enrollmentService.getUserEnrollments(Number(user.id), jwt);
+      setEnrolledCourses(courses);
+      return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to enroll in course');
       return false;

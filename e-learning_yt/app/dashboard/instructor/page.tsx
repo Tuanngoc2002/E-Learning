@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   FiBook, 
@@ -48,7 +48,7 @@ const InstructorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchInstructorData = async () => {
+  const fetchInstructorData = useCallback(async () => {
     if (!jwt || !user) return;
     
     try {
@@ -113,11 +113,11 @@ const InstructorDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jwt, user]);
 
   useEffect(() => {
     fetchInstructorData();
-  }, [jwt, user]);
+  }, [jwt, user, fetchInstructorData]);
 
   const quickActions = [
     { label: 'Tạo khóa học mới', href: '/dashboard/instructor/courses/new', icon: <FiPlus className="w-8 h-8" />, color: 'green' },

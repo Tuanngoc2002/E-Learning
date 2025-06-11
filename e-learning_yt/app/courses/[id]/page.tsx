@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useParams, useRouter } from 'next/navigation';
@@ -55,7 +56,7 @@ const CourseDetailPage = () => {
     } else {
       setIsEnrolled(false);
     }
-  }, [course, userAuth?.id]);
+  }, [course, userAuth, userAuth?.id]);
 
   // Nếu có lỗi 404, chuyển hướng đến trang danh sách khóa học
   useEffect(() => {

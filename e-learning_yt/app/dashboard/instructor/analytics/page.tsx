@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiUsers, FiBook, FiDollarSign, FiTrendingUp, FiEye, FiDownload, FiCalendar, FiStar } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -29,7 +29,7 @@ const InstructorAnalyticsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
-  const fetchAnalyticsData = async () => {
+  const fetchAnalyticsData = useCallback(async () => {
     if (!jwt || !user) return;
 
     try {
@@ -143,11 +143,11 @@ const InstructorAnalyticsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jwt, user]);
 
   useEffect(() => {
     fetchAnalyticsData();
-  }, [jwt, user, timeRange]);
+  }, [jwt, user, timeRange, fetchAnalyticsData]);
 
   const maxEnrollments = Math.max(...analyticsData.monthlyEnrollments.map(d => d.enrollments), 1);
   const maxRevenue = Math.max(...analyticsData.monthlyEnrollments.map(d => d.revenue), 1);

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaStar, FaUsers, FaClock } from 'react-icons/fa';

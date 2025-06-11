@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiEye, FiEyeOff, FiUsers, FiBook, FiDollarSign, FiStar } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
@@ -51,7 +51,7 @@ const InstructorCoursesPage = () => {
     total: 0
   });
 
-  const fetchCourses = async (page = 1, search = '', difficulty = 'all', status = 'all') => {
+  const fetchCourses = useCallback(async (page = 1, search = '', difficulty = 'all', status = 'all') => {
     try {
       setLoading(true);
       let url = `${process.env.NEXT_PUBLIC_API_URL}/api/courses?populate=lessons&pagination[page]=${page}&pagination[pageSize]=10`;
@@ -103,13 +103,13 @@ const InstructorCoursesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jwt, user?.id]);
 
   useEffect(() => {
     if (jwt && user?.id) {
       fetchCourses();
     }
-  }, [jwt, user]);
+  }, [jwt, user, fetchCourses]);
 
 
   const handleSearch = (e: React.FormEvent) => {

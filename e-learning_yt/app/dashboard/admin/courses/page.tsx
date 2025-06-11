@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiEye, FiEyeOff, FiUsers, FiDollarSign, FiBook } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
@@ -46,7 +46,7 @@ const AdminCoursesPage = () => {
     total: 0
   });
 
-  const fetchCourses = async (page = 1, search = '', difficulty = 'all', status = 'all') => {
+  const fetchCourses = useCallback(async (page = 1, search = '', difficulty = 'all', status = 'all') => {
     try {
       setLoading(true);
       let url = `${process.env.NEXT_PUBLIC_API_URL}/api/courses?populate=*&pagination[page]=${page}&pagination[pageSize]=10`;
@@ -81,13 +81,13 @@ const AdminCoursesPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jwt]);
 
   useEffect(() => {
     if (jwt) {
       fetchCourses();
     }
-  }, [jwt]);
+  }, [fetchCourses, jwt]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,10 +210,10 @@ const AdminCoursesPage = () => {
               onChange={(e) => setFilterDifficulty(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="all">All Difficulties</option>
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
+              <option value="all">Tất cả độ khó</option>
+              <option value="easy">Dễ</option>
+              <option value="medium">Trung bình</option>
+              <option value="hard">Khó</option>
             </select>
 
             <select
@@ -221,9 +221,9 @@ const AdminCoursesPage = () => {
               onChange={(e) => setFilterStatus(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="all">All Status</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
+              <option value="all">Tất cả trạng thái</option>
+              <option value="published">Xuất bản</option>
+              <option value="draft">Nháp</option>
             </select>
 
             <button

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiUsers, FiBook, FiDollarSign, FiCalendar, FiTrendingUp, FiSearch, FiDownload, FiFilter } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -51,7 +51,7 @@ const AdminEnrollmentsPage = () => {
     total: 0
   });
 
-  const fetchEnrollments = async (page = 1, search = '', status = 'all') => {
+  const fetchEnrollments = useCallback(async (page = 1, search = '', status = 'all') => {
     try {
       setLoading(true);
       let url = `${process.env.NEXT_PUBLIC_API_URL}/api/user-courses/findAll?&pagination[page]=${page}&pagination[pageSize]=20`;
@@ -127,13 +127,13 @@ const AdminEnrollmentsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jwt]);
 
   useEffect(() => {
     if (jwt) {
       fetchEnrollments();
     }
-  }, [jwt]);
+  }, [fetchEnrollments, jwt]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

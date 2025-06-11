@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiUserPlus, FiEdit2, FiTrash2, FiSearch, FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
@@ -47,7 +47,7 @@ const UsersPage = () => {
     total: 0
   });
 
-  const fetchUsers = async (page = 1, search = '') => {
+  const fetchUsers = useCallback(async (page = 1, search = '') => {
     try {
       setLoading(true);
       const searchFilter = search ? `&filters[username][$containsi]=${search}` : '';
@@ -82,13 +82,13 @@ const UsersPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jwt]);
 
   useEffect(() => {
     if (jwt) {
       fetchUsers();
     }
-  }, [jwt]);
+  }, [fetchUsers, jwt]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

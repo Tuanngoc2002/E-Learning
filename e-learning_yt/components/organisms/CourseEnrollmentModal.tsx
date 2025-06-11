@@ -126,7 +126,7 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
 
               {/* What's Included */}
               <div className="border-t pt-4">
-                <h4 className="font-medium text-gray-900 mb-3">What's included:</h4>
+                <h4 className="font-medium text-gray-900 mb-3">What&apos;s included:</h4>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <FiCheck className="w-4 h-4 text-green-500 mr-2" />

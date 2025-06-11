@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -583,8 +584,6 @@ const UserCoursesPage = () => {
                         ? `${process.env.NEXT_PUBLIC_API_URL}${course.image[0].formats?.medium?.url || course.image[0].url}`
                         : '/images/course-placeholder.jpg'}
                       alt={course.name}
-                      width={500}
-                      height={300}
                       className="object-cover w-full h-full"
                     />
                     <div className="absolute top-2 right-2">

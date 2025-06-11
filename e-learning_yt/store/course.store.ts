@@ -7,10 +7,10 @@ interface CourseState {
   isLoading: boolean
   error: string | null
   fetchCourses: () => Promise<void>
-  fetchCourseById: (id: string) => Promise<void>
+  fetchCourseById: (id: number) => Promise<void>
   createCourse: (course: Omit<Course, 'id'>) => Promise<void>
-  updateCourse: (id: string, course: Partial<Course>) => Promise<void>
-  deleteCourse: (id: string) => Promise<void>
+  updateCourse: (id: number, course: Partial<Course>) => Promise<void>
+  deleteCourse: (id: number) => Promise<void>
 }
 
 export const useCourseStore = create<CourseState>((set, get) => ({
@@ -33,7 +33,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
     }
   },
 
-  fetchCourseById: async (id: string) => {
+  fetchCourseById: async (id: number) => {
     try {
       set({ isLoading: true, error: null })
       const response = await fetch(`/api/courses/${id}`)
@@ -65,7 +65,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
     }
   },
 
-  updateCourse: async (id: string, course) => {
+  updateCourse: async (id: number, course) => {
     try {
       set({ isLoading: true, error: null })
       const response = await fetch(`/api/courses/${id}`, {
@@ -86,7 +86,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
     }
   },
 
-  deleteCourse: async (id: string) => {
+  deleteCourse: async (id: number) => {
     try {
       set({ isLoading: true, error: null })
       const response = await fetch(`/api/courses/${id}`, {

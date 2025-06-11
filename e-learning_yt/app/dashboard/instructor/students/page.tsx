@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiUsers, FiBook, FiDollarSign, FiTrendingUp, FiMail, FiCalendar, FiSearch } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -45,7 +45,7 @@ const InstructorStudentsPage = () => {
     averageProgress: 0
   });
 
-  const fetchStudentData = async () => {
+  const fetchStudentData = useCallback(async () => {
     if (!jwt || !user) return;
 
     try {
@@ -170,11 +170,11 @@ const InstructorStudentsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [jwt, user]);
 
   useEffect(() => {
     fetchStudentData();
-  }, [jwt, user]);
+  }, [jwt, user, fetchStudentData]);
 
   const filteredStudents = students.filter(student =>
     student.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
