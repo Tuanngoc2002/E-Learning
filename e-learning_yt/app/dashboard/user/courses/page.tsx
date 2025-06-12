@@ -141,6 +141,7 @@ const UserCoursesPage = () => {
         setLoading(true);
         let enrolledData: any = { data: [] };
         let enrolledCoursesList: EnrolledCourse[] = [];
+        let allAvailableCourses: Course[] = [];
 
         // Fetch enrolled courses with prestige data
         const enrolledResponse = await fetch(
@@ -184,39 +185,83 @@ const UserCoursesPage = () => {
 
         if (availableResponse.ok) {
           const availableData = await availableResponse.json();
-          console.log('Available data raw:', availableData);
-
-          // Log the first course to see its structure
-          if (availableData.data && availableData.data.length > 0) {
-            console.log('First course structure:', {
-              id: availableData.data[0].id,
-              name: availableData.data[0].name,
-              attributes: availableData.data[0].attributes,
-              prestige: availableData.data[0].prestige
-            });
-          }
-
           const enrolledCourseIds = new Set(enrolledData.data?.map((e: any) => e.course.id) || []);
           const notEnrolledCourses = availableData.data.filter((course: Course) =>
             !enrolledCourseIds.has(course.id)
           );
+          setAvailableCourses(notEnrolledCourses);
+          allAvailableCourses = availableData.data;
+        }
 
-          // Log each course's prestige data
-          notEnrolledCourses.forEach((course: Course) => {
-            console.log('Course prestige data:', {
-              id: course.id,
-              name: course.name,
-              prestige: course.prestige,
-              rawData: course
-            });
+        // Fetch recommended courses for the "Roadmap" tab
+        if (enrolledCoursesList.length > 0) {
+          // Get recommendations for all enrolled courses
+          const allRecommendedCourses = new Set<Course>();
+          
+          // Fetch recommendations for each enrolled course
+          for (const enrolledCourse of enrolledCoursesList) {
+            const recommendationResponse = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${enrolledCourse.id}/recommendations`,
+              {
+                headers: {
+                  'Authorization': `Bearer ${jwt}`,
+                },
+              }
+            );
+
+            if (recommendationResponse.ok) {
+              const recommendedData = await recommendationResponse.json();
+              const recommendedCourses = recommendedData.data || [];
+              
+              // Add recommended courses to the set
+              recommendedCourses.forEach((course: Course) => {
+                allRecommendedCourses.add(course);
+              });
+            }
+          }
+
+          // Combine recommended courses with related courses from available courses
+          const relatedCourses = new Set<Course>();
+          
+          // Add all recommended courses
+          allRecommendedCourses.forEach((course: Course) => {
+            relatedCourses.add(course);
           });
 
-          setAvailableCourses(notEnrolledCourses);
+          // Add courses that have prestige relationships with enrolled or recommended courses
+          const allRelevantCourses = [...enrolledCoursesList, ...Array.from(allRecommendedCourses)];
+          allRelevantCourses.forEach(course => {
+            // Find courses that have this course as a prerequisite
+            const dependentCourses = allAvailableCourses.filter(availableCourse => 
+              availableCourse.prestige?.data?.some(p => p.id === course.id)
+            );
+            dependentCourses.forEach(dependent => relatedCourses.add(dependent));
 
-          // Build and set roadmap
-          const roadmapData = buildRoadmap(enrolledCoursesList, notEnrolledCourses);
+            // Find courses that are prerequisites for this course
+            if (course.prestige?.data) {
+              course.prestige.data.forEach((prerequisite: { id: number }) => {
+                const prerequisiteCourse = allAvailableCourses.find(
+                  availableCourse => availableCourse.id === prerequisite.id
+                );
+                if (prerequisiteCourse) {
+                  relatedCourses.add(prerequisiteCourse);
+                }
+              });
+            }
+          });
+
+          // Convert Set to Array and filter out enrolled courses
+          const finalRecommendedCourses = Array.from(relatedCourses).filter(
+            course => !enrolledCoursesList.some(enrolled => enrolled.id === course.id)
+          );
+
+          // Build roadmap using enrolled courses and combined recommendations
+          const roadmapData = buildRoadmap(enrolledCoursesList, finalRecommendedCourses);
           console.log('Setting roadmap:', roadmapData);
           setRoadmap(roadmapData);
+        } else {
+          // If no enrolled courses, set empty roadmap
+          setRoadmap([]);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch courses');

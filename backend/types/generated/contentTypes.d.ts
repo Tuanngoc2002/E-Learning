@@ -369,6 +369,35 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
+  collectionName: 'categories';
+  info: {
+    displayName: 'category';
+    pluralName: 'categories';
+    singularName: 'category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    courses: Schema.Attribute.Relation<'oneToMany', 'api::course.course'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::category.category'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    type: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiChatMessageChatMessage extends Struct.CollectionTypeSchema {
   collectionName: 'chat_messages';
   info: {
@@ -456,6 +485,7 @@ export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
     chat_messages: Schema.Attribute.Relation<
       'oneToMany',
       'api::chat-message.chat-message'
@@ -1340,6 +1370,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::category.category': ApiCategoryCategory;
       'api::chat-message.chat-message': ApiChatMessageChatMessage;
       'api::comment.comment': ApiCommentComment;
       'api::course.course': ApiCourseCourse;

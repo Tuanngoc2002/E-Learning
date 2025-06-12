@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": {
+    "singularName": "category",
+    "pluralName": "categories",
+    "displayName": "category"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "type": {
+      "type": "string"
+    },
+    "courses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::course.course",
+      "mappedBy": "category"
+    }
+  }
+}

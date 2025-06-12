@@ -5,13 +5,28 @@ interface Course {
   documentId: string;
   name: string;
   createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+  locale: string | null;
+  descriptions: string | null;
+  difficulty: string;
+  price: number;
+  isPublished: boolean;
+  organizationID: string | null;
   rating?: number;
   students_count?: number;
   completion_rate?: number;
-  category?: { id: number; name: string };
+  category?: {
+    id: number;
+    documentId: string;
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string | null;
+    locale: string | null;
+  };
   difficulty_level?: { id: number; name: string };
   tags?: Array<{ id: number; name: string }>;
-  price?: number;
   user_courses?: Array<{
     id: number;
     documentId: string;
@@ -123,6 +138,9 @@ const getRecommendedCourses = async (courseId: number, userId?: number) => {
       // Exclude courses that have user_courses (already enrolled)
       if (course.user_courses && course.user_courses.length > 0) return false;
       
+      // Only include courses with the same category
+      if (currentCourse.category?.id !== course.category?.id) return false;
+      
       return true;
     });
 
@@ -153,6 +171,15 @@ const getRecommendedCourses = async (courseId: number, userId?: number) => {
 
     return scoredCourses.map(course => ({
       ...course,
+      category: course.category ? {
+        id: course.category.id,
+        documentId: course.category.documentId,
+        type: course.category.type,
+        createdAt: course.category.createdAt,
+        updatedAt: course.category.updatedAt,
+        publishedAt: course.category.publishedAt,
+        locale: course.category.locale
+      } : null,
       relevance: range > 0 ? (course.score - minScore) / range : 1
     }));
   } catch (error) {
