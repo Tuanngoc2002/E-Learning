@@ -4,7 +4,7 @@ import { determineUserRole, createRoleObject } from "@/lib/auth-utils";
 export const getCurrentUser = async (jwt: string) => {
   try {
     // First, get the basic user data
-    const res = await axios.get("http://localhost:1337/api/users/me", {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -30,7 +30,7 @@ export const getCurrentUser = async (jwt: string) => {
     
     try {
       // Try to get user role by fetching from users endpoint with populate
-      const userWithRoleRes = await axios.get(`http://localhost:1337/api/users/${userData.id}?populate=role`, {
+      const userWithRoleRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userData.id}?populate=role`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
@@ -51,7 +51,7 @@ export const getCurrentUser = async (jwt: string) => {
       console.log("Attempting to fetch roles and determine user role...");
       
       // Get all roles
-      const rolesRes = await axios.get("http://localhost:1337/api/users-permissions/roles");
+      const rolesRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users-permissions/roles`);
       console.log("Available roles:", rolesRes.data);
       
       if (rolesRes.data && rolesRes.data.roles) {
