@@ -6,7 +6,7 @@ export default {
     translations: {
       en: {
         'Auth.form.welcome.title': 'Chào mừng đến với E-Learning!',
-        'Auth.form.welcome.subtitle': 'Phiên bản v1.2 - CI/CD hoạt động!',
+        'Auth.form.welcome.subtitle': 'Phiên bản v1.3 - CI/CD hoạt động!',
       },
       // Nếu bạn dùng ngôn ngữ khác (vd: vi), thêm vào đây
       vi: {
