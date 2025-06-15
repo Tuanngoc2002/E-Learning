@@ -369,6 +369,16 @@ const CourseDetailPage = () => {
                           <span>Enrolled</span>
                         </div>
                       </div>
+                    ) : !isAuthenticated ? (
+                      <div className="text-center">
+                        <p className="text-gray-600 mb-3">Vui lòng đăng nhập để đăng ký khóa học</p>
+                        <button 
+                          onClick={() => router.push('/login?redirect=/courses/' + courseId)}
+                          className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
+                        >
+                          Đăng nhập
+                        </button>
+                      </div>
                     ) : (
                       <button 
                         onClick={handleEnrollClick}
