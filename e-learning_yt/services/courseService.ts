@@ -1,7 +1,6 @@
 import { Course, CourseResponse, Lesson } from '@/types/course';
 import Cookies from 'js-cookie';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
 const API_TOKEN = process.env.NEXT_PUBLIC_STRAPI_API_TOKEN;
 const token = Cookies.get('jwt');
 
@@ -9,17 +8,14 @@ const headers = {
   'Content-Type': 'application/json',
   Authorization: `Bearer ${token}`,
 };
-const headers2 = {
-  'Content-Type': 'application/json',
-};
+
 
 export const courseService = {
   async getAllCourses(page = 1, pageSize = 10, search = ''): Promise<CourseResponse> {
     try {
       const searchFilter = search ? `&filters[name][$containsi]=${search}` : '';
       const response = await fetch(
-        `${API_URL}/api/courses?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}${searchFilter}`,
-        { headers: headers2 }
+        `${process.env.NEXT_PUBLIC_API_URL }/api/courses?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}${searchFilter}`,
       );
       if (!response.ok) {
         throw new Error('Failed to fetch courses');
@@ -34,8 +30,8 @@ export const courseService = {
   async getCourseById(id: number): Promise<Course> {
     try {
       const response = await fetch(
-        `${API_URL}/api/courses/${id}?populate[lessons][populate]=*&populate[lessons][sort]=order:asc&populate[user_courses][populate]=*`,
-        { headers }
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${id}?populate[lessons][populate]=*&populate[lessons][sort]=order:asc&populate[user_courses][populate]=*`,
+
       );
       if (!response.ok) {
         throw new Error('Failed to fetch course');
@@ -57,7 +53,7 @@ export const courseService = {
         : '';
       
       const response = await fetch(
-        `${API_URL}/api/courses?filters[isPublished][$eq]=true${searchFilter}${difficultyFilter}${priceFilter}&populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses?filters[isPublished][$eq]=true${searchFilter}${difficultyFilter}${priceFilter}&populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
         { headers }
       );
       if (!response.ok) {
@@ -74,7 +70,7 @@ export const courseService = {
     try {
       const publishedFilter = publishedOnly ? '&filters[isPublished][$eq]=true' : '';
       const response = await fetch(
-        `${API_URL}/api/courses?filters[instructor][id][$eq]=${instructorId}${publishedFilter}&populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses?filters[instructor][id][$eq]=${instructorId}${publishedFilter}&populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
         { headers }
       );
       if (!response.ok) {
@@ -92,7 +88,7 @@ export const courseService = {
       // If we want to unpublish (delete), use DELETE method
       // If we want to publish, we need to implement a publish endpoint
       if (!isPublished) {
-        const response = await fetch(`${API_URL}/api/courses/${id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/${id}`, {
           method: 'DELETE',
           headers,
         });
@@ -106,7 +102,7 @@ export const courseService = {
       } else {
         // For publishing, we need to implement a publish endpoint
         // This is a placeholder - you'll need to implement the actual publish endpoint
-        const response = await fetch(`${API_URL}/api/courses/${id}/publish`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/${id}/publish`, {
           method: 'POST',
           headers,
         });
@@ -126,7 +122,7 @@ export const courseService = {
 
   async updateCourse(id: number, courseData: Partial<Course>): Promise<Course> {
     try {
-      const response = await fetch(`${API_URL}/api/courses/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/${id}`, {
         method: 'PUT',
         headers,
         body: JSON.stringify({
@@ -150,7 +146,7 @@ export const courseService = {
     try {
       // Đầu tiên, lấy thông tin khóa học mà không populate lessons
       const courseResponse = await fetch(
-        `${API_URL}/api/courses/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${id}`,
         { headers }
       );
       
@@ -164,7 +160,7 @@ export const courseService = {
       let lessons: Lesson[] = [];
       try {
         const lessonsResponse = await fetch(
-          `${API_URL}/api/courses/${id}?populate[lessons][populate]=*&populate[lessons][sort]=order:asc`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${id}?populate[lessons][populate]=*&populate[lessons][sort]=order:asc`,
           { headers }
         );
         
