@@ -11,7 +11,7 @@ interface CourseGridProps {
 }
 
 const CourseGrid: React.FC<CourseGridProps> = ({
-  title = 'Featured Courses',
+  title = 'Khoá học mới nhất',
   searchQuery = '',
   difficulty,
   minPrice,

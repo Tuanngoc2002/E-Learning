@@ -9,6 +9,9 @@ const headers = {
   'Content-Type': 'application/json',
   Authorization: `Bearer ${token}`,
 };
+const headers2 = {
+  'Content-Type': 'application/json',
+};
 
 export const courseService = {
   async getAllCourses(page = 1, pageSize = 10, search = ''): Promise<CourseResponse> {
@@ -16,7 +19,7 @@ export const courseService = {
       const searchFilter = search ? `&filters[name][$containsi]=${search}` : '';
       const response = await fetch(
         `${API_URL}/api/courses?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}${searchFilter}`,
-        { headers }
+        { headers: headers2 }
       );
       if (!response.ok) {
         throw new Error('Failed to fetch courses');
