@@ -24,10 +24,10 @@ interface ChatBoxProps {
   currentUserId: string;
 }
 
-const socket = io('http://localhost:4000'); // URL server websocket
+const socket = io("http://localhost:4000"); // URL server websocket
 
 const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { jwt } = useAuth();
@@ -48,33 +48,35 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
 
       try {
         setIsLoading(true);
-        console.log('🔍 Fetching chat history for course:', courseId);
+        console.log("🔍 Fetching chat history for course:", courseId);
         const response = await fetch(
           `http://localhost:1337/api/chat-messages?filters[course][id][$eq]=${courseId}&populate=sender&sort=createdAt:asc`,
           {
             headers: {
-              'Authorization': `Bearer ${jwt}`
-            }
+              Authorization: `Bearer ${jwt}`,
+            },
           }
         );
 
         if (response.ok) {
           const data = await response.json();
-          console.log('📚 Loaded chat history:', data.data);
-          setMessages(data.data.map((msg: any) => ({
-            id: msg.id,
-            content: msg.content,
-            senderId: msg.senderId || msg.sender?.id?.toString(),
-            receiverId: msg.receiverId,
-            courseId: msg.courseId || courseId,
-            createdAt: msg.createdAt,
-            sender: msg.sender
-          })));
+          console.log("📚 Loaded chat history:", data.data);
+          setMessages(
+            data.data.map((msg: any) => ({
+              id: msg.id,
+              content: msg.content,
+              senderId: msg.senderId || msg.sender?.id?.toString(),
+              receiverId: msg.receiverId,
+              courseId: msg.courseId || courseId,
+              createdAt: msg.createdAt,
+              sender: msg.sender,
+            }))
+          );
         } else {
-          console.error('❌ Failed to fetch chat history:', response.status);
+          console.error("❌ Failed to fetch chat history:", response.status);
         }
       } catch (error) {
-        console.error('Error fetching chat history:', error);
+        console.error("Error fetching chat history:", error);
       } finally {
         setIsLoading(false);
       }
@@ -87,16 +89,16 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
     if (!courseId) return;
 
     // Khi mở, join vào course
-    socket.emit('join_course', courseId);
+    socket.emit("join_course", courseId);
 
     // Lắng nghe message mới
-    socket.on('receive_message', (data) => {
-      console.log('📩 Received new message:', data);
+    socket.on("receive_message", (data) => {
+      console.log("📩 Received new message:", data);
       setMessages((prev) => [...prev, data]);
     });
 
     return () => {
-      socket.off('receive_message');
+      socket.off("receive_message");
     };
   }, [courseId]);
 
@@ -104,14 +106,19 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
     if (!message.trim()) return;
 
     try {
-      console.log('📤 Sending message:', { content: message, senderId: currentUserId, receiverId: instructorId, courseId });
-      
+      console.log("📤 Sending message:", {
+        content: message,
+        senderId: currentUserId,
+        receiverId: instructorId,
+        courseId,
+      });
+
       // Save message to Strapi
-      const response = await fetch('http://localhost:1337/api/chat-messages', {
-        method: 'POST',
+      const response = await fetch("http://localhost:1337/api/chat-messages", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${jwt}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
         },
         body: JSON.stringify({
           data: {
@@ -122,22 +129,22 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
             // Also include relation format for backward compatibility
             sender: currentUserId,
             receiver: instructorId,
-            course: courseId
-          }
-        })
+            course: courseId,
+          },
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('❌ Failed to save message:', errorData);
-        throw new Error('Failed to save message');
+        console.error("❌ Failed to save message:", errorData);
+        throw new Error("Failed to save message");
       }
 
       const savedMessage = await response.json();
-      console.log('✅ Message saved:', savedMessage.data);
+      console.log("✅ Message saved:", savedMessage.data);
 
       // Emit message through Socket.IO
-      socket.emit('send_message', {
+      socket.emit("send_message", {
         content: message,
         senderId: currentUserId,
         receiverId: instructorId,
@@ -145,24 +152,24 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
         createdAt: new Date().toISOString(),
       });
 
-      setMessage('');
+      setMessage("");
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
       // You might want to show an error message to the user here
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
 
   const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleTimeString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -194,16 +201,27 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
         ) : (
           <>
             {messages.map((msg, index) => (
-              <div key={msg.id || index} className={`flex ${isMyMessage(msg.senderId) ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
-                  isMyMessage(msg.senderId)
-                    ? 'bg-blue-600 text-white rounded-br-sm'
-                    : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm'
-                }`}>
+              <div
+                key={msg.id || index}
+                className={`flex ${
+                  isMyMessage(msg.senderId) ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`max-w-xs lg:max-w-md px-3 py-2 rounded-lg ${
+                    isMyMessage(msg.senderId)
+                      ? "bg-blue-600 text-white rounded-br-sm"
+                      : "bg-white text-gray-800 border border-gray-200 rounded-bl-sm"
+                  }`}
+                >
                   <p className="text-sm break-words">{msg.content}</p>
-                  <p className={`text-xs mt-1 ${
-                    isMyMessage(msg.senderId) ? 'text-blue-100' : 'text-gray-500'
-                  }`}>
+                  <p
+                    className={`text-xs mt-1 ${
+                      isMyMessage(msg.senderId)
+                        ? "text-blue-100"
+                        : "text-gray-500"
+                    }`}
+                  >
                     {formatTime(msg.createdAt)}
                   </p>
                 </div>
@@ -225,7 +243,7 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
-              style={{ minHeight: '36px', maxHeight: '80px' }}
+              style={{ minHeight: "36px", maxHeight: "80px" }}
             />
           </div>
           <button
