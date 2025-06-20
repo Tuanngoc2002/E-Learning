@@ -23,7 +23,9 @@ export default function ChatbotButton() {
     const prompt = `
         Bạn là một trợ lý học tập thân thiện. Hãy trả lời các câu hỏi liên quan đến học tập, định hướng ngành nghề, kỹ năng cần thiết để đi làm, hoặc lộ trình học phù hợp.
 
-        Nếu người dùng hỏi điều gì không liên quan đến học tập, bạn phải lịch sự từ chối. Trả lời ngắn gọn dưới 300 ký tự.
+        Nếu người dùng hỏi điều gì không liên quan đến học tập, bạn phải lịch sự từ chối. Nếu người dùng hỏi những câu không có ý nghĩa, bạn sẽ tự giới thiệu như sau: 'Chào bạn! Trang web của bọn mình cung cấp những khoá học rất bổ ích đấy. Tôi là Trợ lý học tập thông minh, bạn có cần tôi trợ giúp gì không?'
+        
+        Trả lời ngắn gọn dưới 300 ký tự. Chỉ dùng dấu chấm, không dùng những ký tự đặc biệt nhiều ngoài icon để thêm sinh động.
 
         Câu hỏi của người dùng: ${message}
         `;
@@ -72,17 +74,15 @@ export default function ChatbotButton() {
 
   return (
     <div>
-      {!showChatBox && (
-        <button
-          onClick={() => setShowChatBox(true)}
-          className="fixed bottom-6 left-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-110 z-50"
-        >
-          <FaRobot className="w-6 h-6" />
-        </button>
-      )}
+      <button
+        onClick={() => setShowChatBox(true)}
+        className="fixed bottom-[173px] right-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-110 z-50"
+      >
+        <FaRobot className="w-6 h-6" />
+      </button>
 
       {showChatBox && (
-        <div className="fixed bottom-6 left-6 w-[350px] sm:w-96 h-[500px] bg-white/90 backdrop-blur-md border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl z-50 flex flex-col overflow-hidden transition-all duration-300">
+        <div className="fixed bottom-6 right-[92px] w-[350px] sm:w-96 h-[500px] bg-white/90 backdrop-blur-md border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl z-50 flex flex-col overflow-hidden transition-all duration-300">
           <div className="bg-gradient-to-r from-[#1d2671] to-[#c33764] text-white px-4 py-3 flex justify-between items-center rounded-t-2xl shadow-md">
             <span className="font-semibold text-lg tracking-wide">
               🎓 Trợ lý học tập AI
