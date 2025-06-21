@@ -28,6 +28,21 @@ export interface Conversation {
 }
 
 export const messageService = {
+  // Helper function to get course name by courseId
+  getCourseName: async (courseId: string, token: string): Promise<string> => {
+    try {
+      const response = await axios.get(`${API_URL}/courses/${courseId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      return response.data.data?.name || 'Unknown Course';
+    } catch (error) {
+      console.error('Error fetching course name:', error);
+      return 'Unknown Course';
+    }
+  },
+
   // Lấy danh sách conversations cho instructor (nhóm theo student + course)
   getInstructorConversations: async (instructorId: string, token: string): Promise<Conversation[]> => {
     try {
@@ -48,16 +63,23 @@ export const messageService = {
       const conversationsMap = new Map<string, Conversation>();
 
       // Nhóm messages theo student + course
-      messages.forEach((message: any) => {
+      for (const message of messages) {
         const conversationKey = `${message.senderId}-${message.courseId}`;
+        
+        let courseName = message.course?.name || 'Unknown Course';
+        
+        // If course object is null but we have courseId, fetch course name
+        if (!message.course && message.courseId) {
+          courseName = await messageService.getCourseName(message.courseId, token);
+        }
         
         if (!conversationsMap.has(conversationKey)) {
           conversationsMap.set(conversationKey, {
             id: conversationKey,
-            courseId: message.courseId || message.course?.id?.toString(),
-            courseName: message.course?.name || 'Unknown Course',
-            studentId: message.senderId || message.sender?.id?.toString(),
-            studentName: message.sender?.username || 'Unknown Student',
+            courseId: message.courseId || message.course?.id?.toString() || 'unknown',
+            courseName: courseName,
+            studentId: message.senderId || message.sender?.id?.toString() || 'unknown',
+            studentName: message.sender?.username || 'Unknown User',
             lastMessage: message.content,
             lastMessageAt: message.createdAt,
             unreadCount: message.isRead ? 0 : 1,
@@ -73,7 +95,7 @@ export const messageService = {
             conversation.isRead = false;
           }
         }
-      });
+      }
 
       return Array.from(conversationsMap.values()).sort((a, b) => 
         new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
@@ -98,16 +120,30 @@ export const messageService = {
         }
       });
 
-      return response.data.data.map((message: any) => ({
-        id: message.id.toString(),
-        content: message.content,
-        courseId: message.course.id.toString(),
-        courseName: message.course.name,
-        studentId: message.sender.id.toString(),
-        studentName: message.sender.username,
-        createdAt: message.createdAt,
-        isRead: message.isRead || false
-      }));
+      const messages = response.data.data;
+      const processedMessages = [];
+
+      for (const message of messages) {
+        let courseName = message.course?.name || 'Unknown Course';
+        
+        // If course object is null but we have courseId, fetch course name
+        if (!message.course && message.courseId) {
+          courseName = await messageService.getCourseName(message.courseId, token);
+        }
+
+        processedMessages.push({
+          id: message.id.toString(),
+          content: message.content,
+          courseId: message.courseId || message.course?.id?.toString() || 'unknown',
+          courseName: courseName,
+          studentId: message.senderId || message.sender?.id?.toString() || 'unknown',
+          studentName: message.sender?.username || 'Unknown User',
+          createdAt: message.createdAt,
+          isRead: message.isRead || false
+        });
+      }
+
+      return processedMessages;
     } catch (error) {
       console.error('Error fetching messages:', error);
       throw error;
@@ -129,16 +165,30 @@ export const messageService = {
         }
       });
 
-      return response.data.data.map((message: any) => ({
-        id: message.id.toString(),
-        content: message.content,
-        courseId: message.course.id.toString(),
-        courseName: message.course.name,
-        studentId: message.sender.id.toString(),
-        studentName: message.sender.username,
-        createdAt: message.createdAt,
-        isRead: message.isRead || false
-      }));
+      const messages = response.data.data;
+      const processedMessages = [];
+
+      for (const message of messages) {
+        let courseName = message.course?.name || 'Unknown Course';
+        
+        // If course object is null but we have courseId, fetch course name
+        if (!message.course && message.courseId) {
+          courseName = await messageService.getCourseName(message.courseId, token);
+        }
+
+        processedMessages.push({
+          id: message.id.toString(),
+          content: message.content,
+          courseId: message.courseId || message.course?.id?.toString() || 'unknown',
+          courseName: courseName,
+          studentId: message.senderId || message.sender?.id?.toString() || 'unknown',
+          studentName: message.sender?.username || 'Unknown User',
+          createdAt: message.createdAt,
+          isRead: message.isRead || false
+        });
+      }
+
+      return processedMessages;
     } catch (error) {
       console.error('Error fetching messages:', error);
       throw error;
@@ -165,16 +215,30 @@ export const messageService = {
         }
       });
 
-      return response.data.data.map((message: any) => ({
-        id: message.id.toString(),
-        content: message.content,
-        courseId: message.courseId || message.course?.id?.toString(),
-        courseName: message.course?.name || 'Unknown Course',
-        studentId: message.senderId || message.sender?.id?.toString(),
-        studentName: message.sender?.username || 'Unknown Student',
-        createdAt: message.createdAt,
-        isRead: message.isRead || false
-      }));
+      const messages = response.data.data;
+      const processedMessages = [];
+
+      for (const message of messages) {
+        let courseName = message.course?.name || 'Unknown Course';
+        
+        // If course object is null but we have courseId, fetch course name
+        if (!message.course && message.courseId) {
+          courseName = await messageService.getCourseName(message.courseId, token);
+        }
+
+        processedMessages.push({
+          id: message.id.toString(),
+          content: message.content,
+          courseId: message.courseId || message.course?.id?.toString() || 'unknown',
+          courseName: courseName,
+          studentId: message.senderId || message.sender?.id?.toString() || 'unknown',
+          studentName: message.sender?.username || 'Unknown User',
+          createdAt: message.createdAt,
+          isRead: message.isRead || false
+        });
+      }
+
+      return processedMessages;
     } catch (error) {
       console.error('Error fetching conversation:', error);
       throw error;

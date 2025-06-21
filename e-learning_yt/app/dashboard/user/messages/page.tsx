@@ -28,10 +28,25 @@ const UserMessagesPage = () => {
       }
 
       try {
-        console.log(user.id);
-        const fetchedMessages = await messageService.getStudentMessages(user.id, jwt);
+        console.log('User ID:', user.id);
+        console.log('User role:', user.role);
+        
+        // Determine if user is instructor or student based on role or other criteria
+        // For now, let's assume if user has instructor role, show instructor messages
+        // Otherwise show student messages
+        let fetchedMessages;
+        
+        if (user.role === 'instructor' || user.role === 'admin') {
+          // User is instructor - get messages sent to them
+          fetchedMessages = await messageService.getInstructorMessages(user.id, jwt);
+        } else {
+          // User is student - get messages sent to them
+          fetchedMessages = await messageService.getStudentMessages(user.id, jwt);
+        }
+        
         setMessages(fetchedMessages);
       } catch (err) {
+        console.log('Error fetching messages:', err);
         setError('Không thể tải tin nhắn. Vui lòng thử lại sau.');
         toast.error('Không thể tải tin nhắn. Vui lòng thử lại sau.');
       } finally {
@@ -47,9 +62,13 @@ const UserMessagesPage = () => {
     });
 
     socket.on('receive_message', (newMessage: Message) => {
+      // Check if the new message belongs to the current conversation
       if (selectedMessage && 
-          (newMessage.studentId === selectedMessage.studentId || newMessage.studentId === user?.id) &&
-          newMessage.courseId === selectedMessage.courseId) {
+          newMessage.courseId === selectedMessage.courseId &&
+          ((user?.role === 'instructor' || user?.role === 'admin') 
+            ? (newMessage.studentId === selectedMessage.studentId || newMessage.studentId === user?.id)
+            : (newMessage.studentId === selectedMessage.studentId || newMessage.studentId === user?.id)
+          )) {
         setConversationMessages(prev => [...prev, newMessage]);
       }
     });
@@ -96,12 +115,28 @@ const UserMessagesPage = () => {
     
     // Fetch conversation messages
     try {
-      const conversation = await messageService.getConversation(
-        message.courseId,
-        message.studentId,
-        user.id,
-        jwt
-      );
+      // Determine the correct parameters based on user role
+      let conversation;
+      
+      if (user?.role === 'instructor' || user?.role === 'admin') {
+        // For instructor, get conversation between instructor and student
+        conversation = await messageService.getConversation(
+          message.courseId,
+          message.studentId,
+          user.id,
+          jwt
+        );
+      } else {
+        // For student, get conversation between student and instructor
+        // We need to determine the instructor ID from the message
+        conversation = await messageService.getConversation(
+          message.courseId,
+          user.id,
+          message.studentId, // This should be instructor ID for student view
+          jwt
+        );
+      }
+      
       setConversationMessages(conversation);
     } catch (error) {
       console.error('Error fetching conversation:', error);
@@ -130,11 +165,22 @@ const UserMessagesPage = () => {
     }
 
     try {
+      // Determine receiver ID based on user role
+      let receiverId;
+      
+      if (user.role === 'instructor' || user.role === 'admin') {
+        // Instructor is replying to student
+        receiverId = selectedMessage.studentId;
+      } else {
+        // Student is replying to instructor
+        receiverId = selectedMessage.studentId; // This should be instructor ID for student view
+      }
+
       const response = await messageService.sendReply(
         selectedMessage.id,
         replyContent,
         user.id,
-        selectedMessage.studentId,
+        receiverId,
         selectedMessage.courseId,
         jwt
       );
@@ -185,7 +231,11 @@ const UserMessagesPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Tin nhắn từ học viên</h1>
+        <h1 className="text-3xl font-bold mb-8">
+          {user?.role === 'instructor' || user?.role === 'admin' 
+            ? 'Tin nhắn từ học viên' 
+            : 'Tin nhắn từ giảng viên'}
+        </h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Messages List */}
@@ -194,35 +244,46 @@ const UserMessagesPage = () => {
               <h2 className="text-xl font-semibold">Danh sách cuộc trò chuyện</h2>
             </div>
             <div className="divide-y">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  onClick={() => handleMessageSelect(message)}
-                  className={`p-4 cursor-pointer hover:bg-gray-50 ${
-                    selectedMessage?.id === message.id ? 'bg-indigo-50' : ''
-                  } ${!message.isRead ? 'bg-blue-50' : ''}`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center">
-                      <FaUser className="text-indigo-600 mr-2" />
-                      <span className="font-medium">{message.studentName}</span>
-                    </div>
-                    {!message.isRead && (
-                      <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                        Mới
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-500 mb-2">
-                    <FaBook className="mr-2" />
-                    <span>{message.courseName}</span>
-                  </div>
-                  <p className="text-gray-600 line-clamp-2">{message.content}</p>
-                  <div className="text-xs text-gray-400 mt-2">
-                    {new Date(message.createdAt).toLocaleString()}
-                  </div>
+              {messages.length === 0 ? (
+                <div className="p-4 text-center text-gray-500">
+                  <FaCommentDots className="w-8 h-8 mx-auto mb-2" />
+                  <p>Chưa có tin nhắn nào</p>
                 </div>
-              ))}
+              ) : (
+                messages.map((message) => (
+                  <div
+                    key={message.id}
+                    onClick={() => handleMessageSelect(message)}
+                    className={`p-4 cursor-pointer hover:bg-gray-50 ${
+                      selectedMessage?.id === message.id ? 'bg-indigo-50' : ''
+                    } ${!message.isRead ? 'bg-blue-50' : ''}`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        <FaUser className="text-indigo-600 mr-2" />
+                        <span className="font-medium">
+                          {user?.role === 'instructor' || user?.role === 'admin' 
+                            ? message.studentName 
+                            : message.studentName}
+                        </span>
+                      </div>
+                      {!message.isRead && (
+                        <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                          Mới
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center text-sm text-gray-500 mb-2">
+                      <FaBook className="mr-2" />
+                      <span>{message.courseName}</span>
+                    </div>
+                    <p className="text-gray-600 line-clamp-2">{message.content}</p>
+                    <div className="text-xs text-gray-400 mt-2">
+                      {new Date(message.createdAt).toLocaleString()}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
@@ -245,25 +306,32 @@ const UserMessagesPage = () => {
                   </div>
                 </div>
                 <div className="p-4 h-[500px] overflow-y-auto">
-                  {conversationMessages
-                    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-                    .map((message) => (
-                      <div
-                        key={message.id}
-                        className={`mb-4 ${
-                          message.studentId === user?.id ? 'flex justify-end' : 'flex justify-start'
-                        }`}
-                      >
-                        <div className={`max-w-[70%] ${
-                          message.studentId === user?.id ? 'bg-indigo-100' : 'bg-gray-100'
-                        } rounded-lg p-3`}>
-                          <p className="text-gray-700">{message.content}</p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {new Date(message.createdAt).toLocaleString()}
-                          </p>
+                  {conversationMessages.length === 0 ? (
+                    <div className="text-center text-gray-500 mt-8">
+                      <FaCommentDots className="w-8 h-8 mx-auto mb-2" />
+                      <p>Chưa có tin nhắn nào trong cuộc trò chuyện này</p>
+                    </div>
+                  ) : (
+                    conversationMessages
+                      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                      .map((message) => (
+                        <div
+                          key={message.id}
+                          className={`mb-4 ${
+                            message.studentId === user?.id ? 'flex justify-end' : 'flex justify-start'
+                          }`}
+                        >
+                          <div className={`max-w-[70%] ${
+                            message.studentId === user?.id ? 'bg-indigo-100' : 'bg-gray-100'
+                          } rounded-lg p-3`}>
+                            <p className="text-gray-700">{message.content}</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {new Date(message.createdAt).toLocaleString()}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                  )}
                 </div>
                 
                 <div className="p-4 border-t">
