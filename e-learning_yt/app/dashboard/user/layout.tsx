@@ -17,7 +17,8 @@ import {
   FiTrendingUp,
   FiCalendar,
   FiClock,
-  FiAward
+  FiAward,
+  FiZap
 } from 'react-icons/fi';
 
 interface NavItem {
@@ -34,6 +35,11 @@ const userNavigation: NavItem[] = [
   { label: 'Chứng chỉ', icon: <FiAward className="w-5 h-5" />, href: '/dashboard/user/certificates' },
   { label: 'Tin nhắn', icon: <FiMessageCircle className="w-5 h-5" />, href: '/dashboard/user/messages' },
   { label: 'Hồ sơ cá nhân', icon: <FiUser className="w-5 h-5" />, href: '/dashboard/user/profile' },
+  {
+    label: "Trợ lý AI",
+    icon: <FiZap className="w-5 h-5" />,
+    href: "/dashboard/user/chatbot",
+  },
 ];
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
