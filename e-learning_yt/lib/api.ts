@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:1337/api", // Thay bằng link deploy nếu có
+  baseURL: "https://e-learning-smbe.onrender.com/", // Thay bằng link deploy nếu có
   headers: {
     "Content-Type": "application/json",
   },
