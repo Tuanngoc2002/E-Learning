@@ -3,6 +3,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FiUsers, FiBook, FiDollarSign, FiCalendar, FiTrendingUp, FiSearch, FiDownload, FiFilter } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface EnrollmentRecord {
   id: number;
@@ -173,7 +181,7 @@ const AdminEnrollmentsPage = () => {
   }
 
   return (
-    <div className="p-6">
+    <div>
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
@@ -190,7 +198,7 @@ const AdminEnrollmentsPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <div className="flex items-center">
             <FiBook className="w-8 h-8 text-blue-600 mr-4" />
@@ -254,27 +262,31 @@ const AdminEnrollmentsPage = () => {
           <div className="flex-1 min-w-64">
             <div className="relative">
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
+              <Input
                 type="text"
                 placeholder="Tìm kiếm theo tên học viên, email, hoặc khóa học..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="pl-10 pr-4"
               />
             </div>
           </div>
           
-          <select
+          <Select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            onValueChange={setStatusFilter}
           >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="active">Đang hoạt động</option>
-            <option value="completed">Đã hoàn thành</option>
-            <option value="paused">Đã tạm dừng</option>
-            <option value="cancelled">Đã hủy</option>
-          </select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Tất cả trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tất cả trạng thái</SelectItem>
+              <SelectItem value="active">Đang hoạt động</SelectItem>
+              <SelectItem value="completed">Đã hoàn thành</SelectItem>
+              <SelectItem value="paused">Đã tạm dừng</SelectItem>
+              <SelectItem value="cancelled">Đã hủy</SelectItem>
+            </SelectContent>
+          </Select>
 
           <button
             type="submit"

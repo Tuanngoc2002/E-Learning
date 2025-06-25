@@ -4,6 +4,14 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiSave, FiArrowLeft } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CourseFormData {
   name: string;
@@ -97,18 +105,17 @@ const NewCoursePage = () => {
         )}
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                 Tên khóa học *
               </label>
-              <input
+              <Input
                 type="text"
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
                 disabled={isLoading}
                 placeholder="Nhập tên khóa học"
@@ -132,31 +139,32 @@ const NewCoursePage = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-2">
                   Độ khó *
                 </label>
-                <select
-                  id="difficulty"
-                  name="difficulty"
+                <Select
                   value={formData.difficulty}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, difficulty: value }))}
                   disabled={isLoading}
                 >
-                  <option value="easy">Dễ</option>
-                  <option value="medium">Trung bình</option>
-                  <option value="hard">Khó</option>
-                </select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Chọn độ khó" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="easy">Dễ</SelectItem>
+                    <SelectItem value="medium">Trung bình</SelectItem>
+                    <SelectItem value="hard">Khó</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
                 <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
                   Giá (USD)
                 </label>
-                <input
+                <Input
                   type="number"
                   id="price"
                   name="price"
@@ -164,7 +172,6 @@ const NewCoursePage = () => {
                   onChange={handleInputChange}
                   min="0"
                   step="0.01"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={isLoading}
                   placeholder="Để trống để làm khóa học miễn phí"
                 />

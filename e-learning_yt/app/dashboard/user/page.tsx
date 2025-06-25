@@ -52,7 +52,7 @@ const UserDashboard = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map((stat, index) => (
           <div key={index} className="bg-white rounded-lg shadow-sm border p-6">
             <div className="flex items-center justify-between">
@@ -91,7 +91,7 @@ const UserDashboard = () => {
       </div>
 
       {/* Current Courses & Recommendations */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Continue Learning */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">

@@ -417,7 +417,7 @@ const UserCoursesPage = () => {
         )}
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center">
               <FiBook className="w-8 h-8 text-blue-600 mr-4" />
@@ -500,7 +500,7 @@ const UserCoursesPage = () => {
 
         {/* Course Content */}
         {activeTab === 'enrolled' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredEnrolledCourses.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <div className="text-gray-500 mb-4">
@@ -573,7 +573,7 @@ const UserCoursesPage = () => {
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-3xl font-semibold text-gray-900">📚 Lộ trình học tập của bạn</h2>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   <span className="text-sm text-gray-700">Đã hoàn thành</span>
@@ -604,7 +604,7 @@ const UserCoursesPage = () => {
                 </button>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {roadmap.flatMap(root => getAllPathsFromRootToLeaf(root)).map(renderHorizontalPath)}
               </div>
             )}
@@ -613,7 +613,7 @@ const UserCoursesPage = () => {
         )}
 
         {activeTab === 'available' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredAvailableCourses.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <div className="text-gray-500">

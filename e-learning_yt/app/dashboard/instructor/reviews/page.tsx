@@ -180,7 +180,7 @@ export default function InstructorReviewsPage() {
 
         {/* Stats Overview */}
         {Object.keys(groupedReviews).length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
             <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200/50">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">

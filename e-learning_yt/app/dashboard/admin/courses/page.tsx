@@ -4,6 +4,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiEye, FiEyeOff, FiUsers, FiDollarSign, FiBook } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from '@/components/ui/input';
 
 interface Course {
   id: number;
@@ -195,36 +203,38 @@ const AdminCoursesPage = () => {
             <div className="flex-1 min-w-64">
               <div className="relative">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
+                <Input
                   type="text"
                   placeholder="Tìm kiếm khóa học theo tên..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full pl-10 pr-4"
                 />
               </div>
             </div>
             
-            <select
-              value={filterDifficulty}
-              onChange={(e) => setFilterDifficulty(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="all">Tất cả độ khó</option>
-              <option value="easy">Dễ</option>
-              <option value="medium">Trung bình</option>
-              <option value="hard">Khó</option>
-            </select>
+            <Select value={filterDifficulty} onValueChange={setFilterDifficulty}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Tất cả độ khó" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả độ khó</SelectItem>
+                <SelectItem value="easy">Dễ</SelectItem>
+                <SelectItem value="medium">Trung bình</SelectItem>
+                <SelectItem value="hard">Khó</SelectItem>
+              </SelectContent>
+            </Select>
 
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="all">Tất cả trạng thái</option>
-              <option value="published">Xuất bản</option>
-              <option value="draft">Nháp</option>
-            </select>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Tất cả trạng thái" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                <SelectItem value="published">Xuất bản</SelectItem>
+                <SelectItem value="draft">Nháp</SelectItem>
+              </SelectContent>
+            </Select>
 
             <button
               type="submit"
@@ -236,7 +246,7 @@ const AdminCoursesPage = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center">
               <FiBook className="w-8 h-8 text-blue-600 mr-4" />

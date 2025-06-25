@@ -83,7 +83,7 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
         {/* Content */}
         <div className="p-6">
           {enrollmentStep === 'details' && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Course Info */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">{course.name}</h3>
@@ -177,7 +177,7 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
           )}
 
           {enrollmentStep === 'payment' && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Payment Summary */}
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h4 className="font-medium text-gray-900 mb-2">Payment Summary</h4>
@@ -250,7 +250,7 @@ const CourseEnrollmentModal: React.FC<CourseEnrollmentModalProps> = ({
           )}
 
           {enrollmentStep === 'success' && (
-            <div className="text-center space-y-6">
+            <div className="text-center space-y-4">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                 <FiCheck className="w-8 h-8 text-green-600" />
               </div>

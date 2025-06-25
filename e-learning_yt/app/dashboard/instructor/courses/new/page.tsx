@@ -383,7 +383,7 @@ export default function CreateCoursePage() {
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
             <h2 className="text-xl font-semibold text-slate-800 mb-6">Thông Tin Khóa Học</h2>
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div className="col-span-full">
                 <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
                   Tên Khóa Học <span className="text-red-500">*</span>
@@ -489,7 +489,7 @@ export default function CreateCoursePage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {formData.lessons.map((lesson, index) => (
                 <div key={index} className="bg-gradient-to-br from-slate-50 to-blue-50 p-6 rounded-xl border border-slate-200 hover:border-blue-200 transition-all shadow-sm hover:shadow-md">
                   <div className="flex justify-between items-center mb-4">
@@ -564,7 +564,7 @@ export default function CreateCoursePage() {
             {formData.lessons.length === 0 && (
               <div className="text-center py-12 text-slate-500">
                 <FiImage className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Chưa có bài học nào. Nhấn "Thêm Bài Học" để bắt đầu.</p>
+                <p>Chưa có bài học nào. Nhấn &quot;Thêm Bài Học&quot; để bắt đầu.</p>
               </div>
             )}
           </div>

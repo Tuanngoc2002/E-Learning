@@ -96,7 +96,7 @@ export default function LoginPage() {
           <h1 className="text-4xl font-bold text-white mb-6">Welcome to E-Learning Platform</h1>
           <p className="text-blue-100 text-lg mb-8">Expand your knowledge with our comprehensive online courses.</p>
           
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="flex items-center text-white">
               <div className="w-10 h-10 rounded-full bg-blue-500/30 flex items-center justify-center mr-4">
                 <FiBook className="w-5 h-5" />
@@ -131,7 +131,7 @@ export default function LoginPage() {
             <p className="text-gray-600">Continue your learning journey</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email address

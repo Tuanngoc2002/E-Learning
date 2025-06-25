@@ -153,7 +153,7 @@ const InstructorDashboard = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -229,7 +229,7 @@ const InstructorDashboard = () => {
       </div>
 
       {/* Recent Courses */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Khóa học gần đây</h3>
@@ -287,7 +287,7 @@ const InstructorDashboard = () => {
         {/* Performance Overview */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Tổng quan hiệu suất</h3>
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
               <div className="flex justify-between text-sm text-gray-600 mb-2">
                 <span>Hoàn thành khóa học</span>

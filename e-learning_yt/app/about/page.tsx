@@ -55,7 +55,7 @@ const AboutPage = () => {
                 className="object-cover"
               />
             </div>
-            <div className="space-y-6">
+            <div className="space-y-4">
               <h2 className="text-4xl font-bold text-gray-900 leading-tight">
                 Sứ mệnh: Nâng cao thông qua giáo dục
               </h2>

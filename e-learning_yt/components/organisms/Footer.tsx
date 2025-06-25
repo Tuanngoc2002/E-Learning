@@ -21,7 +21,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-gray-800">
             
             {/* Company Info */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <div className="relative w-12 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 p-0.5">
                   <div className="w-full h-full rounded-xl bg-white flex items-center justify-center">
@@ -81,7 +81,7 @@ const Footer = () => {
             </div>
 
             {/* Popular Courses */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <h3 className="text-xl font-bold text-white mb-6 relative">
                 Popular Courses
                 <div className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></div>
@@ -112,7 +112,7 @@ const Footer = () => {
             </div>
 
             {/* Quick Links */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <h3 className="text-xl font-bold text-white mb-6 relative">
                 Quick Links
                 <div className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></div>
@@ -143,7 +143,7 @@ const Footer = () => {
             </div>
 
             {/* Newsletter */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <h3 className="text-xl font-bold text-white mb-6 relative">
                 Stay Updated
                 <div className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></div>
@@ -190,7 +190,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-gray-400 text-sm">
+            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 text-gray-400 text-sm">
               <p>© 2025 EduLearn. All rights reserved.</p>
               <div className="flex items-center space-x-4">
                 <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>

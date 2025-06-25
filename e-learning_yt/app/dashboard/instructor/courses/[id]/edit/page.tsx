@@ -7,6 +7,14 @@ import { useAuth } from '@/hooks/useAuth'
 import { courseService } from '@/services/courseService'
 import { lessonService } from '@/services/lessonService'
 import { Course, Lesson } from '@/types/course'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface CourseFormData {
   name: string
@@ -49,18 +57,12 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
           organizationID: course.organizationID,
         })
 
-        // Set lessons from course data if available
         if (course.lessons && course.lessons.length > 0) {
-          console.log('📚 Setting lessons from course data:', course.lessons)
           setLessons(course.lessons)
         } else {
-          // Fallback to fetching lessons separately if not included in course data
           if (jwt) {
             try {
-              console.log('🔍 Fetching lessons for course:', params.id)
               const courseLessons = await lessonService.getLessonsByCourseId(parseInt(params.id), jwt)
-              console.log('📚 Fetched lessons with IDs:', courseLessons.map(l => `${l.id} (${l.title})`))
-              console.log('📚 Full lessons data:', courseLessons)
               setLessons(courseLessons)
             } catch (lessonError) {
               console.warn('Could not fetch lessons:', lessonError)
@@ -270,19 +272,18 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
 
           {activeTab === 'course' ? (
             <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="col-span-2">
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                     Course Name
                   </label>
-                  <input
+                  <Input
                     type="text"
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
                     placeholder="Enter course name"
                   />
                 </div>
@@ -307,25 +308,28 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                   <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
                     Difficulty Level
                   </label>
-                  <select
-                    id="difficulty"
-                    name="difficulty"
+                  <Select
                     value={formData.difficulty}
-                    onChange={handleChange}
-                    required
-                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                    onValueChange={(value: 'easy' | 'medium' | 'hard') => 
+                      setFormData(prev => ({ ...prev, difficulty: value }))
+                    }
                   >
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                  </select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select difficulty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="easy">Easy</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
                     Price ($)
                   </label>
-                  <input
+                  <Input
                     type="number"
                     id="price"
                     name="price"
@@ -334,7 +338,6 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                     required
                     min="0"
                     step="0.01"
-                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
                     placeholder="Enter course price"
                   />
                 </div>
@@ -368,7 +371,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
               </div>
             </form>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-medium text-gray-900">Course Lessons</h2>
                 <div className="flex space-x-3">
@@ -423,11 +426,10 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Lesson Title
                           </label>
-                          <input
+                          <Input
                             type="text"
                             value={lesson.title}
                             onChange={(e) => handleLessonChange(index, 'title', e.target.value)}
-                            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
                             placeholder="Enter lesson title"
                           />
                         </div>
@@ -449,11 +451,10 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Video URL
                           </label>
-                          <input
+                          <Input
                             type="text"
                             value={lesson.videoUrl || ''}
                             onChange={(e) => handleLessonChange(index, 'videoUrl', e.target.value)}
-                            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
                             placeholder="Enter YouTube video URL"
                           />
                         </div>

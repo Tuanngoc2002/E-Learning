@@ -177,7 +177,7 @@ const CourseComments = ({ courseId }: CourseCommentsProps) => {
       </form>
 
       {/* Comments List */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         {comments.map((comment) => (
           <div key={comment.id} className="border-b border-gray-200 pb-6 last:border-0">
             <div className="flex items-start space-x-4">

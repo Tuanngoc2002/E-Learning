@@ -7,6 +7,14 @@ import { useAuth } from '@/hooks/useAuth'
 import { courseService } from '@/services/courseService'
 import { lessonService } from '@/services/lessonService'
 import { Course, Lesson } from '@/types/course'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface CourseFormData {
   name: string
@@ -148,18 +156,17 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
 
           {activeTab === 'course' ? (
             <div className="space-y-8">
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="col-span-2">
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                     Course Name
                   </label>
-                  <input
+                  <Input
                     type="text"
                     id="name"
                     name="name"
                     value={formData.name}
                     readOnly
-                    className="block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm"
                   />
                 </div>
 
@@ -180,49 +187,48 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                   <label htmlFor="prestige" className="block text-sm font-medium text-gray-700 mb-1">
                     Prestige
                   </label>
-                  <input
+                  <Input
                     type="text"
                     id="prestige"
                     name="prestige"
                     value={formData.prestige[0]?.name || ''}
                     readOnly
-                    className="block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm"
+                    className="bg-gray-50"
                   />
                 </div>
                 <div>
                   <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
                     Difficulty Level
                   </label>
-                  <select
-                    id="difficulty"
-                    name="difficulty"
-                    value={formData.difficulty}
-                    disabled
-                    className="block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm"
-                  >
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                  </select>
+                  <Select value={formData.difficulty} disabled>
+                    <SelectTrigger className="bg-gray-50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="easy">Easy</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
                     Price ($)
                   </label>
-                  <input
+                  <Input
                     type="number"
                     id="price"
                     name="price"
                     value={formData.price}
                     readOnly
-                    className="block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm"
+                    className="bg-gray-50"
                   />
                 </div>
               </div>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-medium text-gray-900">Course Lessons</h2>
               </div>
@@ -247,11 +253,10 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Lesson Title
                           </label>
-                          <input
+                          <Input
                             type="text"
                             value={lesson.title}
                             readOnly
-                            className="block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm"
                           />
                         </div>
 
@@ -271,11 +276,11 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                           <label className="block text-sm font-medium text-gray-700 mb-1">
                             Video URL
                           </label>
-                          <input
+                          <Input
                             type="text"
                             value={lesson.videoUrl || ''}
                             readOnly
-                            className="block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm"
+                            className="bg-gray-50"
                           />
                         </div>
 

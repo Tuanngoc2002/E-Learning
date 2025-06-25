@@ -3,6 +3,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { FiUsers, FiBook, FiDollarSign, FiTrendingUp, FiEye, FiDownload, FiCalendar, FiStar } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AnalyticsData {
   totalUsers: number;
@@ -179,16 +186,20 @@ const InstructorAnalyticsPage = () => {
           <p className="text-gray-600 mt-2">Track your course performance and student engagement</p>
         </div>
         <div className="flex items-center space-x-4">
-          <select
+          <Select
             value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value as any)}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+            onValueChange={(value: '7d' | '30d' | '90d' | '1y') => setTimeRange(value)}
           >
-            <option value="7d">Last 7 days</option>
-            <option value="30d">Last 30 days</option>
-            <option value="90d">Last 90 days</option>
-            <option value="1y">Last year</option>
-          </select>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Select time range" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7d">Last 7 days</SelectItem>
+              <SelectItem value="30d">Last 30 days</SelectItem>
+              <SelectItem value="90d">Last 90 days</SelectItem>
+              <SelectItem value="1y">Last year</SelectItem>
+            </SelectContent>
+          </Select>
           <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
             <FiDownload className="w-4 h-4 mr-2" />
             Export Report
@@ -197,7 +208,7 @@ const InstructorAnalyticsPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <div className="flex items-center justify-between">
             <div>
@@ -252,7 +263,7 @@ const InstructorAnalyticsPage = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
         {/* Monthly Enrollments Chart */}
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Monthly Enrollments</h3>
@@ -299,7 +310,7 @@ const InstructorAnalyticsPage = () => {
       </div>
 
       {/* Course Performance & Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Course Performance */}
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Course Performance</h3>

@@ -80,7 +80,7 @@ export default function RegisterPage() {
           <h1 className="text-4xl font-bold text-white mb-6">Join Our E-Learning Platform</h1>
           <p className="text-blue-100 text-lg mb-8">Start your learning journey today with our comprehensive online courses.</p>
           
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="flex items-center text-white">
               <div className="w-10 h-10 rounded-full bg-blue-500/30 flex items-center justify-center mr-4">
                 <FiBook className="w-5 h-5" />
@@ -114,7 +114,7 @@ export default function RegisterPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h2>
             <p className="text-gray-600">Join thousands of learners worldwide</p>
           </div>
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
                 Username

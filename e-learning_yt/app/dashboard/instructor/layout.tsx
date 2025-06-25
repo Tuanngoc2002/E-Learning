@@ -150,7 +150,7 @@ const InstructorLayout = ({ children }: { children: React.ReactNode }) => {
         {/* Main Content */}
         <div className="flex-1">
           {/* Header */}
-          <header className="bg-white shadow-sm border-b px-6 py-4 max-h-[90px]">
+          <header className="bg-white shadow-sm border-b px-6 py-4 h-[90px] max-h-[90px]">
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Instructor Dashboard</h1>

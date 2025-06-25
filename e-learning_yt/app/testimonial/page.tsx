@@ -71,7 +71,7 @@ const TestimonialPage = () => {
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-            <div className="text-white space-y-6">
+            <div className="text-white space-y-4">
               <div className="flex text-yellow-400 mb-4">
                 {[...Array(5)].map((_, index) => (
                   <FaStar key={index} className="w-6 h-6" />
@@ -175,7 +175,7 @@ const TestimonialPage = () => {
               <p className="mb-8 text-lg text-blue-100 max-w-2xl mx-auto">
                 Join our community of successful learners and take the first step towards your dream career.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                 <Link 
                   href="/courses"
                   className="bg-white text-indigo-600 py-4 px-8 rounded-xl font-semibold hover:bg-blue-50 transition duration-300"

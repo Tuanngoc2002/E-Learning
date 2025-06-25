@@ -96,7 +96,7 @@ const ProfilePage = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="username" className="block text-gray-700 font-semibold mb-1">
               Họ và tên

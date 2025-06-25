@@ -4,6 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { FiSave, FiArrowLeft } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Role {
   id: number;
@@ -181,17 +189,17 @@ const EditUserPage = () => {
         )}
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                 Username *
               </label>
-              <input
+              <Input
                 type="text"
                 id="username"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1"
                 required
                 disabled={isLoading}
               />
@@ -201,12 +209,12 @@ const EditUserPage = () => {
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email *
               </label>
-              <input
+              <Input
                 type="email"
                 id="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1"
                 required
                 disabled={isLoading}
               />
@@ -216,33 +224,34 @@ const EditUserPage = () => {
               <label htmlFor="role" className="block text-sm font-medium text-gray-700">
                 Role *
               </label>
-              <select
-                id="role"
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: Number(e.target.value) })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                required
+              <Select
+                value={formData.role.toString()}
+                onValueChange={(value) => setFormData({ ...formData, role: Number(value) })}
                 disabled={isLoading}
               >
-                <option value={0}>Select a role</option>
-                {roles.map((role) => (
-                  <option key={role.id} value={role.id}>
-                    {role.name} {role.description && `- ${role.description}`}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roles.map((role) => (
+                    <SelectItem key={role.id} value={role.id.toString()}>
+                      {role.name} {role.description && `- ${role.description}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
               <label htmlFor="organizationID" className="block text-sm font-medium text-gray-700">
                 Organization ID
               </label>
-              <input
+              <Input
                 type="text"
                 id="organizationID"
                 value={formData.organizationID}
                 onChange={(e) => setFormData({ ...formData, organizationID: e.target.value })}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1"
                 disabled={isLoading}
               />
             </div>

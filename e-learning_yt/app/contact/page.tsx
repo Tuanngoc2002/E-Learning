@@ -24,7 +24,7 @@ const ContactPage = () => {
             <div className="md:w-1/3">
               <div className="bg-white p-8 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-6">Thông tin liên hệ</h2>
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div className="flex items-start">
                     <FiMail className="text-blue-600 text-xl mt-1" />
                     <div className="ml-4">
@@ -57,8 +57,8 @@ const ContactPage = () => {
             <div className="md:w-2/3">
               <div className="bg-white p-8 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-6">Liên hệ với chúng tôi</h2>
-                <form className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Tên

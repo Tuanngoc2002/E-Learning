@@ -169,7 +169,7 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
       </div>
 
       {/* Enhanced Pagination */}
-      <div className="flex justify-center items-center gap-6 mb-16">
+      <div className="flex justify-center items-center gap-4 mb-16">
         <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={!hasPreviousPage}
