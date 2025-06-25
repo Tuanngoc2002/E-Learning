@@ -329,10 +329,9 @@ const CourseDetailPage = () => {
                   <img
                     src={
                       course.image && course.image[0]
-                        ? `${process.env.NEXT_PUBLIC_API_URL}${
-                            course.image[0].formats?.medium?.url ||
-                            course.image[0].url
-                          }`
+                        ? `${process.env.NEXT_PUBLIC_API_URL}${course.image[0].formats?.medium?.url ||
+                        course.image[0].url
+                        }`
                         : "/images/course-placeholder.jpg"
                     }
                     alt={course.name}
@@ -427,41 +426,37 @@ const CourseDetailPage = () => {
                       <div className="bg-green-100 text-green-800 py-3 px-4 rounded-lg mb-4">
                         <div className="flex items-center justify-center">
                           <FaCheck className="mr-2" />
-                          <span>Enrolled</span>
+                          <span>Đã đăng ký</span>
                         </div>
                       </div>
                     ) : !isAuthenticated ? (
-                      <div className="text-center">
-                        <p className="text-gray-600 mb-3">
-                          Vui lòng đăng nhập để đăng ký khóa học
-                        </p>
-                        <button
-                          onClick={() =>
-                            router.push("/login?redirect=/courses/" + courseId)
-                          }
-                          className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
-                        >
-                          Đăng nhập
-                        </button>
-                      </div>
-                    ) : (
+                    <div className="text-center">
+                      <p className="text-gray-600 mb-3">Vui lòng đăng nhập để đăng ký khóa học</p>
                       <button
-                        onClick={handleEnrollClick}
-                        disabled={enrollmentLoading}
-                        className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 disabled:bg-indigo-400"
+                        onClick={() => router.push('/login?redirect=/courses/' + courseId)}
+                        className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
                       >
-                        {enrollmentLoading ? "Processing..." : "Enroll Now"}
+                        Đăng nhập
                       </button>
+                    </div>
+                    ) : (
+                    <button
+                      onClick={handleEnrollClick}
+                      disabled={enrollmentLoading}
+                      className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 disabled:bg-indigo-400"
+                    >
+                      {enrollmentLoading ? "Đang xử lý..." : "Đăng ký ngay"}
+                    </button>
                     )}
                   </div>
                   <div className="border-t border-gray-200 pt-4">
                     <h3 className="font-semibold mb-2">
-                      This course includes:
+                      Khóa học bao gồm:
                     </h3>
                     <ul className="space-y-2">
                       <li className="flex items-center">
                         <FaPlay className="text-indigo-600 mr-2" />
-                        <span>{lessons.length} lessons</span>
+                        <span>{lessons.length} bài học</span>
                       </li>
                       <li className="flex items-center">
                         <FaClock className="text-indigo-600 mr-2" />
@@ -470,12 +465,12 @@ const CourseDetailPage = () => {
                             (acc, lesson) => acc + (lesson.duration || 0),
                             0
                           )}{" "}
-                          minutes
+                          phút
                         </span>
                       </li>
                       <li className="flex items-center">
                         <FaUsers className="text-indigo-600 mr-2" />
-                        <span>Full lifetime access</span>
+                        <span>Truy cập trọn đời</span>
                       </li>
                     </ul>
                   </div>
@@ -486,40 +481,37 @@ const CourseDetailPage = () => {
 
           {/* Course Curriculum */}
           <div className="mt-16">
-            <h2 className="text-2xl font-bold mb-6">Course Curriculum</h2>
+            <h2 className="text-2xl font-bold mb-6">Khóa học bao gồm</h2>
 
             {/* Tabs */}
             <div className="border-b border-gray-200 mb-6">
               <nav className="flex space-x-8" aria-label="Tabs">
                 <button
                   onClick={() => setActiveTab("lessons")}
-                  className={`${
-                    activeTab === "lessons"
+                  className={`${activeTab === "lessons"
                       ? "border-indigo-500 text-indigo-600"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                 >
-                  Lessons
+                  Bài học
                 </button>
                 <button
                   onClick={() => setActiveTab("comments")}
-                  className={`${
-                    activeTab === "comments"
+                  className={`${activeTab === "comments"
                       ? "border-indigo-500 text-indigo-600"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                 >
-                  Comments
+                  Bình luận
                 </button>
                 <button
                   onClick={() => setActiveTab("ratings")}
-                  className={`${
-                    activeTab === "ratings"
+                  className={`${activeTab === "ratings"
                       ? "border-indigo-500 text-indigo-600"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                    } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
                 >
-                  Ratings
+                  Đánh giá
                 </button>
               </nav>
             </div>
@@ -544,7 +536,7 @@ const CourseDetailPage = () => {
                           <div>
                             <h3 className="font-medium">{lesson.title}</h3>
                             <p className="text-sm text-gray-500">
-                              {lesson.duration || 0} minutes
+                              {lesson.duration || 0} phút
                             </p>
                           </div>
                         </div>
@@ -562,7 +554,7 @@ const CourseDetailPage = () => {
                             </button>
                           ) : lesson.isFree ? (
                             <span className="text-green-500 text-sm font-medium">
-                              Free
+                              Miễn phí
                             </span>
                           ) : (
                             <FaLock className="text-gray-400" />
@@ -596,7 +588,7 @@ const CourseDetailPage = () => {
                             }
                             className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
                           >
-                            Take Exam
+                            Làm bài kiểm tra
                           </button>
                         </div>
                       </div>
@@ -614,11 +606,11 @@ const CourseDetailPage = () => {
                           <div className="text-4xl font-bold text-indigo-600 mr-4">
                             {course.ratings && course.ratings.length > 0
                               ? (
-                                  course.ratings.reduce(
-                                    (acc: number, rating) => acc + rating.stars,
-                                    0
-                                  ) / course.ratings.length
-                                ).toFixed(1)
+                                course.ratings.reduce(
+                                  (acc: number, rating) => acc + rating.stars,
+                                  0
+                                ) / course.ratings.length
+                              ).toFixed(1)
                               : "0.0"}
                           </div>
                           <div>
@@ -626,20 +618,19 @@ const CourseDetailPage = () => {
                               {[...Array(5)].map((_, index) => (
                                 <FaStar
                                   key={index}
-                                  className={`w-5 h-5 ${
-                                    index <
-                                    (course.ratings && course.ratings.length > 0
-                                      ? Math.round(
+                                  className={`w-5 h-5 ${index <
+                                      (course.ratings && course.ratings.length > 0
+                                        ? Math.round(
                                           course.ratings.reduce(
                                             (acc: number, rating) =>
                                               acc + rating.stars,
                                             0
                                           ) / course.ratings.length
                                         )
-                                      : 0)
+                                        : 0)
                                       ? "text-yellow-400"
                                       : "text-gray-300"
-                                  }`}
+                                    }`}
                                 />
                               ))}
                             </div>
@@ -655,7 +646,7 @@ const CourseDetailPage = () => {
                     {isEnrolled && (
                       <div className="bg-white rounded-lg p-6 border border-gray-200">
                         <h3 className="text-lg font-semibold mb-4">
-                          Rate this course
+                          Đánh giá khóa học
                         </h3>
                         {ratingError && (
                           <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -670,11 +661,10 @@ const CourseDetailPage = () => {
                               className="focus:outline-none"
                             >
                               <FaStar
-                                className={`w-6 h-6 ${
-                                  star <= (newRating || 0)
+                                className={`w-6 h-6 ${star <= (newRating || 0)
                                     ? "text-yellow-400"
                                     : "text-gray-300"
-                                }`}
+                                  }`}
                               />
                             </button>
                           ))}
@@ -684,14 +674,14 @@ const CourseDetailPage = () => {
                           onChange={(e) => setNewRatingComment(e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                           rows={3}
-                          placeholder="Write your review..."
+                          placeholder="Viết đánh giá..."
                         ></textarea>
                         <button
                           onClick={handleAddRating}
                           disabled={!newRating}
                           className="mt-2 bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300 disabled:bg-indigo-400"
                         >
-                          Submit Rating
+                          Gửi đánh giá
                         </button>
                       </div>
                     )}
@@ -700,7 +690,7 @@ const CourseDetailPage = () => {
                     <div className="space-y-4">
                       {course.ratings?.length === 0 ? (
                         <div className="text-gray-500 text-center">
-                          No ratings yet
+                          Chưa có đánh giá
                         </div>
                       ) : (
                         course.ratings?.map((rating) => (
@@ -732,11 +722,10 @@ const CourseDetailPage = () => {
                                     {[...Array(5)].map((_, index) => (
                                       <FaStar
                                         key={index}
-                                        className={`w-4 h-4 ${
-                                          index < rating.stars
+                                        className={`w-4 h-4 ${index < rating.stars
                                             ? "text-yellow-400"
                                             : "text-gray-300"
-                                        }`}
+                                          }`}
                                       />
                                     ))}
                                   </div>
@@ -817,26 +806,26 @@ const CourseDetailPage = () => {
                                   </div>
                                   {user?.id?.toString() ===
                                     comment.user.id.toString() && (
-                                    <div className="flex space-x-2">
-                                      <button
-                                        onClick={() => {
-                                          setEditingComment(comment.id);
-                                          setEditContent(comment.content);
-                                        }}
-                                        className="text-indigo-600 hover:text-indigo-800"
-                                      >
-                                        Edit
-                                      </button>
-                                      <button
-                                        onClick={() =>
-                                          deleteComment(comment.id)
-                                        }
-                                        className="text-red-600 hover:text-red-800"
-                                      >
-                                        Delete
-                                      </button>
-                                    </div>
-                                  )}
+                                      <div className="flex space-x-2">
+                                        <button
+                                          onClick={() => {
+                                            setEditingComment(comment.id);
+                                            setEditContent(comment.content);
+                                          }}
+                                          className="text-indigo-600 hover:text-indigo-800"
+                                        >
+                                          Edit
+                                        </button>
+                                        <button
+                                          onClick={() =>
+                                            deleteComment(comment.id)
+                                          }
+                                          className="text-red-600 hover:text-red-800"
+                                        >
+                                          Delete
+                                        </button>
+                                      </div>
+                                    )}
                                 </div>
                                 {editingComment === comment.id ? (
                                   <div className="mt-2">
@@ -947,30 +936,30 @@ const CourseDetailPage = () => {
                                                 </div>
                                                 {user?.id?.toString() ===
                                                   reply.user.id.toString() && (
-                                                  <div className="flex space-x-2">
-                                                    <button
-                                                      onClick={() => {
-                                                        setEditingComment(
-                                                          reply.id
-                                                        );
-                                                        setEditContent(
-                                                          reply.content
-                                                        );
-                                                      }}
-                                                      className="text-indigo-600 hover:text-indigo-800 text-sm"
-                                                    >
-                                                      Edit
-                                                    </button>
-                                                    <button
-                                                      onClick={() =>
-                                                        deleteComment(reply.id)
-                                                      }
-                                                      className="text-red-600 hover:text-red-800 text-sm"
-                                                    >
-                                                      Delete
-                                                    </button>
-                                                  </div>
-                                                )}
+                                                    <div className="flex space-x-2">
+                                                      <button
+                                                        onClick={() => {
+                                                          setEditingComment(
+                                                            reply.id
+                                                          );
+                                                          setEditContent(
+                                                            reply.content
+                                                          );
+                                                        }}
+                                                        className="text-indigo-600 hover:text-indigo-800 text-sm"
+                                                      >
+                                                        Edit
+                                                      </button>
+                                                      <button
+                                                        onClick={() =>
+                                                          deleteComment(reply.id)
+                                                        }
+                                                        className="text-red-600 hover:text-red-800 text-sm"
+                                                      >
+                                                        Delete
+                                                      </button>
+                                                    </div>
+                                                  )}
                                               </div>
                                               {editingComment === reply.id ? (
                                                 <div className="mt-2">
