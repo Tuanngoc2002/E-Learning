@@ -7,6 +7,7 @@ import PageHero from '@/components/organisms/PageHero';
 import { useCourses } from '@/hooks/useCourses';
 import { useState } from 'react';
 import CourseList from '@/components/organisms/CourseList';
+import { Input } from '@/components/ui/input';
 
 const categories = [
   "All Categories",
@@ -134,24 +135,24 @@ const CoursesPage = () => {
                 </label>
                 <div className="flex items-center gap-4">
                   <div className="flex-1">
-                    <input
+                    <Input
                       type="number"
                       name="min"
                       value={priceRange.min}
                       onChange={handlePriceChange}
                       placeholder="Min"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2"
                     />
                   </div>
                   <span className="text-gray-500">to</span>
                   <div className="flex-1">
-                    <input
+                    <Input
                       type="number"
                       name="max"
                       value={priceRange.max}
                       onChange={handlePriceChange}
                       placeholder="Max"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      className="w-full px-3 py-2"
                     />
                   </div>
                 </div>

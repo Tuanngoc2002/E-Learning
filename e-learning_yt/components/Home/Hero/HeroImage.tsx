@@ -9,9 +9,9 @@ const HeroImage = () => {
       <div
         data-aos="fade-left"
         data-aos-delay="1050"
-        className="hidden lg:block overflow-hidden"
+        className="hidden overflow-hidden flex-shrink-0 lg:flex justify-end items-end w-full h-full translate-x-10"
       >
-        <Image src="/images/hero.png" width={800} height={600} alt="Hero" />
+        <Image src="/images/hero.png" width={800} height={600} alt="Hero" className="object-contain h-[600px] w-auto" />
       </div>
     </Tilt>
   );

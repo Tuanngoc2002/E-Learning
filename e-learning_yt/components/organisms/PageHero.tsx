@@ -11,8 +11,8 @@ interface PageHeroProps {
 
 const PageHero = ({ title, description, currentPage }: PageHeroProps) => {
   return (
-    <div className="w-full pt-[4vh] md:pt-[12vh] h-[50vh] bg-indigo-950">
-      <div className="flex justify-center flex-col w-4/5 h-full mx-auto">
+    <div className="w-full py-10 bg-indigo-950">
+      <div className="flex justify-center flex-col max-w-6xl h-full mx-auto">
         {/* Breadcrumb */}
         <div className="mb-8">
           <div className="flex items-center space-x-2 text-white text-opacity-60">

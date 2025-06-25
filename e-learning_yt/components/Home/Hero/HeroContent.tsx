@@ -6,7 +6,7 @@ const HeroContent = () => {
       {/* Title */}
       <h1
         data-aos="fade-right"
-        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold md:leading-[3rem] lg:leading-[3.5rem] xl:leading-[4rem] text-white"
+        className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-bold md:leading-[3rem] lg:leading-[3.5rem] xl:leading-[4rem] text-white"
       >
         Học lập trình miễn phí và đầy đủ với các khóa học chất lượng cao.
       </h1>
@@ -14,12 +14,12 @@ const HeroContent = () => {
       <p
         data-aos="fade-left"
         data-aos-delay="150"
-        className="mt-6 text-sm md:text-base text-white text-opacity-60"
+        className="mt-4 text-sm md:text-base text-white text-opacity-60"
       >
         Học lập trình miễn phí và đầy đủ với các khóa học chất lượng cao.
       </p>
       {/* Buttons */}
-      <div className="mt-8 flex items-center space-x-4">
+      <div className="mt-4 flex items-center space-x-4">
         <button
           data-aos="zoom-in"
           data-aos-delay="300"
@@ -36,7 +36,7 @@ const HeroContent = () => {
         </button>
       </div>
       {/* Stats */}
-      <div className="flex items-center flex-wrap space-x-16 mt-8">
+      <div className="flex items-center flex-wrap space-x-16 mt-4">
         <div data-aos="fade-up" data-aos-delay="600">
           <p className="md:text-xl lg:text-2xl text-base text-white font-bold">
             260+

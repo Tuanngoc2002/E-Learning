@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaStar, FaUsers, FaClock } from 'react-icons/fa';
+import { FaStar, FaUsers, FaClock, FaTag } from 'react-icons/fa';
 import { useCourses } from '@/hooks/useCourses';
 import { useState } from 'react';
 
@@ -58,8 +58,21 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
     minPrice,
     maxPrice
   });
-  console.log(courses);
-  // const imgUrl = process.env.NEXT_PUBLIC_API_URL + courses[0].image.url;
+  // coxnst imgUrl = process.env.NEXT_PUBLIC_API_URL + courses[0].image.url;
+
+  // Function to get difficulty badge style
+  const getDifficultyBadgeStyle = (difficulty: string) => {
+    switch (difficulty.toLowerCase()) {
+      case 'beginner':
+        return 'bg-green-100 text-green-700 border-green-200 shadow-green-50';
+      case 'intermediate':
+        return 'bg-yellow-100 text-yellow-700 border-yellow-200 shadow-yellow-50';
+      case 'advanced':
+        return 'bg-red-100 text-red-700 border-red-200 shadow-red-50';
+      default:
+        return 'bg-gray-100 text-gray-700 border-gray-200 shadow-gray-50';
+    }
+  };
 
   if (loading) {
     return (
@@ -85,82 +98,98 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
       {/* Course Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {courses.map((course) => (
-          <Link 
-            key={course.id} 
+          <Link
+            key={course.id}
             href={`/courses/${course.id}`}
-            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 transform hover:-translate-y-1"
+            className="group bg-white border border-gray-100 rounded-xl overflow-hidden transition-all duration-500 hover:border-indigo-200 hover:shadow-lg hover:-translate-y-2 relative transform"
           >
-            <div className="relative h-48">
+            <div className="relative h-48 overflow-hidden">
               <img
-                src={course.image && course.image[0] 
+                src={course.image && course.image[0]
                   ? `${process.env.NEXT_PUBLIC_API_URL}${course.image[0].formats?.medium?.url || course.image[0].url}`
                   : '/images/course-placeholder.jpg'}
                 alt={course.name}
                 width={500}
                 height={300}
-                className="object-cover w-full h-full"
+                className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
               />
-              <div className="absolute top-4 right-4 bg-white px-2 py-1 rounded text-sm font-semibold">
-                ${course.price}
+              {/* Enhanced Price Badge */}
+              <div className="absolute top-4 right-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm border border-white/20 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl">
+                <div className="flex items-center space-x-1">
+                  <FaTag className="w-3 h-3" />
+                  <span>${course.price}</span>
+                </div>
+              </div>
+              {/* Overlay effect on hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <h2 className="text-xl font-semibold mb-2 text-gray-800 group-hover:text-indigo-600 transition-colors duration-300">{course.name}</h2>
+                <p className="text-gray-500 text-sm group-hover:text-gray-600 transition-colors duration-300">by {course.instructor?.username || 'Unknown Instructor'}</p>
+              </div>
+              <div className="flex items-center justify-between text-sm text-gray-500">
+                <div className="flex items-center space-x-2 transition-colors duration-300 group-hover:text-indigo-600">
+                  <FaUsers className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-300" />
+                  <span>{course.lessons?.length || 0} lessons</span>
+                </div>
+                <div className="flex items-center space-x-2 transition-colors duration-300 group-hover:text-indigo-600">
+                  <FaClock className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-300" />
+                  <span>{course.lessons?.reduce((acc, lesson) => acc + (lesson.duration || 0), 0) || 0} mins</span>
+                </div>
+              </div>
+              <div className="pt-4 relative">
+                {/* Progress Border Container */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gray-100 overflow-hidden">
+                  {/* Animated Progress Bar */}
+                  <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-400 to-blue-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-out w-full shadow-sm"></div>
+                </div>
+                <div className="flex justify-between items-center">
+                  {/* Enhanced Level Badge */}
+                  <div className="flex items-center space-x-2">
+                  <span className={`text-sm font-semibold px-4 py-2 rounded-full border shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-md ${getDifficultyBadgeStyle(course.difficulty)}`}>
+                    Level: {course.difficulty}
+                  </span>
+                  <div className="flex items-center bg-gradient-to-r from-yellow-50 to-orange-50 px-4 py-2 rounded-full border border-yellow-200 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-md">
+                    <FaStar className="text-yellow-500 w-4 h-4 mr-1.5" />
+                    <span className="text-sm text-yellow-700 font-semibold">4.5</span>
+                  </div>
+                  </div>
+                  <span className="text-indigo-600 font-semibold text-sm group-hover:translate-x-2 transition-all duration-300 flex items-center space-x-1">
+                    <span>Learn More</span>
+                    <span className="transform group-hover:rotate-12 transition-transform duration-300">→</span>
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-indigo-600">{course.difficulty}</span>
-                <div className="flex items-center">
-                  <FaStar className="text-yellow-400 w-4 h-4 mr-1" />
-                  <span className="text-sm text-gray-600">4.5</span>
-                </div>
-              </div>
-              <h2 className="text-xl font-semibold mb-2">{course.name}</h2>
-              <p className="text-gray-600 text-sm mb-4">by {course.instructor?.username || 'Unknown Instructor'}</p>
-              <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                <div className="flex items-center">
-                  <FaUsers className="mr-2" />
-                  {course.lessons?.length || 0} lessons
-                </div>
-                <div className="flex items-center">
-                  <FaClock className="mr-2" />
-                  {course.lessons?.reduce((acc, lesson) => acc + (lesson.duration || 0), 0) || 0} mins
-                </div>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-gray-600">
-                  Level: {course.difficulty}
-                </span>
-                <span className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition duration-300">
-                  Learn More
-                </span>
-              </div>
-            </div>
+            {/* Animated border effect */}
+            <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-indigo-200 transition-all duration-300 pointer-events-none"></div>
           </Link>
         ))}
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center items-center gap-4 mb-16">
+      {/* Enhanced Pagination */}
+      <div className="flex justify-center items-center gap-6 mb-16">
         <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={!hasPreviousPage}
-          className={`px-4 py-2 rounded ${
-            hasPreviousPage
-              ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
+          className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${hasPreviousPage
+              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-1'
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            }`}
         >
           Previous
         </button>
-        <span className="text-gray-600">
+        <span className="text-gray-600 font-medium px-4 py-2 bg-gray-50 rounded-lg border">
           Page {pagination.page} of {pagination.pageCount}
         </span>
         <button
           onClick={() => setCurrentPage(prev => prev + 1)}
           disabled={!hasNextPage}
-          className={`px-4 py-2 rounded ${
-            hasNextPage
-              ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
+          className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${hasNextPage
+              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-1'
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            }`}
         >
           Next
         </button>
