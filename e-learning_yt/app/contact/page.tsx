@@ -6,7 +6,7 @@ import PageHero from '@/components/organisms/PageHero';
 
 const ContactPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       {/* Contact Hero Section */}
       <PageHero
         title="Liên hệ"

@@ -312,7 +312,7 @@ const CourseDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       <PageHero
         title={course.name}
         description={course.descriptions}

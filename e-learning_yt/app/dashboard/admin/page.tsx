@@ -234,7 +234,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       {/* Admin Header */}
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-6">

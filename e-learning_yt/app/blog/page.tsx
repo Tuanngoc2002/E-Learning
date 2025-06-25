@@ -36,7 +36,7 @@ const blogPosts = [
 
 const BlogPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       <PageHero
         title="Our Latest Blog Posts"
         description="Stay updated with the latest insights, tips, and trends in online education and e-learning technology."

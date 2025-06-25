@@ -150,7 +150,7 @@ const EditUserPage = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-2xl mx-auto">
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             User not found
@@ -161,7 +161,7 @@ const EditUserPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center mb-8">
           <button

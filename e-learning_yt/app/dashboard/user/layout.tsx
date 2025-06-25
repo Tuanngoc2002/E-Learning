@@ -73,12 +73,12 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       <div className="flex">
         {/* Sidebar */}
         <div className="w-64 min-h-screen bg-white shadow-lg border-r">
           {/* User Profile Section */}
-          <div className="p-6 border-b bg-gradient-to-r from-purple-600 to-pink-600">
+          <div className="px-6 flex items-center justify-start max-h-[90px] h-[90px] border-b bg-gradient-to-r from-purple-600 to-pink-600">
             <div className="flex items-center space-x-3">
               <div className="relative w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
                 <FiUser className="w-6 h-6 text-white" />
@@ -155,7 +155,7 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
         {/* Main Content */}
         <div className="flex-1">
           {/* Header */}
-          <header className="bg-white shadow-sm border-b px-6 py-4">
+          <header className="bg-white shadow-sm border-b px-6 py-4  max-h-[90px]">
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">My Learning Dashboard</h1>

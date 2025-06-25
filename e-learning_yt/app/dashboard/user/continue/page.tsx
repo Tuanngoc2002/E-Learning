@@ -103,7 +103,7 @@ export default function ContinueLearning() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <Link 
           href="/dashboard/user"

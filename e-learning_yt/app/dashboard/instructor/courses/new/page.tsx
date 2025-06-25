@@ -3,8 +3,18 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { FiSave, FiX, FiAlertCircle, FiUpload, FiImage } from 'react-icons/fi'
+import { FiSave, FiX, FiAlertCircle, FiUpload, FiImage, FiPlus } from 'react-icons/fi'
 import { useAuth } from '@/hooks/useAuth'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface CourseFormData {
   name: string
@@ -45,7 +55,7 @@ export default function CreateCoursePage() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
-  
+
   const [formData, setFormData] = useState<CourseFormData>({
     name: '',
     descriptions: '',
@@ -97,7 +107,7 @@ export default function CreateCoursePage() {
         setErrorMessage('Vui lòng chọn file ảnh hợp lệ')
         return
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setErrorMessage('Kích thước ảnh không được vượt quá 5MB')
@@ -105,7 +115,7 @@ export default function CreateCoursePage() {
       }
 
       setSelectedImage(file)
-      
+
       // Create preview
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -152,7 +162,7 @@ export default function CreateCoursePage() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
-      
+
       if (!apiUrl) {
         throw new Error('API URL is not configured')
       }
@@ -204,7 +214,7 @@ export default function CreateCoursePage() {
 
       console.log('✅ Course created successfully:', data)
       router.push('/dashboard/instructor')
-      
+
       // Reset form
       setFormData({
         name: '',
@@ -230,7 +240,7 @@ export default function CreateCoursePage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target
-    
+
     // Special handling for price to ensure it's a number
     if (name === 'price') {
       const numValue = parseFloat(value)
@@ -240,7 +250,7 @@ export default function CreateCoursePage() {
       }))
       return
     }
-    
+
     // Handle other fields
     setFormData((prev) => ({
       ...prev,
@@ -291,154 +301,164 @@ export default function CreateCoursePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Tạo Khóa Học Mới</h1>
-            <button
-              onClick={() => router.back()}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
-            >
-              <FiX className="w-5 h-5" /> Hủy
-            </button>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Tạo Khóa Học Mới
+          </h1>
+          <Button
+            onClick={() => router.back()}
+            className="bg-red-400 hover:bg-red-500 text-white"
+          >
+            <FiX className="w-5 h-5 mr-2" />
+            Huỷ
+          </Button>
+        </div>
 
-          {errorMessage && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-              <div className="flex items-start">
-                <FiAlertCircle className="mt-1 mr-2 flex-shrink-0 w-5 h-5" />
-                <div>
-                  <p className="font-medium">{errorMessage}</p>
-                </div>
+        {errorMessage && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl shadow-sm">
+            <div className="flex items-start">
+              <FiAlertCircle className="mt-1 mr-3 flex-shrink-0 w-5 h-5" />
+              <div>
+                <p className="font-medium">{errorMessage}</p>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Image Upload Section */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-medium text-gray-900">Ảnh Khóa Học</h2>
-              
-              {imagePreview ? (
-                <div className="relative inline-block">
-                  <img
-                    src={imagePreview}
-                    alt="Course preview"
-                    className="w-64 h-40 object-cover rounded-lg border border-gray-300"
-                  />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
-                  >
-                    <FiX className="w-4 h-4" />
-                  </button>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Image Upload Section */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+            <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center">
+              <FiImage className="w-6 h-6 mr-3 text-blue-600" />
+              Ảnh Khóa Học
+            </h2>
+
+            {imagePreview ? (
+              <div className="relative inline-block group">
+                <img
+                  src={imagePreview}
+                  alt="Course preview"
+                  className="w-80 h-48 object-cover rounded-xl border border-slate-200 shadow-sm transition-transform group-hover:scale-105"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-all shadow-lg hover:scale-110"
+                >
+                  <FiX className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-blue-200 rounded-xl p-12 text-center hover:border-blue-300 transition-all bg-gradient-to-br from-blue-50 to-indigo-50">
+                <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                  <FiImage className="w-8 h-8 text-blue-600" />
                 </div>
-              ) : (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-                  <FiImage className="mx-auto h-12 w-12 text-gray-400" />
-                  <div className="mt-4">
-                    <label htmlFor="course-image" className="cursor-pointer">
-                      <span className="mt-2 block text-sm font-medium text-gray-900">
-                        Chọn ảnh khóa học
-                      </span>
-                      <span className="mt-1 block text-xs text-gray-500">
-                        PNG, JPG, GIF tối đa 5MB
-                      </span>
-                    </label>
-                    <input
-                      id="course-image"
-                      name="course-image"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageSelect}
-                      className="sr-only"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
+                <label htmlFor="course-image" className="cursor-pointer">
+                  <span className="block text-lg font-medium text-slate-700 mb-2">
+                    Chọn ảnh khóa học
+                  </span>
+                  <span className="block text-sm text-slate-500 mb-4">
+                    PNG, JPG, GIF tối đa 5MB
+                  </span>
+                  <Button type="button" variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
+                    <FiUpload className="w-4 h-4 mr-2" />
+                    Tải ảnh lên
+                  </Button>
+                </label>
+                <input
+                  id="course-image"
+                  name="course-image"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="sr-only"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Course Information */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+            <h2 className="text-xl font-semibold text-slate-800 mb-6">Thông Tin Khóa Học</h2>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <div className="col-span-full">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Tên Khóa Học
+                <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
+                  Tên Khóa Học <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
+                <Input
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
                   placeholder="Nhập tên khóa học"
+                  className="bg-slate-50 border-slate-200 focus:bg-white transition-all"
                 />
               </div>
 
               <div className="col-span-full">
-                <label htmlFor="descriptions" className="block text-sm font-medium text-gray-700 mb-1">
-                  Mô Tả
+                <label htmlFor="descriptions" className="block text-sm font-medium text-slate-700 mb-2">
+                  Mô Tả <span className="text-red-500">*</span>
                 </label>
-                <textarea
+                <Textarea
                   id="descriptions"
                   name="descriptions"
                   value={formData.descriptions}
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
                   placeholder="Nhập mô tả khóa học"
+                  className="bg-slate-50 border-slate-200 focus:bg-white transition-all resize-none"
                 />
               </div>
 
               <div>
-                <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="difficulty" className="block text-sm font-medium text-slate-700 mb-2">
                   Độ Khó
                 </label>
-                <select
-                  id="difficulty"
-                  name="difficulty"
-                  value={formData.difficulty}
-                  onChange={handleChange}
-                  className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
-                >
-                  <option value="easy">Dễ</option>
-                  <option value="medium">Trung Bình</option>
-                  <option value="hard">Khó</option>
-                </select>
+                <Select value={formData.difficulty} onValueChange={(value: 'easy' | 'medium' | 'hard') => setFormData(prev => ({ ...prev, difficulty: value }))}>
+                  <SelectTrigger className="bg-slate-50 border-slate-200 focus:bg-white">
+                    <SelectValue placeholder="Chọn độ khó" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="easy">Dễ</SelectItem>
+                    <SelectItem value="medium">Trung Bình</SelectItem>
+                    <SelectItem value="hard">Khó</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
-                <label htmlFor="prestige" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="prestige" className="block text-sm font-medium text-slate-700 mb-2">
                   Khóa Học Tham Chiếu
                 </label>
-                <select
-                  id="prestige"
-                  name="prestige"
-                  value={formData.prestige}
-                  onChange={handleChange}
-                  className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
-                >
-                  <option value="">Chọn khóa học tham chiếu</option>
-                  {courses.map((course) => (
-                    <option key={course.id} value={course.id}>
-                      {course.name} - Giảng viên: {course.instructor?.username || 'Chưa xác định'}
-                    </option>
-                  ))}
-                </select>
+                <Select value={formData.prestige?.toString() || "none"} onValueChange={(value) => setFormData(prev => ({ ...prev, prestige: value === "none" ? "" : value }))}>
+                  <SelectTrigger className="bg-slate-50 border-slate-200 focus:bg-white">
+                    <SelectValue placeholder="Chọn khóa học tham chiếu" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Không có</SelectItem>
+                    {courses.map((course) => (
+                      <SelectItem key={course.id} value={course.id.toString()}>
+                        {course.name} - {course.instructor?.username || 'Chưa xác định'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                  Giá
+                <label htmlFor="price" className="block text-sm font-medium text-slate-700 mb-2">
+                  Giá <span className="text-red-500">*</span>
                 </label>
-                <div className="relative rounded-lg shadow-sm">
+                <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">₫</span>
+                    <span className="text-slate-500 text-sm">₫</span>
                   </div>
-                  <input
+                  <Input
                     type="number"
                     id="price"
                     name="price"
@@ -447,114 +467,130 @@ export default function CreateCoursePage() {
                     required
                     min="0"
                     step="1000"
-                    className="block w-full pl-7 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                    className="pl-8 bg-slate-50 border-slate-200 focus:bg-white transition-all"
                     placeholder="0"
                   />
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-medium text-gray-900">Bài Học</h2>
-                <button
-                  type="button"
-                  onClick={addLesson}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105"
-                >
-                  Thêm Bài Học
-                </button>
-              </div>
+          {/* Lessons Section */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-slate-800">Bài Học</h2>
+              <Button
+                type="button"
+                onClick={addLesson}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white  transition-all"
+              >
+                <FiPlus className="w-4 h-4 mr-2" />
+                Thêm Bài Học
+              </Button>
+            </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {formData.lessons.map((lesson, index) => (
-                  <div key={index} className="bg-gray-50 p-6 rounded-xl space-y-4 border border-gray-200 hover:border-blue-200 transition-colors">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-md font-medium text-gray-900">Bài Học {index + 1}</h3>
-                      <button
-                        type="button"
-                        onClick={() => removeLesson(index)}
-                        className="text-red-600 hover:text-red-800 transition-colors"
-                      >
-                        Xóa
-                      </button>
-                    </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {formData.lessons.map((lesson, index) => (
+                <div key={index} className="bg-gradient-to-br from-slate-50 to-blue-50 p-6 rounded-xl border border-slate-200 hover:border-blue-200 transition-all shadow-sm hover:shadow-md">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium text-slate-800 flex items-center">
+                      <span className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-semibold mr-3">
+                        {index + 1}
+                      </span>
+                      Bài Học {index + 1}
+                    </h3>
+                    <button
+                      onClick={() => removeLesson(index)}
+                    >
+                      <FiX className="w-5 h-5 text-red-400" />
+                    </button>
+                  </div>
 
+                  <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
                         Tiêu Đề
                       </label>
-                      <input
-                        type="text"
+                      <Input
                         value={lesson.title}
                         onChange={(e) => handleLessonChange(index, 'title', e.target.value)}
-                        className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
                         placeholder="Nhập tiêu đề bài học"
+                        className="bg-white border-slate-200"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
                         Nội Dung
                       </label>
-                      <textarea
+                      <Textarea
                         value={lesson.content || ''}
                         onChange={(e) => handleLessonChange(index, 'content', e.target.value)}
-                        rows={4}
-                        className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
+                        rows={3}
                         placeholder="Nhập nội dung bài học"
+                        className="bg-white border-slate-200 resize-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
                         URL Video
                       </label>
-                      <input
-                        type="text"
+                      <Input
                         value={lesson.videoUrl || ''}
                         onChange={(e) => handleLessonChange(index, 'videoUrl', e.target.value)}
-                        className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors"
                         placeholder="Nhập URL video bài học"
+                        className="bg-white border-slate-200"
                       />
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-3 pt-2">
                       <input
                         type="checkbox"
                         id={`isFree-${index}`}
                         checked={lesson.isFree || false}
                         onChange={(e) => handleLessonChange(index, 'isFree', e.target.checked)}
-                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 focus:ring-2"
                       />
-                      <label htmlFor={`isFree-${index}`} className="text-sm text-gray-700">
+                      <label htmlFor={`isFree-${index}`} className="text-sm text-slate-700 font-medium">
                         Bài Học Miễn Phí
                       </label>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
 
-            <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
-              <button
+            {formData.lessons.length === 0 && (
+              <div className="text-center py-12 text-slate-500">
+                <FiImage className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>Chưa có bài học nào. Nhấn "Thêm Bài Học" để bắt đầu.</p>
+              </div>
+            )}
+          </div>
+
+          {/* Submit Section */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
+            <div className="flex justify-end gap-4">
+              <Button
                 type="button"
+                variant="outline"
                 onClick={() => router.back()}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
+                className="border-slate-200 text-slate-600 hover:bg-slate-50"
               >
                 Hủy
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={isSubmitting || uploadingImage}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white  transition-all"
               >
-                <FiSave className="w-4 h-4" />
+                <FiSave className="w-4 h-4 mr-2" />
                 {uploadingImage ? 'Đang tải ảnh...' : isSubmitting ? 'Đang tạo...' : 'Tạo Khóa Học'}
-              </button>
+              </Button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   )

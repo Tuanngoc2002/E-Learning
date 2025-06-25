@@ -46,7 +46,7 @@ const CoursesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       <PageHero
         title="Explore Our Courses"
         description="Choose from our wide range of courses designed to help you achieve your goals. Learn from industry experts and get practical experience."
