@@ -4,11 +4,11 @@ export default factories.createCoreRouter('api::course.course', {
   config: {
     find: {
       auth: false,
-      policies: ['global::allow-public'],
+      policies: [],
     },
     findOne: {
       auth: false,
-      policies: ['global::allow-public'],
+      policies: [],
     },
   },
 });

@@ -55,7 +55,7 @@ export const courseService = {
       
       const response = await fetch(
         `${API_URL}/api/courses?filters[isPublished][$eq]=true${searchFilter}${difficultyFilter}${priceFilter}&populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}`,
-        { headers }
+       
       );
       if (!response.ok) {
         throw new Error('Failed to fetch published courses');
