@@ -32,7 +32,6 @@ export const courseService = {
     try {
       const response = await fetch(
         `${API_URL}/api/courses/${id}?populate[lessons][populate]=*&populate[lessons][sort]=order:asc&populate[user_courses][populate]=*`,
-        { headers }
       );
       if (!response.ok) {
         throw new Error('Failed to fetch course');
