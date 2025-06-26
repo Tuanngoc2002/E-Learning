@@ -61,10 +61,10 @@ const UserCoursesPage = () => {
   const [activeTab, setActiveTab] = useState<'enrolled' | 'available' | 'roadmap'>('enrolled');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const buildRoadmap = (enrolled: EnrolledCourse[], available: Course[]): RoadmapNode[] => {
+  const buildRoadmap = (enrolled: EnrolledCourse[], available: Course[], dependentFromRecommendation: Course[] = []): RoadmapNode[] => {
     // Tạo map để tra cứu nhanh
     const courseMap = new Map<number, Course>();
-    [...enrolled, ...available].forEach(course => {
+    [...enrolled, ...available, ...dependentFromRecommendation].forEach(course => {
       courseMap.set(course.id, course);
     });
 
@@ -72,16 +72,17 @@ const UserCoursesPage = () => {
     const relevantCourses = new Set<number>();
     enrolled.forEach(course => relevantCourses.add(course.id));
     available.forEach(course => relevantCourses.add(course.id));
+    dependentFromRecommendation.forEach(course => relevantCourses.add(course.id));
 
     // Hàm tìm dependent (khóa học phụ thuộc vào courseId)
     const findDependentCourses = (courseId: number): Course[] => {
-      return [...enrolled, ...available].filter(course =>
+      return [...enrolled, ...available, ...dependentFromRecommendation].filter(course =>
         course.prestige?.data?.some(p => p.id === courseId)
       );
     };
 
     // Tìm root: không có prerequisite hoặc prerequisite không nằm trong hệ thống
-    const filteredCourses = [...enrolled, ...available].filter(course => relevantCourses.has(course.id));
+    const filteredCourses = [...enrolled, ...available, ...dependentFromRecommendation].filter(course => relevantCourses.has(course.id));
     const rootCourses = filteredCourses.filter(course => {
       if (!course.prestige?.data || course.prestige.data.length === 0) return true;
       // Nếu tất cả prerequisite không nằm trong hệ thống thì cũng là root
@@ -112,11 +113,18 @@ const UserCoursesPage = () => {
         .map(c => buildTree(c, level + 1, new Set(visited)));
 
       // Đề xuất nếu: chưa học, đã publish, đủ điều kiện prerequisite
+      // Hoặc nếu là khóa học dependent từ recommendation system
       const isRecommended = !isEnrolled &&
         course.isPublished &&
-        (!course.prestige?.data ||
-          course.prestige.data.every(p =>
-            enrolled.some(ec => ec.id === p.id && (ec.progress || 0) >= 100)
+        (
+          // Trường hợp 1: Khóa học dependent từ recommendation system
+          // Những khóa học này được AI đề xuất và có mối quan hệ phụ thuộc với khóa học đã đăng ký
+          dependentFromRecommendation.some(dc => dc.id === course.id) ||
+          // Trường hợp 2: Khóa học thông thường đủ điều kiện prerequisite
+          (!course.prestige?.data ||
+            course.prestige.data.every(p =>
+              enrolled.some(ec => ec.id === p.id && (ec.progress || 0) >= 100)
+            )
           )
         );
 
@@ -196,7 +204,8 @@ const UserCoursesPage = () => {
         // Fetch recommended courses for the "Roadmap" tab
         if (enrolledCoursesList.length > 0) {
           // Get recommendations for all enrolled courses
-          const allRecommendedCourses = new Set<Course>();
+          const allRecommendedCourses = new Map<number, Course>();
+          const dependentCoursesFromRecommendation = new Map<number, Course>();
           
           // Fetch recommendations for each enrolled course
           for (const enrolledCourse of enrolledCoursesList) {
@@ -213,29 +222,70 @@ const UserCoursesPage = () => {
               const recommendedData = await recommendationResponse.json();
               const recommendedCourses = recommendedData.data || [];
               
-              // Add recommended courses to the set
-              recommendedCourses.forEach((course: Course) => {
-                allRecommendedCourses.add(course);
+              // Logic mới: Lấy id từ recommendation và kiểm tra mối quan hệ trong dữ liệu getCourses
+              // Recommendation API chỉ trả về id và tên, không có đủ dữ liệu prestige
+              // Cần lấy id và tìm thông tin đầy đủ trong dữ liệu getCourses để kiểm tra mối quan hệ
+              recommendedCourses.forEach((recommendedCourse: any) => {
+                // Lấy id từ recommendation API
+                const recommendedCourseId = recommendedCourse.id;
+                
+                // Tìm khóa học đầy đủ trong dữ liệu getCourses để lấy thông tin prestige
+                const fullCourseData = allAvailableCourses.find(course => course.id === recommendedCourseId);
+                
+                if (fullCourseData) {
+                  // Kiểm tra xem khóa học này có phải là dependent của khóa học đã đăng ký không
+                  // (tức là có prerequisite là khóa học đã đăng ký)
+                  const isDependentOfEnrolled = fullCourseData.prestige?.data?.some(prerequisite => 
+                    enrolledCoursesList.some(enrolledCourse => enrolledCourse.id === prerequisite.id)
+                  );
+                  
+                  if (isDependentOfEnrolled) {
+                    // Nếu là dependent trực tiếp, thêm vào danh sách dependent courses
+                    // Khóa học này sẽ được hiển thị trong learning path
+                    if (!dependentCoursesFromRecommendation.has(fullCourseData.id)) {
+                      dependentCoursesFromRecommendation.set(fullCourseData.id, fullCourseData);
+                    }
+                  } else {
+                    // Nếu không phải dependent trực tiếp, thêm vào danh sách recommendation thông thường
+                    if (!allRecommendedCourses.has(fullCourseData.id)) {
+                      allRecommendedCourses.set(fullCourseData.id, fullCourseData);
+                    }
+                  }
+                }
               });
             }
           }
 
           // Combine recommended courses with related courses from available courses
-          const relatedCourses = new Set<Course>();
+          const relatedCourses = new Map<number, Course>();
           
-          // Add all recommended courses
+          // Add all recommended courses (không phải dependent)
           allRecommendedCourses.forEach((course: Course) => {
-            relatedCourses.add(course);
+            relatedCourses.set(course.id, course);
+          });
+
+          // Add dependent courses from recommendation system
+          dependentCoursesFromRecommendation.forEach((course: Course) => {
+            relatedCourses.set(course.id, course);
           });
 
           // Add courses that have prestige relationships with enrolled or recommended courses
-          const allRelevantCourses = [...enrolledCoursesList, ...Array.from(allRecommendedCourses)];
+          const allRelevantCourses = [
+            ...enrolledCoursesList, 
+            ...Array.from(allRecommendedCourses.values()),
+            ...Array.from(dependentCoursesFromRecommendation.values())
+          ];
+          
           allRelevantCourses.forEach(course => {
             // Find courses that have this course as a prerequisite
             const dependentCourses = allAvailableCourses.filter(availableCourse => 
               availableCourse.prestige?.data?.some(p => p.id === course.id)
             );
-            dependentCourses.forEach(dependent => relatedCourses.add(dependent));
+            dependentCourses.forEach(dependent => {
+              if (!relatedCourses.has(dependent.id)) {
+                relatedCourses.set(dependent.id, dependent);
+              }
+            });
 
             // Find courses that are prerequisites for this course
             if (course.prestige?.data) {
@@ -243,20 +293,61 @@ const UserCoursesPage = () => {
                 const prerequisiteCourse = allAvailableCourses.find(
                   availableCourse => availableCourse.id === prerequisite.id
                 );
-                if (prerequisiteCourse) {
-                  relatedCourses.add(prerequisiteCourse);
+                if (prerequisiteCourse && !relatedCourses.has(prerequisiteCourse.id)) {
+                  relatedCourses.set(prerequisiteCourse.id, prerequisiteCourse);
                 }
               });
             }
           });
 
-          // Convert Set to Array and filter out enrolled courses
-          const finalRecommendedCourses = Array.from(relatedCourses).filter(
+          // Logic mới: Kiểm tra và thêm các khóa học có mối quan hệ phụ thuộc gián tiếp
+          // Ví dụ: Khóa học 3 phụ thuộc vào khóa học 2, khóa học 2 phụ thuộc vào khóa học 1 (đã đăng ký)
+          const allRelatedCourses = Array.from(relatedCourses.values());
+          
+          // Hàm kiểm tra xem một khóa học có phụ thuộc gián tiếp vào khóa học đã đăng ký không
+          // Sử dụng đệ quy để tìm kiếm chuỗi phụ thuộc: Course 3 -> Course 2 -> Course 1 (enrolled)
+          const isIndirectlyDependentOnEnrolled = (course: Course, visited: Set<number> = new Set()): boolean => {
+            if (visited.has(course.id)) return false; // Tránh vòng lặp vô hạn
+            visited.add(course.id);
+            
+            // Nếu khóa học này phụ thuộc trực tiếp vào khóa học đã đăng ký
+            if (course.prestige?.data?.some(p => 
+              enrolledCoursesList.some(enrolled => enrolled.id === p.id)
+            )) {
+              return true;
+            }
+            
+            // Kiểm tra các prerequisite của khóa học này (đệ quy)
+            if (course.prestige?.data) {
+              for (const prerequisite of course.prestige.data) {
+                const prerequisiteCourse = allRelatedCourses.find(c => c.id === prerequisite.id);
+                if (prerequisiteCourse && isIndirectlyDependentOnEnrolled(prerequisiteCourse, new Set(visited))) {
+                  return true;
+                }
+              }
+            }
+            
+            return false;
+          };
+          
+          // Kiểm tra tất cả khóa học trong allRecommendedCourses
+          // Nếu có khóa học nào phụ thuộc gián tiếp, chuyển từ recommendation sang dependent
+          allRecommendedCourses.forEach((course: Course) => {
+            if (isIndirectlyDependentOnEnrolled(course)) {
+              // Nếu là phụ thuộc gián tiếp, chuyển từ recommendation sang dependent
+              // Khóa học này sẽ được hiển thị trong learning path thay vì chỉ là recommendation
+              allRecommendedCourses.delete(course.id);
+              dependentCoursesFromRecommendation.set(course.id, course);
+            }
+          });
+
+          // Convert Map to Array and filter out enrolled courses
+          const finalRecommendedCourses = Array.from(relatedCourses.values()).filter(
             course => !enrolledCoursesList.some(enrolled => enrolled.id === course.id)
           );
 
           // Build roadmap using enrolled courses and combined recommendations
-          const roadmapData = buildRoadmap(enrolledCoursesList, finalRecommendedCourses);
+          const roadmapData = buildRoadmap(enrolledCoursesList, finalRecommendedCourses, Array.from(dependentCoursesFromRecommendation.values()));
           console.log('Setting roadmap:', roadmapData);
           setRoadmap(roadmapData);
         } else {
@@ -584,7 +675,11 @@ const UserCoursesPage = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <span className="text-sm text-gray-700">Đề xuất</span>
+                  <span className="text-sm text-gray-700">Đề xuất từ AI</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+                  <span className="text-sm text-gray-700">Khóa học liên quan</span>
                 </div>
               </div>
             </div>
@@ -605,11 +700,37 @@ const UserCoursesPage = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                {roadmap.flatMap(root => getAllPathsFromRootToLeaf(root)).map(renderHorizontalPath)}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <h3 className="text-sm font-semibold text-blue-800 mb-2">💡 Cách hoạt động của lộ trình:</h3>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• <strong>Khóa học đã đăng ký:</strong> Hiển thị màu xanh dương với tiến trình học tập</li>
+                    <li>• <strong>Khóa học đề xuất từ AI:</strong> Hiển thị màu vàng - đây là những khóa học phù hợp tiếp theo</li>
+                    <li>• <strong>Khóa học phụ thuộc:</strong> Những khóa học cần hoàn thành khóa học trước đó (bao gồm cả phụ thuộc gián tiếp)</li>
+                    <li>• <strong>Khóa học đã hoàn thành:</strong> Hiển thị màu xanh lá với dấu tích</li>
+                  </ul>
+                  <div className="mt-3 p-3 bg-white rounded border-l-4 border-blue-500">
+                    <p className="text-xs text-blue-600">
+                      <strong>Ví dụ:</strong> Nếu bạn đã đăng ký khóa học A, và AI đề xuất khóa học C phụ thuộc vào khóa học B, 
+                      khóa học B lại phụ thuộc vào khóa học A → Khóa học C sẽ hiển thị như node thứ 3 trong learning path.
+                    </p>
+                    <p className="text-xs text-blue-600 mt-2">
+                      <strong>Cách hoạt động:</strong> AI đề xuất khóa học → Hệ thống kiểm tra mối quan hệ prestige → 
+                      Nếu có mối quan hệ phụ thuộc → Hiển thị trong learning path thay vì chỉ là đề xuất.
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Loại bỏ các path trùng lặp dựa trên chuỗi id */}
+                {(() => {
+                  const allPaths = roadmap.flatMap(root => getAllPathsFromRootToLeaf(root));
+                  const uniquePaths = Array.from(
+                    new Map(allPaths.map(path => [path.map(n => n.course.id).join('-'), path])).values()
+                  );
+                  return uniquePaths.map(renderHorizontalPath);
+                })()}
               </div>
             )}
           </div>
-
         )}
 
         {activeTab === 'available' && (

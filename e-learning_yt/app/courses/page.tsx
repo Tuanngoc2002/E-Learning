@@ -1,13 +1,11 @@
 "use client";
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { FaStar, FaUsers, FaClock, FaFilter } from 'react-icons/fa';
 import PageHero from '@/components/organisms/PageHero';
-import { useCourses } from '@/hooks/useCourses';
 import { useState } from 'react';
 import CourseList from '@/components/organisms/CourseList';
 import { Input } from '@/components/ui/input';
+import { useCourses } from '@/services/course.service';
 
 const categories = [
   "All Categories",
@@ -29,6 +27,7 @@ const CoursesPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All Levels');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 200 });
+  const { courses, isLoading, isError } = useCourses();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
