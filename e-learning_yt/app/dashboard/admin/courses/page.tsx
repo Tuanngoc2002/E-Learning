@@ -461,7 +461,7 @@ const AdminCoursesPage = () => {
                 Xác nhận xóa khóa học
               </DialogTitle>
               <DialogDescription className="text-gray-600 pt-2">
-                Bạn có chắc chắn muốn xóa khóa học "{deleteDialog.courseName}"? Hành động này không thể hoàn tác.
+                Bạn có chắc chắn muốn xóa khóa học &ldquo;{deleteDialog.courseName}&rdquo;? Hành động này không thể hoàn tác.
               </DialogDescription>
             </DialogHeader>
 
