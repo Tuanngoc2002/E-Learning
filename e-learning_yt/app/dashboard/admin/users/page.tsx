@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 
 interface User {
   id: number;
@@ -303,13 +304,13 @@ const UsersPage = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => router.push(`/dashboard/admin/users/${user.id}/edit`)}
+                      <Link
+                        href={`/dashboard/admin/users/${user.id}/edit`}
                         className="text-blue-600 hover:text-blue-900"
                         title="Sửa người dùng"
                       >
                         <FiEdit2 className="w-4 h-4" />
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleBlockUser(user.id, !user.blocked)}
                         className={`${user.blocked ? 'text-green-600 hover:text-green-900' : 'text-yellow-600 hover:text-yellow-900'}`}

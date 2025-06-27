@@ -48,32 +48,33 @@ export const messageService = {
       const conversationsMap = new Map<string, Conversation>();
 
       // Nhóm messages theo student + course
-      messages.forEach((message: any) => {
-        const conversationKey = `${message.senderId}-${message.courseId}`;
-        
-        if (!conversationsMap.has(conversationKey)) {
-          conversationsMap.set(conversationKey, {
-            id: conversationKey,
-            courseId: message.courseId || message.course?.id?.toString(),
-            courseName: message.course?.name || 'Unknown Course',
-            studentId: message.senderId || message.sender?.id?.toString(),
-            studentName: message.sender?.username || 'Unknown Student',
-            lastMessage: message.content,
-            lastMessageAt: message.createdAt,
-            unreadCount: message.isRead ? 0 : 1,
-            isRead: message.isRead || false
-          });
-        } else {
-          // Update unread count cho conversation này
-          const conversation = conversationsMap.get(conversationKey)!;
-          if (!message.isRead) {
-            conversation.unreadCount += 1;
+      messages
+        .filter((message: any) => message && (message.course || message.courseId) && (message.sender || message.senderId)) // Filter out null/undefined messages
+        .forEach((message: any) => {
+          const conversationKey = `${message.senderId || message.sender?.id}-${message.courseId || message.course?.id}`;
+          if (!conversationsMap.has(conversationKey)) {
+            conversationsMap.set(conversationKey, {
+              id: conversationKey,
+              courseId: message.courseId || message.course?.id?.toString() || '',
+              courseName: message.course?.name || 'Unknown Course',
+              studentId: message.senderId || message.sender?.id?.toString() || '',
+              studentName: message.sender?.username || 'Unknown Student',
+              lastMessage: message.content || '',
+              lastMessageAt: message.createdAt || new Date().toISOString(),
+              unreadCount: message.isRead ? 0 : 1,
+              isRead: message.isRead || false
+            });
+          } else {
+            // Update unread count cho conversation này
+            const conversation = conversationsMap.get(conversationKey)!;
+            if (!message.isRead) {
+              conversation.unreadCount += 1;
+            }
+            if (!conversation.isRead && !message.isRead) {
+              conversation.isRead = false;
+            }
           }
-          if (!conversation.isRead && !message.isRead) {
-            conversation.isRead = false;
-          }
-        }
-      });
+        });
 
       return Array.from(conversationsMap.values()).sort((a, b) => 
         new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
@@ -86,6 +87,7 @@ export const messageService = {
 
   getStudentMessages: async (studentId: string, token: string) => {
     try {
+      console.log('getStudentMessages called with:', { studentId, hasToken: !!token });
       const response = await axios.get(`${API_URL}/chat-messages`, {
         params: {
           'filters[receiver][id][$eq]': studentId,
@@ -97,15 +99,29 @@ export const messageService = {
           Authorization: `Bearer ${token}`
         }
       });
+      
+      if (!response.data.data || !Array.isArray(response.data.data)) {
+        return [];
+      }
 
-      return response.data.data.map((message: any) => ({
-        id: message.id.toString(),
-        content: message.content,
-        courseId: message.course.id.toString(),
-        courseName: message.course.name,
-        studentId: message.sender.id.toString(),
-        studentName: message.sender.username,
-        createdAt: message.createdAt,
+      const validMessages = response.data.data.filter((message: any) => {
+        const isValid = message && (message.course || message.courseId) && message.sender;
+        if (!isValid) {
+          console.warn('Filtering out invalid message:', message);
+        }
+        return isValid;
+      });
+
+      console.log('Valid messages after filtering:', validMessages.length);
+
+      return validMessages.map((message: any) => ({
+        id: message.id?.toString() || '',
+        content: message.content || '',
+        courseId: message.course?.id?.toString() || message.courseId?.toString() || '',
+        courseName: message.course?.name || 'Unknown Course',
+        studentId: message.sender?.id?.toString() || '',
+        studentName: message.sender?.username || 'Unknown Student',
+        createdAt: message.createdAt || new Date().toISOString(),
         isRead: message.isRead || false
       }));
     } catch (error) {
@@ -129,16 +145,18 @@ export const messageService = {
         }
       });
 
-      return response.data.data.map((message: any) => ({
-        id: message.id.toString(),
-        content: message.content,
-        courseId: message.course.id.toString(),
-        courseName: message.course.name,
-        studentId: message.sender.id.toString(),
-        studentName: message.sender.username,
-        createdAt: message.createdAt,
-        isRead: message.isRead || false
-      }));
+      return response.data.data
+        .filter((message: any) => message && message.course && message.sender) // Filter out null/undefined messages
+        .map((message: any) => ({
+          id: message.id?.toString() || '',
+          content: message.content || '',
+          courseId: message.course?.id?.toString() || '',
+          courseName: message.course?.name || 'Unknown Course',
+          studentId: message.sender?.id?.toString() || '',
+          studentName: message.sender?.username || 'Unknown Student',
+          createdAt: message.createdAt || new Date().toISOString(),
+          isRead: message.isRead || false
+        }));
     } catch (error) {
       console.error('Error fetching messages:', error);
       throw error;

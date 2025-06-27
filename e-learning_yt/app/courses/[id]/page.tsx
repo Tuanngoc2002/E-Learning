@@ -23,6 +23,7 @@ import ChatBox from "@/components/molecules/Chatbox";
 import RecommendedCourses from "@/components/organisms/RecommendedCourses";
 import { Course } from "@/types/course";
 import ChatbotButton from "@/components/molecules/ChatBot";
+import Link from "next/link";
 
 interface UserCourse {
   id: number;
@@ -300,12 +301,12 @@ const CourseDetailPage = () => {
         <div className="text-red-600 text-center">
           <h2 className="text-2xl font-bold mb-2">Course Not Found</h2>
           <p>The course you are looking for does not exist.</p>
-          <button
-            onClick={() => router.push("/courses")}
+          <Link
+            href="/courses"
             className="mt-4 bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
           >
             Back to Courses
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -413,7 +414,7 @@ const CourseDetailPage = () => {
                       <div className="text-3xl font-bold text-indigo-600 mb-1">
                         ${course.price}
                       </div>
-                      <div className="text-gray-600 text-sm">
+                      <div className="text-gray-600 text-sm mb-2">
                         (
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
@@ -432,12 +433,12 @@ const CourseDetailPage = () => {
                     ) : !isAuthenticated ? (
                     <div className="text-center">
                       <p className="text-gray-600 mb-3">Vui lòng đăng nhập để đăng ký khóa học</p>
-                      <button
-                        onClick={() => router.push('/login?redirect=/courses/' + courseId)}
+                      <Link
+                        href={'/login?redirect=/courses/' + courseId}
                         className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
                       >
                         Đăng nhập
-                      </button>
+                      </Link>
                     </div>
                     ) : (
                     <button
@@ -542,16 +543,12 @@ const CourseDetailPage = () => {
                         </div>
                         <div className="flex items-center">
                           {isEnrolled ? (
-                            <button
-                              onClick={() =>
-                                router.push(
-                                  `/courses/${courseId}/lessons/${lesson.id}`
-                                )
-                              }
+                            <Link
+                              href={`/courses/${courseId}/lessons/${lesson.id}`}
                               className="bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition duration-300"
                             >
                               <FaPlay className="w-4 h-4" />
-                            </button>
+                            </Link>
                           ) : lesson.isFree ? (
                             <span className="text-green-500 text-sm font-medium">
                               Miễn phí
@@ -582,14 +579,12 @@ const CourseDetailPage = () => {
                           </div>
                         </div>
                         <div className="flex items-center">
-                          <button
-                            onClick={() =>
-                              router.push(`/courses/${courseId}/exam`)
-                            }
+                          <Link
+                            href={`/courses/${courseId}/exam`}
                             className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
                           >
                             Làm bài kiểm tra
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>

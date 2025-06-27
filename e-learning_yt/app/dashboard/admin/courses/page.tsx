@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
+import Link from 'next/link';
 
 interface Course {
   id: number;
@@ -382,13 +383,13 @@ const AdminCoursesPage = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => router.push(`/dashboard/admin/courses/${course.id}/edit`)}
+                      <Link
+                        href={`/dashboard/admin/courses/${course.id}/edit`}
                         className="text-blue-600 hover:text-blue-900"
                         title="Sửa khóa học"
                       >
                         <FiEdit2 className="w-4 h-4" />
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handlePublishToggle(course.id, course.isPublished)}
                         className={`${course.isPublished ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`}

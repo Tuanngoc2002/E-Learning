@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
+import Link from 'next/link';
 
 interface Course {
   id: number;
@@ -218,13 +219,13 @@ const InstructorCoursesPage = () => {
             <h1 className="text-3xl font-bold text-gray-900">My Courses</h1>
             <p className="text-gray-600 mt-2">Manage your course content and track student progress</p>
           </div>
-          <button
-            onClick={() => router.push('/dashboard/instructor/courses/new')}
+          <Link
+            href='/dashboard/instructor/courses/new'
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <FiPlus className="w-5 h-5 mr-2" />
             Create New Course
-          </button>
+          </Link>
         </div>
 
         {error && (
@@ -388,13 +389,13 @@ const InstructorCoursesPage = () => {
                 </div>
 
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => router.push(`/dashboard/instructor/courses/${course.id}/edit`)}
+                  <Link
+                    href={`/dashboard/instructor/courses/${course.id}/edit`}
                     className="flex-1 bg-blue-600 text-white text-sm py-2 px-3 rounded hover:bg-blue-700 transition-colors flex items-center justify-center"
                   >
                     <FiEdit2 className="w-4 h-4 mr-1" />
                     Edit
-                  </button>
+                  </Link>
                   <button
                     onClick={() => openDeleteDialog(course.id, course.name)}
                     className="px-3 py-2 bg-red-100 text-red-800 text-sm rounded hover:bg-red-200 transition-colors"
@@ -415,13 +416,13 @@ const InstructorCoursesPage = () => {
             <p className="text-gray-500 mb-4">
               {searchTerm ? 'Try adjusting your search criteria.' : 'Get started by creating your first course.'}
             </p>
-            <button
-              onClick={() => router.push('/dashboard/instructor/courses/new')}
+            <Link
+              href='/dashboard/instructor/courses/new'
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
             >
               <FiPlus className="w-5 h-5 mr-2" />
               Create Your First Course
-            </button>
+            </Link>
           </div>
         )}
 

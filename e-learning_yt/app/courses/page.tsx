@@ -49,9 +49,9 @@ const CoursesPage = () => {
   return (
     <div className="min-h-screen pt-[66px] bg-gray-50">
       <PageHero
-        title="Explore Our Courses"
-        description="Choose from our wide range of courses designed to help you achieve your goals. Learn from industry experts and get practical experience."
-        currentPage="Courses"
+        title="Khám phá các khóa học của chúng tôi"
+        description="Chọn từ nhiều khóa học được thiết kế để giúp bạn đạt được mục tiêu của mình. Học từ chuyên gia công nghệ và nhận trải nghiệm thực tế."
+        currentPage="Khóa học"
       />
 
       <div className="container mx-auto px-4 py-16">
@@ -61,7 +61,7 @@ const CoursesPage = () => {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search courses..."
+                placeholder="Tìm kiếm khóa học..."
                 value={searchQuery}
                 onChange={handleSearch}
                 className="w-full px-6 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"

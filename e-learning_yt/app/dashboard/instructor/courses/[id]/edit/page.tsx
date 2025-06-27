@@ -114,7 +114,6 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
       
       router.push('/dashboard/instructor')
     } catch (error) {
-      console.error('Error updating course:', error)
       setErrorMessage(error instanceof Error ? error.message : 'Failed to update course')
     } finally {
       setIsSubmitting(false)

@@ -97,12 +97,10 @@ const NewUserPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error response:', errorData);
         throw new Error(errorData.error?.message || errorData.message || 'Failed to create user');
       }
 
       const data = await response.json();
-      console.log('User created successfully:', data);
       router.push('/dashboard/admin/users');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

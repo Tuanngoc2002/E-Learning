@@ -25,11 +25,11 @@ const PageHero = ({ title, description, currentPage }: PageHeroProps) => {
         </div>
 
         {/* Content */}
-        <div className="max-w-3xl">
+        <div>
           {/* Title */}
           <h1
             data-aos="fade-right"
-            className="text-3xl sm:text-4xl md:text-5xl font-bold md:leading-[3rem] text-white mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold md:leading-[3rem] text-white mb-6 w-full"
           >
             {title}
           </h1>
@@ -37,7 +37,7 @@ const PageHero = ({ title, description, currentPage }: PageHeroProps) => {
           <p
             data-aos="fade-left"
             data-aos-delay="150"
-            className="text-sm md:text-base text-white text-opacity-60"
+            className="text-base md:text-lg text-white text-opacity-60"
           >
             {description}
           </p>

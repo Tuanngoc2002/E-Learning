@@ -7,6 +7,7 @@ import { FaCommentDots, FaUser, FaBook, FaReply } from 'react-icons/fa';
 import { messageService, Message, Conversation } from '@/services/messageService';
 import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
+import Link from 'next/link';
 
 const socket = io('http://localhost:4000');
 
@@ -127,12 +128,12 @@ const InstructorMessagesPage = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center p-8 bg-white rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">Bạn cần đăng nhập để xem tin nhắn</h2>
-          <button 
-            onClick={() => router.push('/login')}
+          <Link 
+            href='/login'
             className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700"
           >
             Đăng nhập
-          </button>
+          </Link>
         </div>
       </div>
     );

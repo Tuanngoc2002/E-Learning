@@ -60,7 +60,6 @@ const NewCoursePage = () => {
       }
 
       const data = await response.json();
-      console.log('Course created successfully:', data);
       router.push('/dashboard/admin/courses');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

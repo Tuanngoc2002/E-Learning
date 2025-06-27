@@ -138,11 +138,9 @@ const EditUserPage = () => {
       }
 
       const data = await response.json();
-      console.log('User updated successfully:', data);
       router.push('/dashboard/admin/users');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('Error updating user:', err);
     } finally {
       setIsLoading(false);
     }

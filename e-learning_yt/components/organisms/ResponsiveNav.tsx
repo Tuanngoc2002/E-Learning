@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { toastSuccess, getVietnameseSuccessMessage } from '@/lib/toast';
 
 const navLinks = [
   { id: 1, label: 'Trang chủ', url: '/' },
@@ -72,6 +73,7 @@ const ResponsiveNav = () => {
     setIsAuthenticated(false);
     setUserRole('');
     setUserName('');
+    toastSuccess(getVietnameseSuccessMessage('Logout successful'));
     router.push('/');
   };
 
@@ -81,8 +83,8 @@ const ResponsiveNav = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="flex items-center space-x-2 focus:outline-none hover:opacity-80 transition-opacity">
-          <div className="relative w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-            <FiUser className="w-5 h-5 text-gray-600" />
+          <div className="relative w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
+            <Image src={`/images/${userRole}.webp`} alt="avatar" width={100} height={100} className='rounded-full h-full w-full object-cover' />
           </div>
           <span className="text-white">{userName}</span>
           <FiChevronDown className="w-4 h-4 text-white" />
@@ -113,7 +115,7 @@ const ResponsiveNav = () => {
           className="flex items-center cursor-pointer text-red-600 focus:text-red-600"
         >
           <FiLogOut className="w-4 h-4 mr-2" />
-          Logout
+          Đăng xuất
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -198,8 +200,8 @@ const ResponsiveNav = () => {
           {isAuthenticated ? (
             <div className="flex flex-col space-y-4 ml-12">
               <div className="flex items-center space-x-2 border-b-[1.5px] pb-2 border-white">
-                <div className="relative w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <FiUser className="w-5 h-5 text-gray-600" />
+                <div className="relative w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
+                <Image src={`/images/${userRole}.webp`} alt="avatar" width={100} height={100} className='rounded-full h-full w-full object-cover' />
                 </div>
                 <span className="text-[20px] sm:text-[30px]">{userName}</span>
               </div>
@@ -217,7 +219,7 @@ const ResponsiveNav = () => {
                 onClick={handleLogout}
                 className="text-[20px] text-left border-b-[1.5px] pb-2 border-white sm:text-[30px] text-red-400 hover:text-red-300 transition-colors duration-300"
               >
-                Logout
+                Đăng xuất
               </button>
             </div>
           ) : (

@@ -191,9 +191,6 @@ export default function CreateCoursePage() {
           isFree: lesson.isFree || false,
         }))
       }
-
-      console.log('📤 Creating course with data:', courseData)
-
       const response = await fetch(`${apiUrl}/api/courses`, {
         method: 'POST',
         headers: {
@@ -212,7 +209,6 @@ export default function CreateCoursePage() {
         throw new Error(errorMsg)
       }
 
-      console.log('✅ Course created successfully:', data)
       router.push('/dashboard/instructor')
 
       // Reset form

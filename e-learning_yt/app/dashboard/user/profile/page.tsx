@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import { Input } from '@/components/ui/input';
 
 interface UserFormData {
   username: string;
@@ -80,8 +81,8 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="flex justify-center py-12 px-4">
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-xl">
+    <div className="flex justify-center w-full">
+      <div className="bg-white rounded-xl shadow-lg p-8 w-full">
         <h1 className="text-3xl font-bold text-center mb-6 text-blue-800">Chỉnh sửa hồ sơ</h1>
 
         {message.text && (
@@ -101,14 +102,14 @@ const ProfilePage = () => {
             <label htmlFor="username" className="block text-gray-700 font-semibold mb-1">
               Họ và tên
             </label>
-            <input
+            <Input
               type="text"
               id="username"
               name="username"
               value={formData.username}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full"
             />
           </div>
 
@@ -116,14 +117,14 @@ const ProfilePage = () => {
             <label htmlFor="email" className="block text-gray-700 font-semibold mb-1">
               Email
             </label>
-            <input
+            <Input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full"
             />
           </div>
 
@@ -131,14 +132,14 @@ const ProfilePage = () => {
             <label htmlFor="avatar" className="block text-gray-700 font-semibold mb-1">
               URL ảnh đại diện
             </label>
-            <input
+            <Input
               type="text"
               id="avatar"
               name="avatar"
               value={formData.avatar}
               onChange={handleChange}
               placeholder="https://example.com/avatar.jpg"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full"
             />
             {formData.avatar && (
               <div className="mt-4 flex justify-center">

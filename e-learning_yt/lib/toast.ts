@@ -123,6 +123,7 @@ export const getVietnameseSuccessMessage = (message: string): string => {
     'Comment posted': 'Đăng bình luận thành công',
     'Bookmark added': 'Thêm bookmark thành công',
     'Bookmark removed': 'Xóa bookmark thành công',
+    'Logout successful': 'Đăng xuất thành công',
   };
 
   return translations[message] || message;
