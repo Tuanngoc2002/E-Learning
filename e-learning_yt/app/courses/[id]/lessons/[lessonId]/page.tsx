@@ -133,7 +133,6 @@ const LessonPage = () => {
         </div>
       );
     } catch (error) {
-      console.error("Error rendering video:", error);
       return <div className="w-full bg-gray-100 rounded-lg p-8 text-center text-red-600">Error loading video</div>;
     }
   };

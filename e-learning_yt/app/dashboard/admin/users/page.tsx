@@ -4,6 +4,16 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiUserPlus, FiEdit2, FiTrash2, FiSearch, FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface User {
   id: number;
@@ -40,6 +50,16 @@ const UsersPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    userId: number | null;
+    userName: string;
+  }>({
+    isOpen: false,
+    userId: null,
+    userName: ''
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
     pageSize: 10,
@@ -119,10 +139,7 @@ const UsersPage = () => {
   };
 
   const handleDeleteUser = async (userId: number) => {
-    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-      return;
-    }
-
+    setIsDeleting(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}`, {
         method: 'DELETE',
@@ -137,10 +154,21 @@ const UsersPage = () => {
 
       // Refresh users list
       fetchUsers(pagination.page, searchTerm);
+      setDeleteDialog({ isOpen: false, userId: null, userName: '' });
     } catch (err) {
       console.error('Error deleting user:', err);
       setError(err instanceof Error ? err.message : 'Failed to delete user');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const openDeleteDialog = (userId: number, userName: string) => {
+    setDeleteDialog({ isOpen: true, userId, userName });
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, userId: null, userName: '' });
   };
 
   const getRoleColor = (roleName: string) => {
@@ -290,7 +318,7 @@ const UsersPage = () => {
                         {user.blocked ? <FiEye className="w-4 h-4" /> : <FiEyeOff className="w-4 h-4" />}
                       </button>
                       <button
-                        onClick={() => handleDeleteUser(user.id)}
+                        onClick={() => openDeleteDialog(user.id, user.username)}
                         className="text-red-600 hover:text-red-900"
                         title="Xóa người dùng"
                       >
@@ -335,6 +363,53 @@ const UsersPage = () => {
             <div className="text-sm text-gray-500">Giáo viên</div>
           </div>
         </div>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialog.isOpen} onOpenChange={closeDeleteDialog}>
+          <DialogContent size="small" className="bg-white max-h-[90vh] h-fit overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center text-red-600">
+                Xác nhận xóa người dùng
+              </DialogTitle>
+              <DialogDescription className="text-gray-600 pt-2">
+                Bạn có chắc chắn muốn xóa người dùng "{deleteDialog.userName}"? Hành động này không thể hoàn tác.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="bg-red-50 p-4 my-4 rounded-sm border border-red-200">
+              <p className="text-gray-800 text-sm">
+                Khi xóa người dùng, tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn khỏi hệ thống và không thể khôi phục.
+              </p>
+            </div>
+
+            <DialogFooter className="flex flex-row justify-end gap-2 sm:gap-0">
+              <DialogClose asChild>
+                <Button type="button" disabled={isDeleting} className="border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">
+                  Hủy
+                </Button>
+              </DialogClose>
+
+              <Button
+                type="button"
+                onClick={() => deleteDialog.userId && handleDeleteUser(deleteDialog.userId)}
+                className="bg-red-600 hover:bg-red-700 text-white"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                    Đang xóa...
+                  </>
+                ) : (
+                  <>
+                    <FiTrash2 className="mr-2 h-4 w-4" />
+                    Xóa
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
