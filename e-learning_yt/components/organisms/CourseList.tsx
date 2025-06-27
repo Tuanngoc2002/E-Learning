@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { FaStar, FaUsers, FaClock, FaTag } from 'react-icons/fa';
 import { useCourses } from '@/hooks/useCourses';
 import { useState } from 'react';
+import { Pagination } from '@/components/ui/pagination';
 
 interface ImageFormat {
   url: string;
@@ -169,31 +170,12 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
       </div>
 
       {/* Enhanced Pagination */}
-      <div className="flex justify-center items-center gap-4 mb-16">
-        <button
-          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-          disabled={!hasPreviousPage}
-          className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${hasPreviousPage
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-1'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-        >
-          Previous
-        </button>
-        <span className="text-gray-600 font-medium px-4 py-2 bg-gray-50 rounded-lg border">
-          Page {pagination.page} of {pagination.pageCount}
-        </span>
-        <button
-          onClick={() => setCurrentPage(prev => prev + 1)}
-          disabled={!hasNextPage}
-          className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${hasNextPage
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-1'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        page={pagination.page}
+        pageSize={pagination.pageSize || 9}
+        total={pagination.total}
+        onPageChange={setCurrentPage}
+      />
     </>
   );
 };

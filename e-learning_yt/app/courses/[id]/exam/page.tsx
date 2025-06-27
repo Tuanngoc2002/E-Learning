@@ -150,7 +150,7 @@ const ExamPage = () => {
                   : 'bg-indigo-600 text-white hover:bg-indigo-700'
               } transition duration-300`}
             >
-              Previous
+              Trước
             </button>
             {currentQuestionIndex === exam.questions.length - 1 ? (
               <button
@@ -164,7 +164,7 @@ const ExamPage = () => {
                 onClick={handleNextQuestion}
                 className="bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition duration-300"
               >
-                Next
+                Tiếp
               </button>
             )}
           </div>

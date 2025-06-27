@@ -22,6 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 
 interface Course {
   id: number;
@@ -426,39 +427,12 @@ const InstructorCoursesPage = () => {
 
         {/* Pagination */}
         {pagination.pageCount > 1 && (
-          <div className="mt-6 flex justify-center">
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-              <button
-                onClick={() => fetchCourses(pagination.page - 1, searchTerm, filterDifficulty, filterStatus)}
-                disabled={pagination.page === 1}
-                className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              
-              {Array.from({ length: pagination.pageCount }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => fetchCourses(page, searchTerm, filterDifficulty, filterStatus)}
-                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                    page === pagination.page
-                      ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              
-              <button
-                onClick={() => fetchCourses(pagination.page + 1, searchTerm, filterDifficulty, filterStatus)}
-                disabled={pagination.page === pagination.pageCount}
-                className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </nav>
-          </div>
+          <Pagination
+            page={pagination.page}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            onPageChange={(page) => fetchCourses(page, searchTerm, filterDifficulty, filterStatus)}
+          />
         )}
 
         {/* Delete Confirmation Dialog */}

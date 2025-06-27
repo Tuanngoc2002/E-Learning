@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Pagination } from "@/components/ui/pagination";
 
 interface EnrollmentRecord {
   id: number;
@@ -373,39 +374,12 @@ const AdminEnrollmentsPage = () => {
 
       {/* Pagination */}
       {pagination.pageCount > 1 && (
-        <div className="mt-6 flex justify-center">
-          <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-            <button
-              onClick={() => fetchEnrollments(pagination.page - 1, searchTerm, statusFilter)}
-              disabled={pagination.page === 1}
-              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Trước
-            </button>
-            
-            {Array.from({ length: Math.min(pagination.pageCount, 10) }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => fetchEnrollments(page, searchTerm, statusFilter)}
-                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                  page === pagination.page
-                    ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-            
-            <button
-              onClick={() => fetchEnrollments(pagination.page + 1, searchTerm, statusFilter)}
-              disabled={pagination.page === pagination.pageCount}
-              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Tiếp
-            </button>
-          </nav>
-        </div>
+        <Pagination
+          page={pagination.page}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          onPageChange={(page) => fetchEnrollments(page, searchTerm, statusFilter)}
+        />
       )}
     </div>
   );
