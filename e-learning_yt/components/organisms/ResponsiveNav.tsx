@@ -26,8 +26,9 @@ const ResponsiveNav = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Check if current path is dashboard
+  // Check if current path is dashboard or includes lessons
   const isDashboard = pathname?.startsWith('/dashboard');
+  const isLessons = pathname?.includes('lessons');
 
   // Check authentication status on mount and when pathname changes
   useEffect(() => {
@@ -50,8 +51,8 @@ const ResponsiveNav = () => {
       }
     };
 
-    // Only add scroll listener if not on dashboard
     if (!isDashboard) {
+      setNavBg(false);
       window.addEventListener('scroll', handler);
       return () => window.removeEventListener('scroll', handler);
     }
@@ -115,8 +116,8 @@ const ResponsiveNav = () => {
       {/* Desktop Navbar */}
       <div
         className={`fixed ${
-          isDashboard ? 'bg-indigo-800' : navBg ? 'bg-indigo-800' : 'bg-indigo-800'
-        } w-full transition-all duration-200 h-[12vh] z-[1000]`}
+          isDashboard || isLessons ? 'bg-indigo-800' : navBg ? 'bg-indigo-800' : 'bg-transparent'
+        } w-full transition-all duration-200 h-[72px] z-[1000]`}
       >
         <div className="flex items-center h-full justify-between w-full max-w-6xl mx-auto">
           {/* Logo */}

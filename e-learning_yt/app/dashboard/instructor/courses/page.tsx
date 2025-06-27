@@ -12,6 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface Course {
   id: number;
@@ -52,6 +62,16 @@ const InstructorCoursesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDifficulty, setFilterDifficulty] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    courseId: number | null;
+    courseName: string;
+  }>({
+    isOpen: false,
+    courseId: null,
+    courseName: ''
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
     pageSize: 10,
@@ -128,10 +148,7 @@ const InstructorCoursesPage = () => {
 
 
   const handleDeleteCourse = async (courseId: number) => {
-    if (!confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
-      return;
-    }
-
+    setIsDeleting(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}`, {
         method: 'DELETE',
@@ -146,10 +163,21 @@ const InstructorCoursesPage = () => {
 
       // Refresh courses list
       fetchCourses(pagination.page, searchTerm, filterDifficulty, filterStatus);
+      setDeleteDialog({ isOpen: false, courseId: null, courseName: '' });
     } catch (err) {
       console.error('Error deleting course:', err);
       setError(err instanceof Error ? err.message : 'Failed to delete course');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const openDeleteDialog = (courseId: number, courseName: string) => {
+    setDeleteDialog({ isOpen: true, courseId, courseName });
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialog({ isOpen: false, courseId: null, courseName: '' });
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -367,7 +395,7 @@ const InstructorCoursesPage = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDeleteCourse(course.id)}
+                    onClick={() => openDeleteDialog(course.id, course.name)}
                     className="px-3 py-2 bg-red-100 text-red-800 text-sm rounded hover:bg-red-200 transition-colors"
                     title="Delete course"
                   >
@@ -432,6 +460,53 @@ const InstructorCoursesPage = () => {
             </nav>
           </div>
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={deleteDialog.isOpen} onOpenChange={closeDeleteDialog}>
+          <DialogContent size="small" className="bg-white max-h-[90vh] h-fit overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center text-red-600">
+                Xác nhận xóa khóa học
+              </DialogTitle>
+              <DialogDescription className="text-gray-600 pt-2">
+                Bạn có chắc chắn muốn xóa khóa học "{deleteDialog.courseName}"? Hành động này không thể hoàn tác.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="bg-red-50 p-4 my-4 rounded-sm border border-red-200">
+              <p className="text-gray-800 text-sm">
+                Khi xóa khóa học, tất cả dữ liệu liên quan bao gồm bài học, học viên đã đăng ký sẽ bị xóa vĩnh viễn khỏi hệ thống và không thể khôi phục.
+              </p>
+            </div>
+
+            <DialogFooter className="flex flex-row justify-end gap-2 sm:gap-0">
+              <DialogClose asChild>
+                <Button type="button" disabled={isDeleting} className="border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">
+                  Hủy
+                </Button>
+              </DialogClose>
+
+              <Button
+                type="button"
+                onClick={() => deleteDialog.courseId && handleDeleteCourse(deleteDialog.courseId)}
+                className="bg-red-600 hover:bg-red-700 text-white"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 animate-spin border-2 border-white border-t-transparent rounded-full" />
+                    Đang xóa...
+                  </>
+                ) : (
+                  <>
+                    <FiTrash2 className="mr-2 h-4 w-4" />
+                    Xóa
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
