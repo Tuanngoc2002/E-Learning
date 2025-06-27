@@ -306,21 +306,21 @@ const UsersPage = () => {
                     <div className="flex justify-end gap-2">
                       <Link
                         href={`/dashboard/admin/users/${user.id}/edit`}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="h-9 w-9 border border-indigo-800 text-indigo-800 bg-indigo-50 flex items-center justify-center rounded-sm"
                         title="Sửa người dùng"
                       >
                         <FiEdit2 className="w-4 h-4" />
                       </Link>
                       <button
                         onClick={() => handleBlockUser(user.id, !user.blocked)}
-                        className={`${user.blocked ? 'text-green-600 hover:text-green-900' : 'text-yellow-600 hover:text-yellow-900'}`}
+                        className={`${user.blocked ? 'h-9 w-9 border border-green-800 text-green-800 bg-green-50 flex items-center justify-center rounded-sm' : 'h-9 w-9 border border-amber-800 text-amber-800 bg-amber-50 flex items-center justify-center rounded-sm'}`}
                         title={user.blocked ? 'Mở khóa người dùng' : 'Khóa người dùng'}
                       >
                         {user.blocked ? <FiEye className="w-4 h-4" /> : <FiEyeOff className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={() => openDeleteDialog(user.id, user.username)}
-                        className="text-red-600 hover:text-red-900"
+                        className="h-9 w-9 border border-red-800 text-red-800 bg-red-50 flex items-center justify-center rounded-sm"
                         title="Xóa người dùng"
                       >
                         <FiTrash2 className="w-4 h-4" />

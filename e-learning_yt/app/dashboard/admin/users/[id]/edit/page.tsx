@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ChevronLeft } from 'lucide-react';
 
 interface Role {
   id: number;
@@ -120,8 +121,6 @@ const EditUserPage = () => {
     setError(null);
 
     try {
-      console.log('Updating user data:', formData);
-      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}`, {
         method: 'PUT',
         headers: {
@@ -133,7 +132,6 @@ const EditUserPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error response:', errorData);
         throw new Error(errorData.error?.message || errorData.message || 'Failed to update user');
       }
 
@@ -157,7 +155,7 @@ const EditUserPage = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-2xl mx-auto">
+        <div className="mx-auto">
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             User not found
           </div>
@@ -168,16 +166,16 @@ const EditUserPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto">
-        <div className="flex items-center mb-8">
+      <div className="mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Chi tiết người dùng</h1>
           <button
             onClick={() => router.back()}
-            className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
+            className="flex items-center text-gray-600 hover:text-gray-900"
           >
-            <FiArrowLeft className="w-5 h-5 mr-2" />
-            Back
+            <ChevronLeft className="w-5 h-5 mr-1" />
+            Quay lại
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">Edit User</h1>
         </div>
 
         {error && (

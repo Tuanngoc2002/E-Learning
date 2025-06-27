@@ -95,7 +95,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             style={{ height: 'calc(100vh - 66px)' }}
           >
             {/* User Profile Section */}
-            <div className="px-6 h-[90px] max-h-[90px] flex items-center justify-start border-b bg-gradient-to-r from-blue-600 to-purple-600 flex-shrink-0">
+            <div className="px-6 h-[90px] max-h-[90px] flex items-center justify-start border-b bg-gradient-to-r from-blue-500 to-purple-500 flex-shrink-0">
               <div className="flex items-center space-x-3">
               <div className="relative w-14 h-14 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
                   <Image src={'/images/admin.webp'} alt="avatar" width={100} height={100} className='rounded-full h-full w-full object-cover' />

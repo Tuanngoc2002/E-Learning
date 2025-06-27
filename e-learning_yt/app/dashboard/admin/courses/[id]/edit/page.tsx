@@ -15,6 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { ChevronLeft } from 'lucide-react'
+import { Textarea } from '@/components/ui/textarea'
 
 interface CourseFormData {
   name: string
@@ -63,18 +65,12 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
           prestige: Array.isArray(course.prestige) ? course.prestige : [],
         })
 
-        // Set lessons from course data if available
         if (course.lessons && course.lessons.length > 0) {
-          console.log('📚 Setting lessons from course data:', course.lessons)
           setLessons(course.lessons)
         } else {
-          // Fallback to fetching lessons separately if not included in course data
           if (jwt) {
             try {
-              console.log('🔍 Fetching lessons for course:', params.id)
               const courseLessons = await lessonService.getLessonsByCourseId(parseInt(params.id), jwt)
-              console.log('📚 Fetched lessons with IDs:', courseLessons.map(l => `${l.id} (${l.title})`))
-              console.log('📚 Full lessons data:', courseLessons)
               setLessons(courseLessons)
             } catch (lessonError) {
               console.warn('Could not fetch lessons:', lessonError)
@@ -95,9 +91,6 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
     fetchCourseAndLessons()
   }, [params.id, jwt])
 
-
-
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -105,19 +98,18 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
       </div>
     )
   }
-  console.log(formData, "formdata")
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="w-full mx-auto">
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Course Details</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Chi tiết khóa học</h1>
             <button
               onClick={() => router.back()}
               className="flex items-center text-gray-600 hover:text-gray-900"
             >
-              <FiX className="w-5 h-5 mr-1" />
-              Back
+              <ChevronLeft className="w-5 h-5 mr-1" />
+              Quay lại
             </button>
           </div>
 
@@ -139,7 +131,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Course Information
+                Thông tin khóa học
               </button>
               <button
                 onClick={() => setActiveTab('lessons')}
@@ -159,7 +151,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="col-span-2">
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Course Name
+                    Tên khóa học
                   </label>
                   <Input
                     type="text"
@@ -172,15 +164,14 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
 
                 <div className="col-span-2">
                   <label htmlFor="descriptions" className="block text-sm font-medium text-gray-700 mb-1">
-                    Description
+                    Mô tả
                   </label>
-                  <textarea
+                  <Textarea
                     id="descriptions"
                     name="descriptions"
                     value={formData.descriptions}
                     readOnly
-                    rows={4}
-                    className="block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm"
+                    rows={5}
                   />
                 </div>
                 <div>
@@ -198,23 +189,23 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                 </div>
                 <div>
                   <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
-                    Difficulty Level
+                    Độ khó
                   </label>
                   <Select value={formData.difficulty} disabled>
                     <SelectTrigger className="bg-gray-50">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="easy">Easy</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="hard">Hard</SelectItem>
+                      <SelectItem value="easy">Dễ</SelectItem>
+                      <SelectItem value="medium">Trung bình</SelectItem>
+                      <SelectItem value="hard">Khó</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                    Price ($)
+                    Giá ($)
                   </label>
                   <Input
                     type="number"
@@ -230,12 +221,12 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
           ) : (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-medium text-gray-900">Course Lessons</h2>
+                <h2 className="text-lg font-medium text-gray-900">Bài học</h2>
               </div>
 
               {lessons.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
-                  <p className="text-gray-500">No lessons available.</p>
+                  <p className="text-gray-500">Không có bài học.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -251,7 +242,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
                       <div className="grid grid-cols-1 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Lesson Title
+                            Tiêu đề bài học
                           </label>
                           <Input
                             type="text"
@@ -262,9 +253,9 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Content
+                            Nội dung
                           </label>
-                          <textarea
+                          <Textarea
                             value={lesson.content || ''}
                             readOnly
                             rows={3}

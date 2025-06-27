@@ -388,17 +388,17 @@ const InstructorCoursesPage = () => {
                   </span>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex justify-end gap-2">
                   <Link
                     href={`/dashboard/instructor/courses/${course.id}/edit`}
-                    className="flex-1 bg-blue-600 text-white text-sm py-2 px-3 rounded hover:bg-blue-700 transition-colors flex items-center justify-center"
+                    className="h-9 w-9 border border-indigo-800 text-indigo-800 bg-indigo-50 flex items-center justify-center rounded-sm"
+                    title="Edit course"
                   >
-                    <FiEdit2 className="w-4 h-4 mr-1" />
-                    Edit
+                    <FiEdit2 className="w-4 h-4" />
                   </Link>
                   <button
                     onClick={() => openDeleteDialog(course.id, course.name)}
-                    className="px-3 py-2 bg-red-100 text-red-800 text-sm rounded hover:bg-red-200 transition-colors"
+                    className="h-9 w-9 border border-red-800 text-red-800 bg-red-50 flex items-center justify-center rounded-sm"
                     title="Delete course"
                   >
                     <FiTrash2 className="w-4 h-4" />

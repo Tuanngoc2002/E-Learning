@@ -385,21 +385,22 @@ const AdminCoursesPage = () => {
                     <div className="flex justify-end gap-2">
                       <Link
                         href={`/dashboard/admin/courses/${course.id}/edit`}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="h-9 w-9 border border-indigo-800 text-indigo-800 bg-indigo-50 flex items-center justify-center rounded-sm"
                         title="Sửa khóa học"
                       >
                         <FiEdit2 className="w-4 h-4" />
                       </Link>
                       <button
-                        onClick={() => handlePublishToggle(course.id, course.isPublished)}
-                        className={`${course.isPublished ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`}
+                        onClick={() => handlePublishToggle(course.id, course.isPublished)
+                        }
+                        className={`${course.isPublished ? 'h-9 w-9 border border-amber-800 text-amber-800 bg-amber-50 flex items-center justify-center rounded-sm' : 'h-9 w-9 border border-green-800 text-green-800 bg-green-50 flex items-center justify-center rounded-sm'}`}
                         title={course.isPublished ? 'Bỏ xuất bản khóa học' : 'Xuất bản khóa học'}
                       >
                         {course.isPublished ? <FiEyeOff className="w-4 h-4" /> : <FiEye className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={() => openDeleteDialog(course.id, course.name)}
-                        className="text-red-600 hover:text-red-900"
+                        className="h-9 w-9 border border-red-800 text-red-800 bg-red-50 flex items-center justify-center rounded-sm"
                         title="Xóa khóa học"
                       >
                         <FiTrash2 className="w-4 h-4" />
