@@ -75,7 +75,6 @@ const LessonPage = () => {
     );
   }
 
-  // Handle not enrolled state
   if (!isEnrolled) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -92,7 +91,6 @@ const LessonPage = () => {
     );
   }
 
-  // Handle lesson not found
   if (!currentLesson) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -151,7 +149,6 @@ const LessonPage = () => {
     }
   };
 
-  // Sort lessons by ID in ascending order
   const sortedLessons = lessons ? [...lessons].sort((a, b) => a.id - b.id) : [];
 
   return (
@@ -168,8 +165,7 @@ const LessonPage = () => {
           </button>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Video and Description (2/3 width) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2 space-y-6">
               {/* Video Section */}
               <div className="bg-white rounded-xl shadow-lg overflow-hidden">

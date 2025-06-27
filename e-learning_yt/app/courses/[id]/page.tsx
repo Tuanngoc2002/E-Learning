@@ -1080,13 +1080,13 @@ const CourseDetailPage = () => {
       )}
 
       {/* Floating Chat Icon - Fixed to bottom right */}
-      <div className="fixed bottom-24 right-6 z-50">
+      <div className="fixed bottom-24 right-8 z-50">
         {!showChatBox ? (
           <button
             onClick={() => setShowChatBox(true)}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white h-11 w-11 flex items-center justify-center rounded-full shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
           >
-            <FaCommentDots className="w-6 h-6" />
+            <FaCommentDots className="w-5 h-5" />
           </button>
         ) : (
           <div className="bg-white rounded-lg shadow-2xl w-80 sm:w-96 border border-gray-200">

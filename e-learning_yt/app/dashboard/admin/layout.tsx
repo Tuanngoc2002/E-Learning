@@ -68,9 +68,12 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="min-h-screen pt-[66px] bg-gray-50">
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-64 min-h-screen bg-white shadow-lg border-r">
+        <div 
+          className="w-64 shadow-lg border-r sticky top-[66px] flex flex-col" 
+          style={{ height: 'calc(100vh - 66px)' }}
+        >
           {/* User Profile Section */}
-          <div className="px-6 h-[90px] max-h-[90px] flex items-center justify-start border-b bg-gradient-to-r from-blue-600 to-purple-600">
+          <div className="px-6 h-[90px] max-h-[90px] flex items-center justify-start border-b bg-gradient-to-r from-blue-600 to-purple-600 flex-shrink-0">
             <div className="flex items-center space-x-3">
               <div className="relative w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
                 <FiShield className="w-6 h-6 text-white" />
@@ -83,7 +86,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
 
           {/* Navigation */}
-          <nav className="p-4">
+          <nav className="p-4 flex-1">
             <div className="space-y-1">
               {adminNavigation.map((item) => (
                 <Link
@@ -103,7 +106,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           </nav>
 
           {/* Logout Section */}
-          <div className="absolute bottom-0 w-64 p-4 border-t bg-gray-50">
+          <div className="p-4 border-t bg-gray-50 flex-shrink-0">
             <button
               onClick={handleLogout}
               className="flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg w-full transition-colors"
