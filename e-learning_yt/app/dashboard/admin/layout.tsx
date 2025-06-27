@@ -62,7 +62,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
-  }
+  } 
 
   return (
     <div className="min-h-screen pt-[66px] bg-gray-50">

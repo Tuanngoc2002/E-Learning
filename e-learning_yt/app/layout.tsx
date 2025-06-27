@@ -8,6 +8,8 @@ import ResponsiveNav from "@/components/organisms/ResponsiveNav";
 import Footer from "@/components/organisms/Footer";
 import ScrollToTop from "@/components/Helper/ScrollToTop";
 import { usePathname } from 'next/navigation';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const font = Space_Grotesk({
   weight: ["300", "400", "500", "600", "700"],
@@ -25,6 +27,18 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
       {children}
       {!isAuthPage && <Footer />}
       <ScrollToTop />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </ApolloProvider>
   );
 };

@@ -157,7 +157,7 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
                   </div>
                   <span className="text-indigo-600 font-semibold text-sm group-hover:translate-x-2 transition-all duration-300 flex items-center space-x-1">
                     <span>Learn More</span>
-                    <span className="transform group-hover:rotate-12 transition-transform duration-300">→</span>
+                    <span className="duration-300">→</span>
                   </span>
                 </div>
               </div>

@@ -7,6 +7,7 @@ import { CgClose } from 'react-icons/cg';
 import { FiUser, FiChevronDown, FiLogOut, FiSettings } from 'react-icons/fi';
 import { useRouter, usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
+import Image from 'next/image';
 
 const navLinks = [
   { id: 1, label: 'Trang chủ', url: '/' },
@@ -122,7 +123,9 @@ const ResponsiveNav = () => {
         <div className="flex items-center h-full justify-between w-full max-w-6xl mx-auto">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-white">
-            EduLearn
+            <Image 
+            draggable={false}
+            src="/images/logo.svg" alt="logo" width={100} height={100} className='h-12 w-auto object-contain' />
           </Link>
 
           {/* NavLinks */}
