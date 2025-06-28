@@ -358,7 +358,7 @@ export default function CreateCoursePage() {
                   <span className="block text-sm text-slate-500 mb-4">
                     PNG, JPG, GIF tối đa 5MB
                   </span>
-                  <Button type="button" variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
+                  <Button type="button" variant="outline" onClick={() => document.getElementById('course-image')?.click()} className="border-blue-200 text-blue-600 hover:bg-blue-50">
                     <FiUpload className="w-4 h-4 mr-2" />
                     Tải ảnh lên
                   </Button>
@@ -448,7 +448,7 @@ export default function CreateCoursePage() {
 
               <div>
                 <label htmlFor="price" className="block text-sm font-medium text-slate-700 mb-2">
-                  Giá <span className="text-red-500">*</span>
+                  Giá
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -460,9 +460,7 @@ export default function CreateCoursePage() {
                     name="price"
                     value={formData.price}
                     onChange={handleChange}
-                    required
                     min="0"
-                    step="1000"
                     className="pl-8 bg-slate-50 border-slate-200 focus:bg-white transition-all"
                     placeholder="0"
                   />
