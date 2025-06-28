@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Category } from '@/types'
 
 interface CourseFormData {
   name: string
@@ -24,6 +25,7 @@ interface CourseFormData {
   isPublished: boolean
   organizationID: string
   prestige?: number | string
+  categoryId?: number | string
   lessons: {
     title: string
     content: string | null
@@ -52,6 +54,7 @@ interface Course {
 export default function CreateCoursePage() {
   const router = useRouter()
   const [courses, setCourses] = useState<Course[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -64,6 +67,7 @@ export default function CreateCoursePage() {
     isPublished: false,
     organizationID: '',
     prestige: '',
+    categoryId: '',
     lessons: [],
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -95,6 +99,34 @@ export default function CreateCoursePage() {
 
     if (jwt) {
       fetchCourses();
+    }
+  }, [jwt]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
+          {
+            headers: {
+              'Authorization': `Bearer ${jwt}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+
+        const data = await response.json();
+        setCategories(data.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    if (jwt) {
+      fetchCategories();
     }
   }, [jwt]);
 
@@ -182,6 +214,7 @@ export default function CreateCoursePage() {
         instructor: user?.id,
         organizationID: organizationID,
         prestige: formData.prestige || null,
+        category: formData.categoryId || null,
         image: imageId, // Add image ID to course data
         lessons: validLessons.map((lesson, index) => ({
           title: lesson.title.trim(),
@@ -220,6 +253,7 @@ export default function CreateCoursePage() {
         isPublished: false,
         organizationID: '',
         prestige: '',
+        categoryId: '',
         lessons: [],
       })
       setSelectedImage(null)
@@ -442,6 +476,24 @@ export default function CreateCoursePage() {
                         {course.name} - {course.instructor?.username || 'Chưa xác định'}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label htmlFor="category" className="block text-sm font-medium text-slate-700 mb-2">
+                  Danh Mục
+                </label>
+                <Select value={formData.categoryId?.toString() || "none"} onValueChange={(value) => setFormData(prev => ({ ...prev, categoryId: value === "none" ? "" : value }))}>
+                  <SelectTrigger className="bg-slate-50 border-slate-200 focus:bg-white">
+                    <SelectValue placeholder="Chọn danh mục" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Không có</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id.toString()}>
+                        {category.type}
+                      </SelectItem> 
+                    ))} 
                   </SelectContent>
                 </Select>
               </div>

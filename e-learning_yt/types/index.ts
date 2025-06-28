@@ -7,14 +7,12 @@ export interface Image {
 }
 
 export interface Category {
-  id: string;
-  attributes: {
-    name: string;
-    slug: string;
-    courses?: {
-      data: Course[];
-    };
-  };
+  id: number;
+  documentId: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
 }
 
 export interface Instructor {

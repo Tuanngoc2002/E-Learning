@@ -182,13 +182,14 @@ export default factories.createCoreController('api::course.course', ({ strapi })
   },
   async create(ctx) {
     try {
-      const { lessons, instructor, ...courseData } = ctx.request.body.data;
+      const { lessons, instructor, category, ...courseData } = ctx.request.body.data;
   
       // 1. Tạo course trước
       const newCourse = await strapi.entityService.create('api::course.course', {
         data: {
           ...courseData,
           instructor: instructor?.id || instructor,
+          category: category || null,
         },
       });
   
@@ -220,10 +221,11 @@ export default factories.createCoreController('api::course.course', ({ strapi })
         },
       });
   
-      // 4. Lấy lại Course, populate instructor
+      // 4. Lấy lại Course, populate instructor và category
       const courseInfo = await strapi.entityService.findOne('api::course.course', newCourse.id, {
         populate: {
           instructor: true,
+          category: true,
         },
       });
   
