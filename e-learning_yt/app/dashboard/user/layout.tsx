@@ -28,8 +28,8 @@ const userNavigation: NavItem[] = [
   { label: 'Bảng điều khiển', icon: <FiHome className="w-5 h-5" />, href: '/dashboard/user' },
   { label: 'Khóa học của tôi', icon: <FiBook className="w-5 h-5" />, href: '/dashboard/user/courses' },
   { label: 'Khám phá khóa học', icon: <FiTrendingUp className="w-5 h-5" />, href: '/courses' },
-  { label: 'Tiến trình học tập', icon: <FiPlay className="w-5 h-5" />, href: '/dashboard/user/progress' },
-  { label: 'Chứng chỉ', icon: <FiAward className="w-5 h-5" />, href: '/dashboard/user/certificates' },
+  // { label: 'Tiến trình học tập', icon: <FiPlay className="w-5 h-5" />, href: '/dashboard/user/progress' },
+  // { label: 'Chứng chỉ', icon: <FiAward className="w-5 h-5" />, href: '/dashboard/user/certificates' },
   { label: 'Tin nhắn', icon: <FiMessageCircle className="w-5 h-5" />, href: '/dashboard/user/messages' },
   { label: 'Hồ sơ cá nhân', icon: <FiUser className="w-5 h-5" />, href: '/dashboard/user/profile' },
   {

@@ -375,29 +375,29 @@ const CourseDetailPage = () => {
                       <p className="font-medium">
                         {course?.instructor?.username}
                       </p>
-                      <p className="text-sm text-gray-500">Instructor</p>
+                      <p className="text-sm text-gray-500">Giáo viên</p>
                     </div>
                   </div>
                   <div className="border-t border-gray-200 pt-4">
                     <h3 className="text-lg font-semibold mb-2">
-                      What you&apos;ll learn
+                      Bạn sẽ học được gì
                     </h3>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       <li className="flex items-start">
                         <span className="text-green-500 mr-2">✓</span>
-                        <span>Comprehensive understanding of the subject</span>
+                        <span>Hiểu biết sâu sắc về chủ đề</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-green-500 mr-2">✓</span>
-                        <span>Practical skills you can apply immediately</span>
+                        <span>Kỹ năng thực tế bạn có thể áp dụng ngay lập tức</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-green-500 mr-2">✓</span>
-                        <span>Access to course materials for life</span>
+                        <span>Truy cập vào tài liệu khóa học trọn đời</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-green-500 mr-2">✓</span>
-                        <span>Certificate of completion</span>
+                        <span>Chứng chỉ hoàn thành</span>
                       </li>
                     </ul>
                   </div>
@@ -579,12 +579,16 @@ const CourseDetailPage = () => {
                           </div>
                         </div>
                         <div className="flex items-center">
+                          {isEnrolled ? (
                           <Link
                             href={`/courses/${courseId}/exam`}
                             className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
                           >
                             Làm bài kiểm tra
                           </Link>
+                          ) : (
+                            <FaLock className="text-gray-400" />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1016,7 +1020,7 @@ const CourseDetailPage = () => {
 
           {course && (
             <div className="mx-auto py-4">
-              <h2 className="text-2xl font-bold mb-6">Recommended Courses</h2>
+              <h2 className="text-2xl font-bold mb-6">Khóa học đề xuất</h2>
               <RecommendedCourses courseId={course.id} />
             </div>
           )}
@@ -1033,23 +1037,23 @@ const CourseDetailPage = () => {
                   <FaCheck className="text-green-500 text-2xl" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">
-                  Successfully Enrolled!
+                  Đăng ký thành công!
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  You are now enrolled in this course.
+                  Bạn đã đăng ký khóa học này.
                 </p>
                 <button
                   onClick={() => setShowEnrollmentModal(false)}
                   className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
                 >
-                  Continue to Course
+                  Tiếp tục khóa học
                 </button>
               </div>
             ) : (
               <>
-                <h3 className="text-xl font-bold mb-4">Confirm Enrollment</h3>
+                <h3 className="text-xl font-bold mb-4">Xác nhận đăng ký</h3>
                 <p className="text-gray-600 mb-4">
-                  You are about to enroll in{" "}
+                  Bạn đang muốn đăng ký khóa học{" "}
                   <span className="font-semibold">{course.name}</span> for $
                   {course.price}.
                 </p>
@@ -1058,14 +1062,14 @@ const CourseDetailPage = () => {
                     onClick={() => setShowEnrollmentModal(false)}
                     className="bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300 transition duration-300"
                   >
-                    Cancel
+                    Hủy
                   </button>
                   <button
                     onClick={handleConfirmEnrollment}
                     disabled={enrollmentLoading}
                     className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300 disabled:bg-indigo-400"
                   >
-                    {enrollmentLoading ? "Processing..." : "Confirm Enrollment"}
+                    {enrollmentLoading ? "Đang xử lý..." : "Xác nhận đăng ký"}
                   </button>
                 </div>
               </>
@@ -1090,8 +1094,8 @@ const CourseDetailPage = () => {
                 <div className="flex items-center">
                   <FaCommentDots className="w-5 h-5 mr-2" />
                   <div>
-                    <h3 className="font-semibold text-sm">Course Chat</h3>
-                    <p className="text-xs opacity-90">Ask instructor</p>
+                    <h3 className="font-semibold text-sm">Chat khóa học</h3>
+                    <p className="text-xs opacity-90">Hỏi chuyên gia</p>
                   </div>
                 </div>
                 <button

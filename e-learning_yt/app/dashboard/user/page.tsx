@@ -4,14 +4,12 @@ import React from 'react';
 import Link from 'next/link';
 import { 
   FiBook, 
-  FiPlay, 
   FiStar, 
   FiClock,
   FiAward,
   FiTrendingUp,
-  FiBookmark,
-  FiCalendar,
-  FiTarget
+  FiZap,
+  FiMessageCircle
 } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -26,8 +24,8 @@ const UserDashboard = () => {
   const quickActions = [
     { label: 'Xem khóa học', href: '/courses', icon: <FiTrendingUp className="w-8 h-8" />, color: 'purple' },
     { label: 'Khóa học của tôi', href: '/dashboard/user/courses', icon: <FiBook className="w-8 h-8" />, color: 'blue' },
-    { label: 'Tiến trình học', href: '/dashboard/user/progress', icon: <FiTarget className="w-8 h-8" />, color: 'green' },
-    { label: 'Chứng chỉ', href: '/dashboard/user/certificates', icon: <FiAward className="w-8 h-8" />, color: 'yellow' },
+    { label: 'Tin nhắn', href: '/dashboard/user/messages', icon: <FiMessageCircle className="w-8 h-8" />, color: 'green' },
+    { label: 'Trợ lý AI', href: '/dashboard/user/chatbot', icon: <FiZap className="w-8 h-8" />, color: 'yellow' },
   ];
 
   const currentCourses = [

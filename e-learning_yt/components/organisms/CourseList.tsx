@@ -59,7 +59,9 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
     minPrice,
     maxPrice
   });
-  // coxnst imgUrl = process.env.NEXT_PUBLIC_API_URL + courses[0].image.url;
+
+  // Filter to ensure only published courses are displayed
+  const publishedCourses = courses.filter(course => course.isPublished === true);
 
   // Function to get difficulty badge style
   const getDifficultyBadgeStyle = (difficulty: string) => {
@@ -94,11 +96,23 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
     );
   }
 
+  // Show message if no published courses found
+  if (publishedCourses.length === 0) {
+    return (
+      <div className="min-h-[400px] flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-2 text-gray-800">No Published Courses Found</h2>
+          <p className="text-gray-600">Try adjusting your search criteria or check back later for new courses.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Course Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-        {courses.map((course) => (
+        {publishedCourses.map((course) => (
           <Link
             key={course.id}
             href={`/courses/${course.id}`}
@@ -173,7 +187,7 @@ const CourseList = ({ searchQuery, difficulty, minPrice, maxPrice }: CourseListP
       <Pagination
         page={pagination.page}
         pageSize={pagination.pageSize || 9}
-        total={pagination.total}
+        total={publishedCourses.length > 0 ? pagination.total : 0}
         onPageChange={setCurrentPage}
       />
     </>
