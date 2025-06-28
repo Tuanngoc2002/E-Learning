@@ -50,7 +50,7 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
         setIsLoading(true);
         console.log('🔍 Fetching chat history for course:', courseId);
         const response = await fetch(
-          `http://localhost:1337/api/chat-messages?filters[course][id][$eq]=${courseId}&populate=sender&sort=createdAt:asc`,
+          `https://e-learning-smbe.onrender.com/api/chat-messages?filters[course][id][$eq]=${courseId}&populate=sender&sort=createdAt:asc`,
           {
             headers: {
               'Authorization': `Bearer ${jwt}`
@@ -107,7 +107,7 @@ const ChatBox = ({ courseId, instructorId, currentUserId }: ChatBoxProps) => {
       console.log('📤 Sending message:', { content: message, senderId: currentUserId, receiverId: instructorId, courseId });
       
       // Save message to Strapi
-      const response = await fetch('http://localhost:1337/api/chat-messages', {
+      const response = await fetch('https://e-learning-smbe.onrender.com/api/chat-messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

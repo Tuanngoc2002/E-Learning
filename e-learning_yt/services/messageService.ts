@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { courseService } from './courseService';
 
 // Ensure API URL always includes /api prefix
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
@@ -36,7 +37,6 @@ export const messageService = {
           'filters[receiverId][$eq]': instructorId,
           'populate[sender]': true,
           'populate[receiver]': true,
-          'populate[course]': true,
           'sort': 'createdAt:desc'
         },
         headers: {
@@ -49,16 +49,16 @@ export const messageService = {
 
       // Nhóm messages theo student + course
       messages
-        .filter((message: any) => message && (message.course || message.courseId) && (message.sender || message.senderId)) // Filter out null/undefined messages
+        .filter((message: any) => message && message.courseId && (message.sender || message.senderId)) // Filter out null/undefined messages
         .forEach((message: any) => {
-          const conversationKey = `${message.senderId || message.sender?.id}-${message.courseId || message.course?.id}`;
+          const conversationKey = `${message.senderId || message.sender?.id}-${message.courseId}`;
           if (!conversationsMap.has(conversationKey)) {
             conversationsMap.set(conversationKey, {
               id: conversationKey,
-              courseId: message.courseId || message.course?.id?.toString() || '',
-              courseName: message.course?.name || 'Unknown Course',
+              courseId: message.courseId?.toString() || '',
+              courseName: 'Loading...', // Sẽ được cập nhật sau
               studentId: message.senderId || message.sender?.id?.toString() || '',
-              studentName: message.sender?.username || 'Unknown Student',
+              studentName: message.sender?.username || message.sender?.name || 'Unknown Student',
               lastMessage: message.content || '',
               lastMessageAt: message.createdAt || new Date().toISOString(),
               unreadCount: message.isRead ? 0 : 1,
@@ -76,7 +76,32 @@ export const messageService = {
           }
         });
 
-      return Array.from(conversationsMap.values()).sort((a, b) => 
+      // Lấy thông tin course cho tất cả conversations
+      const conversations = Array.from(conversationsMap.values());
+      const uniqueCourseIds = Array.from(new Set(conversations.map(conv => conv.courseId))) as string[];
+      
+      const courseNameMap = new Map<string, string>();
+      for (const courseId of uniqueCourseIds) {
+        if (courseId) {
+          try {
+            const courseData = await courseService.getCourseById(parseInt(courseId));
+            courseNameMap.set(courseId, courseData.name || 'Unknown Course');
+            console.log(`📚 Course ${courseId}: ${courseData.name}`);
+          } catch (courseError) {
+            console.error(`❌ Error fetching course ${courseId}:`, courseError);
+            courseNameMap.set(courseId, 'Unknown Course');
+          }
+        }
+      }
+
+      // Cập nhật courseName cho tất cả conversations
+      conversations.forEach(conversation => {
+        if (conversation.courseId) {
+          conversation.courseName = courseNameMap.get(conversation.courseId) || 'Unknown Course';
+        }
+      });
+
+      return conversations.sort((a, b) => 
         new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
       );
     } catch (error) {
@@ -93,7 +118,7 @@ export const messageService = {
           'filters[receiver][id][$eq]': studentId,
           'populate[sender]': true,
           'populate[receiver]': true,
-          'populate[course]': true
+          'sort': 'createdAt:desc'
         },
         headers: {
           Authorization: `Bearer ${token}`
@@ -105,7 +130,7 @@ export const messageService = {
       }
 
       const validMessages = response.data.data.filter((message: any) => {
-        const isValid = message && (message.course || message.courseId) && message.sender;
+        const isValid = message && message.courseId && message.sender;
         if (!isValid) {
           console.warn('Filtering out invalid message:', message);
         }
@@ -114,16 +139,38 @@ export const messageService = {
 
       console.log('Valid messages after filtering:', validMessages.length);
 
-      return validMessages.map((message: any) => ({
-        id: message.id?.toString() || '',
-        content: message.content || '',
-        courseId: message.course?.id?.toString() || message.courseId?.toString() || '',
-        courseName: message.course?.name || 'Unknown Course',
-        studentId: message.sender?.id?.toString() || '',
-        studentName: message.sender?.username || 'Unknown Student',
-        createdAt: message.createdAt || new Date().toISOString(),
-        isRead: message.isRead || false
-      }));
+      // Lấy danh sách unique courseIds
+      const uniqueCourseIds = Array.from(new Set(validMessages.map((msg: any) => msg.courseId))) as string[];
+      console.log('Unique course IDs:', uniqueCourseIds);
+
+      // Lấy thông tin course cho tất cả courseIds
+      const courseNameMap = new Map<string, string>();
+      for (const courseId of uniqueCourseIds) {
+        try {
+          const courseData = await courseService.getCourseById(parseInt(courseId));
+          courseNameMap.set(courseId, courseData.name || 'Unknown Course');
+          console.log(`📚 Course ${courseId}: ${courseData.name}`);
+        } catch (courseError) {
+          console.error(`❌ Error fetching course ${courseId}:`, courseError);
+          courseNameMap.set(courseId, 'Unknown Course');
+        }
+      }
+
+      return validMessages.map((message: any) => {
+        const courseId = message.courseId?.toString() || '';
+        const courseName = courseNameMap.get(courseId) || 'Unknown Course';
+
+        return {
+          id: message.id?.toString() || '',
+          content: message.content || '',
+          courseId: courseId,
+          courseName: courseName,
+          studentId: message.sender?.id?.toString() || '',
+          studentName: message.sender?.username || message.sender?.name || 'Unknown Student',
+          createdAt: message.createdAt || new Date().toISOString(),
+          isRead: message.isRead || false
+        };
+      });
     } catch (error) {
       console.error('Error fetching messages:', error);
       throw error;
@@ -138,25 +185,48 @@ export const messageService = {
           'filters[receiver][id][$eq]': instructorId,
           'populate[sender]': true,
           'populate[receiver]': true,
-          'populate[course]': true
+          'sort': 'createdAt:desc'
         },
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
 
-      return response.data.data
-        .filter((message: any) => message && message.course && message.sender) // Filter out null/undefined messages
-        .map((message: any) => ({
+      const validMessages = response.data.data
+        .filter((message: any) => message && message.courseId && message.sender); // Filter out null/undefined messages
+
+      // Lấy danh sách unique courseIds
+      const uniqueCourseIds = Array.from(new Set(validMessages.map((msg: any) => msg.courseId))) as string[];
+      console.log('Unique course IDs for instructor messages:', uniqueCourseIds);
+
+      // Lấy thông tin course cho tất cả courseIds
+      const courseNameMap = new Map<string, string>();
+      for (const courseId of uniqueCourseIds) {
+        try {
+          const courseData = await courseService.getCourseById(parseInt(courseId));
+          courseNameMap.set(courseId, courseData.name || 'Unknown Course');
+          console.log(`📚 Course ${courseId}: ${courseData.name}`);
+        } catch (courseError) {
+          console.error(`❌ Error fetching course ${courseId}:`, courseError);
+          courseNameMap.set(courseId, 'Unknown Course');
+        }
+      }
+
+      return validMessages.map((message: any) => {
+        const courseId = message.courseId?.toString() || '';
+        const courseName = courseNameMap.get(courseId) || 'Unknown Course';
+
+        return {
           id: message.id?.toString() || '',
           content: message.content || '',
-          courseId: message.course?.id?.toString() || '',
-          courseName: message.course?.name || 'Unknown Course',
+          courseId: courseId,
+          courseName: courseName,
           studentId: message.sender?.id?.toString() || '',
-          studentName: message.sender?.username || 'Unknown Student',
+          studentName: message.sender?.username || message.sender?.name || 'Unknown Student',
           createdAt: message.createdAt || new Date().toISOString(),
           isRead: message.isRead || false
-        }));
+        };
+      });
     } catch (error) {
       console.error('Error fetching messages:', error);
       throw error;
@@ -166,6 +236,8 @@ export const messageService = {
   // Lấy toàn bộ cuộc trò chuyện giữa instructor và student cho một course
   getConversation: async (courseId: string, studentId: string, instructorId: string, token: string) => {
     try {
+      console.log('🔍 Fetching conversation with params:', { courseId, studentId, instructorId });
+      
       const response = await axios.get(`${API_URL}/chat-messages`, {
         params: {
           'filters[courseId][$eq]': courseId,
@@ -175,7 +247,6 @@ export const messageService = {
           'filters[$or][1][receiverId][$eq]': studentId,
           'populate[sender]': true,
           'populate[receiver]': true,
-          'populate[course]': true,
           'sort': 'createdAt:asc'
         },
         headers: {
@@ -183,16 +254,30 @@ export const messageService = {
         }
       });
 
-      return response.data.data.map((message: any) => ({
-        id: message.id.toString(),
-        content: message.content,
-        courseId: message.courseId || message.course?.id?.toString(),
-        courseName: message.course?.name || 'Unknown Course',
-        studentId: message.senderId || message.sender?.id?.toString(),
-        studentName: message.sender?.username || 'Unknown Student',
-        createdAt: message.createdAt,
-        isRead: message.isRead || false
-      }));
+      console.log('📨 Raw response data:', response.data.data?.length, 'messages');
+
+      // Lấy thông tin course từ courseService
+      let courseName = 'Unknown Course';
+      try {
+        const courseData = await courseService.getCourseById(parseInt(courseId));
+        courseName = courseData.name || 'Unknown Course';
+        console.log('📚 Course data fetched:', { courseId, courseName });
+      } catch (courseError) {
+        console.error('❌ Error fetching course data:', courseError);
+      }
+
+      return response.data.data.map((message: any) => {
+        return {
+          id: message.id.toString(),
+          content: message.content,
+          courseId: message.courseId || courseId,
+          courseName: courseName, // Sử dụng courseName từ API course
+          studentId: message.senderId || message.sender?.id?.toString(),
+          studentName: message.sender?.username || message.sender?.name || 'Unknown Student',
+          createdAt: message.createdAt,
+          isRead: message.isRead || false
+        };
+      });
     } catch (error) {
       console.error('Error fetching conversation:', error);
       throw error;
