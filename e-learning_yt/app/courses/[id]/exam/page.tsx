@@ -3,6 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useCourseDetail } from '@/hooks/useCourseDetail';
+import Link from 'next/link';
 
 const ExamPage = () => {
   const params = useParams();
@@ -28,12 +29,12 @@ const ExamPage = () => {
         <div className="text-red-600 text-center">
           <h2 className="text-2xl font-bold mb-2">Error</h2>
           <p>{error || 'Exam not found'}</p>
-          <button 
-            onClick={() => router.push(`/courses/${courseId}`)}
+          <Link 
+            href={`/courses/${courseId}`}
             className="mt-4 bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
           >
             Back to Course
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -88,12 +89,12 @@ const ExamPage = () => {
               </p>
             </div>
             <div className="flex justify-center">
-              <button
-                onClick={() => router.push(`/courses/${courseId}`)}
+              <Link
+                href={`/courses/${courseId}`}
                 className="bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition duration-300"
               >
                 Back to Course
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -150,7 +151,7 @@ const ExamPage = () => {
                   : 'bg-indigo-600 text-white hover:bg-indigo-700'
               } transition duration-300`}
             >
-              Previous
+              Trước
             </button>
             {currentQuestionIndex === exam.questions.length - 1 ? (
               <button
@@ -164,7 +165,7 @@ const ExamPage = () => {
                 onClick={handleNextQuestion}
                 className="bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition duration-300"
               >
-                Next
+                Tiếp
               </button>
             )}
           </div>

@@ -19,31 +19,20 @@ const Footer = () => {
         {/* Main Footer Content */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-gray-800">
-            
+
             {/* Company Info */}
             <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="relative w-12 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 p-0.5">
-                  <div className="w-full h-full rounded-xl bg-white flex items-center justify-center">
-                    <Image 
-                      src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1339&q=80" 
-                      alt="EduPlatform Logo" 
-                      width={40} 
-                      height={40}
-                      className="rounded-lg object-cover"
-                    />
-                  </div>
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  EduPlatform
-                </span>
-              </div>
-              
+              <Link href="/" className="text-2xl font-bold text-white">
+                <Image
+                  draggable={false}
+                  src="/images/logo.svg" alt="logo" width={100} height={100} className='h-12 w-auto object-contain' />
+              </Link>
+
               <p className="text-gray-400 leading-relaxed">
-                Empowering minds through innovative education. Join thousands of learners 
+                Empowering minds through innovative education. Join thousands of learners
                 transforming their careers with our cutting-edge courses.
               </p>
-              
+
               {/* Contact Info */}
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors">
@@ -59,7 +48,7 @@ const Footer = () => {
                   <span className="text-sm">San Francisco, CA</span>
                 </div>
               </div>
-              
+
               {/* Social Links */}
               <div className="flex items-center space-x-4">
                 {[
@@ -148,12 +137,12 @@ const Footer = () => {
                 Stay Updated
                 <div className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"></div>
               </h3>
-              
+
               <p className="text-gray-400 text-sm leading-relaxed">
-                Get the latest course updates, learning tips, and exclusive offers 
+                Get the latest course updates, learning tips, and exclusive offers
                 delivered straight to your inbox.
               </p>
-              
+
               <div className="space-y-4">
                 <div className="relative">
                   <input
@@ -162,11 +151,11 @@ const Footer = () => {
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                   />
                 </div>
-                
+
                 <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25">
                   Subscribe Now
                 </button>
-                
+
                 <p className="text-xs text-gray-500">
                   By subscribing, you agree to our Privacy Policy and consent to receive updates.
                 </p>
@@ -200,7 +189,7 @@ const Footer = () => {
                 <Link href="/cookies" className="hover:text-white transition-colors">Cookies</Link>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-2 text-gray-400 text-sm">
               <span>Made with</span>
               <span className="text-red-500 animate-pulse">❤️</span>

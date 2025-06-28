@@ -60,7 +60,7 @@ const testimonials = [
 
 const TestimonialPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       <PageHero
         title="Câu chuyện thành công của học viên"
         description="Khám phá cách nền tảng của chúng tôi đã biến đổi sự nghiệp và cuộc sống của họ."

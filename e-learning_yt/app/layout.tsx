@@ -8,6 +8,9 @@ import ResponsiveNav from "@/components/organisms/ResponsiveNav";
 import Footer from "@/components/organisms/Footer";
 import ScrollToTop from "@/components/Helper/ScrollToTop";
 import { usePathname } from 'next/navigation';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import NextTopLoader from 'nextjs-toploader';
 
 const font = Space_Grotesk({
   weight: ["300", "400", "500", "600", "700"],
@@ -21,10 +24,29 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <ApolloProvider client={client}>
+      <NextTopLoader 
+        color="#3B82F6"
+        showSpinner={false}
+        height={3}
+        speed={200}
+        shadow={false}
+      />
       {!isAuthPage && <ResponsiveNav />}
       {children}
       {!isAuthPage && <Footer />}
       <ScrollToTop />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </ApolloProvider>
   );
 };

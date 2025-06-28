@@ -7,6 +7,15 @@ import { CgClose } from 'react-icons/cg';
 import { FiUser, FiChevronDown, FiLogOut, FiSettings } from 'react-icons/fi';
 import { useRouter, usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
+import Image from 'next/image';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toastSuccess, getVietnameseSuccessMessage } from '@/lib/toast';
 
 const navLinks = [
   { id: 1, label: 'Trang chủ', url: '/' },
@@ -22,7 +31,6 @@ const ResponsiveNav = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState('');
   const [userName, setUserName] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -65,50 +73,52 @@ const ResponsiveNav = () => {
     setIsAuthenticated(false);
     setUserRole('');
     setUserName('');
+    toastSuccess(getVietnameseSuccessMessage('Logout successful'));
     router.push('/');
   };
 
   const navOpen = showNav ? 'translate-x-0' : 'translate-x-[-100%]';
 
   const UserMenu = () => (
-    <div className="relative">
-      <button
-        onClick={() => setShowDropdown(!showDropdown)}
-        className="flex items-center space-x-2 focus:outline-none"
-      >
-        <div className="relative w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-          <FiUser className="w-5 h-5 text-gray-600" />
-        </div>
-        <span className="text-white">{userName}</span>
-        <FiChevronDown className={`w-4 h-4 text-white transition-transform ${showDropdown ? 'transform rotate-180' : ''}`} />
-      </button>
-
-      {showDropdown && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="flex items-center space-x-2 focus:outline-none hover:opacity-80 transition-opacity">
+          <div className="relative w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
+            <Image src={`/images/${userRole}.webp`} alt="avatar" width={100} height={100} className='rounded-full h-full w-full object-cover' />
+          </div>
+          <span className="text-white">{userName}</span>
+          <FiChevronDown className="w-4 h-4 text-white" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuItem asChild>
           <Link
             href={`/dashboard/${userRole}`}
-            className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+            className="flex items-center cursor-pointer"
           >
             <FiUser className="w-4 h-4 mr-2" />
             Dashboard
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link
             href="/profile"
-            className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+            className="flex items-center cursor-pointer"
           >
             <FiSettings className="w-4 h-4 mr-2" />
             Settings
           </Link>
-          <button
-            onClick={handleLogout}
-            className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-gray-100"
-          >
-            <FiLogOut className="w-4 h-4 mr-2" />
-            Logout
-          </button>
-        </div>
-      )}
-    </div>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem 
+          onClick={handleLogout}
+          className="flex items-center cursor-pointer text-red-600 focus:text-red-600"
+        >
+          <FiLogOut className="w-4 h-4 mr-2" />
+          Đăng xuất
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 
   return (
@@ -122,7 +132,9 @@ const ResponsiveNav = () => {
         <div className="flex items-center h-full justify-between w-full max-w-6xl mx-auto">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-white">
-            EduLearn
+            <Image 
+            draggable={false}
+            src="/images/logo.svg" alt="logo" width={100} height={100} className='h-12 w-auto object-contain' />
           </Link>
 
           {/* NavLinks */}
@@ -188,8 +200,8 @@ const ResponsiveNav = () => {
           {isAuthenticated ? (
             <div className="flex flex-col space-y-4 ml-12">
               <div className="flex items-center space-x-2 border-b-[1.5px] pb-2 border-white">
-                <div className="relative w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <FiUser className="w-5 h-5 text-gray-600" />
+                <div className="relative w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
+                <Image src={`/images/${userRole}.webp`} alt="avatar" width={100} height={100} className='rounded-full h-full w-full object-cover' />
                 </div>
                 <span className="text-[20px] sm:text-[30px]">{userName}</span>
               </div>
@@ -207,7 +219,7 @@ const ResponsiveNav = () => {
                 onClick={handleLogout}
                 className="text-[20px] text-left border-b-[1.5px] pb-2 border-white sm:text-[30px] text-red-400 hover:text-red-300 transition-colors duration-300"
               >
-                Logout
+                Đăng xuất
               </button>
             </div>
           ) : (

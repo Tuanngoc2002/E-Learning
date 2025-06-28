@@ -7,6 +7,8 @@ import { FaCommentDots, FaUser, FaBook, FaReply } from 'react-icons/fa';
 import { messageService, Message } from '@/services/messageService';
 import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
+import { X } from 'lucide-react';
+import Link from 'next/link';
 
 const socket = io('http://localhost:4000');
 
@@ -23,15 +25,18 @@ const UserMessagesPage = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       if (!jwt || !user?.id) {
+        console.log('Missing auth data:', { jwt: !!jwt, userId: user?.id });
         setLoading(false);
         return;
       }
 
       try {
-        console.log(user.id);
+        console.log('Fetching messages for user:', user?.id);
         const fetchedMessages = await messageService.getStudentMessages(user.id, jwt);
+        console.log('Fetched messages:', fetchedMessages);
         setMessages(fetchedMessages);
       } catch (err) {
+        console.error('Error in fetchMessages:', err);
         setError('Không thể tải tin nhắn. Vui lòng thử lại sau.');
         toast.error('Không thể tải tin nhắn. Vui lòng thử lại sau.');
       } finally {
@@ -75,12 +80,12 @@ const UserMessagesPage = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center p-8 bg-white rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">Bạn cần đăng nhập để xem tin nhắn</h2>
-          <button 
-            onClick={() => router.push('/login')}
+          <Link 
+            href='/login'
             className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700"
           >
             Đăng nhập
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -117,8 +122,6 @@ const UserMessagesPage = () => {
           )
         );
       } catch (error) {
-        console.error('Error marking message as read:', error);
-        toast.error('Không thể đánh dấu tin nhắn đã đọc');
       }
     }
   };
@@ -158,7 +161,6 @@ const UserMessagesPage = () => {
       setReplyContent('');
       toast.success('Phản hồi đã được gửi thành công');
     } catch (error) {
-      console.error('Error sending reply:', error);
       toast.error('Không thể gửi phản hồi. Vui lòng thử lại sau.');
     }
   };
@@ -183,14 +185,12 @@ const UserMessagesPage = () => {
   }
 
   return (
-    <div className="min-h-screen pt-[66px] bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Tin nhắn từ học viên</h1>
-        
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Messages List */}
           <div className="md:col-span-1 bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-4 border-b">
+            <div className="p-4 border-b h-[60px]">
               <h2 className="text-xl font-semibold">Danh sách cuộc trò chuyện</h2>
             </div>
             <div className="divide-y">
@@ -230,17 +230,17 @@ const UserMessagesPage = () => {
           <div className="md:col-span-2 bg-white rounded-lg shadow-md">
             {selectedMessage ? (
               <>
-                <div className="p-4 border-b">
+                <div className="p-4 border-b h-[60px]">
                   <div className="flex justify-between items-center">
-                    <div>
+                    <div className='flex gap-2 items-center'>
                       <h2 className="text-xl font-semibold">{selectedMessage.studentName}</h2>
-                      <p className="text-sm text-gray-500">{selectedMessage.courseName}</p>
+                      <p className="text-sm text-gray-500">({selectedMessage.courseName})</p>
                     </div>
                     <button
                       onClick={() => setSelectedMessage(null)}
                       className="text-gray-500 hover:text-gray-700"
                     >
-                      ×
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

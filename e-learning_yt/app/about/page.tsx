@@ -36,7 +36,7 @@ const team = [
 
 const AboutPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <div className="min-h-screen pt-[66px] bg-gray-50">
       <PageHero
         title="Biến đổi giáo dục kĩ thuật số"
         description="Chúng tôi đang trong quá trình phát triển nền tảng học tập kĩ thuật số đến với mọi người,mọi nơi trên thế giới."

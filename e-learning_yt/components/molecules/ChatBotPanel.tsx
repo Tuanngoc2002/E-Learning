@@ -1,4 +1,5 @@
 "use client";
+import { Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 export default function ChatbotPanel() {
@@ -121,10 +122,11 @@ export default function ChatbotPanel() {
         />
         <button
           onClick={handleSend}
-          className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm shadow hover:bg-purple-700 transition"
+          className="bg-purple-600 flex items-center font-semibold gap-2 w-fit flex-shrink-0 text-white px-4 py-2 rounded-full text-sm shadow hover:bg-purple-700 transition"
           disabled={isLoading}
         >
           Gửi
+          <Send className="w-4 h-4" />
         </button>
       </div>
     </div>

@@ -22,6 +22,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
+import Link from 'next/link';
 
 interface Course {
   id: number;
@@ -217,13 +219,13 @@ const InstructorCoursesPage = () => {
             <h1 className="text-3xl font-bold text-gray-900">My Courses</h1>
             <p className="text-gray-600 mt-2">Manage your course content and track student progress</p>
           </div>
-          <button
-            onClick={() => router.push('/dashboard/instructor/courses/new')}
+          <Link
+            href='/dashboard/instructor/courses/new'
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <FiPlus className="w-5 h-5 mr-2" />
             Create New Course
-          </button>
+          </Link>
         </div>
 
         {error && (
@@ -386,17 +388,17 @@ const InstructorCoursesPage = () => {
                   </span>
                 </div>
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => router.push(`/dashboard/instructor/courses/${course.id}/edit`)}
-                    className="flex-1 bg-blue-600 text-white text-sm py-2 px-3 rounded hover:bg-blue-700 transition-colors flex items-center justify-center"
+                <div className="flex justify-end gap-2">
+                  <Link
+                    href={`/dashboard/instructor/courses/${course.id}/edit`}
+                    className="h-9 w-9 border border-indigo-800 text-indigo-800 bg-indigo-50 flex items-center justify-center rounded-sm"
+                    title="Edit course"
                   >
-                    <FiEdit2 className="w-4 h-4 mr-1" />
-                    Edit
-                  </button>
+                    <FiEdit2 className="w-4 h-4" />
+                  </Link>
                   <button
                     onClick={() => openDeleteDialog(course.id, course.name)}
-                    className="px-3 py-2 bg-red-100 text-red-800 text-sm rounded hover:bg-red-200 transition-colors"
+                    className="h-9 w-9 border border-red-800 text-red-800 bg-red-50 flex items-center justify-center rounded-sm"
                     title="Delete course"
                   >
                     <FiTrash2 className="w-4 h-4" />
@@ -414,51 +416,24 @@ const InstructorCoursesPage = () => {
             <p className="text-gray-500 mb-4">
               {searchTerm ? 'Try adjusting your search criteria.' : 'Get started by creating your first course.'}
             </p>
-            <button
-              onClick={() => router.push('/dashboard/instructor/courses/new')}
+            <Link
+              href='/dashboard/instructor/courses/new'
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
             >
               <FiPlus className="w-5 h-5 mr-2" />
               Create Your First Course
-            </button>
+            </Link>
           </div>
         )}
 
         {/* Pagination */}
         {pagination.pageCount > 1 && (
-          <div className="mt-6 flex justify-center">
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-              <button
-                onClick={() => fetchCourses(pagination.page - 1, searchTerm, filterDifficulty, filterStatus)}
-                disabled={pagination.page === 1}
-                className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              
-              {Array.from({ length: pagination.pageCount }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => fetchCourses(page, searchTerm, filterDifficulty, filterStatus)}
-                  className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                    page === pagination.page
-                      ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              
-              <button
-                onClick={() => fetchCourses(pagination.page + 1, searchTerm, filterDifficulty, filterStatus)}
-                disabled={pagination.page === pagination.pageCount}
-                className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </nav>
-          </div>
+          <Pagination
+            page={pagination.page}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            onPageChange={(page) => fetchCourses(page, searchTerm, filterDifficulty, filterStatus)}
+          />
         )}
 
         {/* Delete Confirmation Dialog */}

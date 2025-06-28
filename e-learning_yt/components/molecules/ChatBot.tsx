@@ -76,7 +76,7 @@ export default function ChatbotButton() {
     <div>
       <button
         onClick={() => setShowChatBox(true)}
-        className="fixed bottom-[173px] right-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-110 z-50"
+        className="fixed bottom-[160px] right-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white h-11 w-11 flex items-center justify-center rounded-full shadow-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-110 z-50"
       >
         <FaRobot className="w-6 h-6" />
       </button>

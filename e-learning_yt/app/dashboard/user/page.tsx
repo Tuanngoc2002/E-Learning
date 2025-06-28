@@ -43,6 +43,36 @@ const UserDashboard = () => {
   ];
   const { user } = useAuth();
 
+  const getStatCardGradient = (color: string) => {
+    const gradients = {
+      purple: 'from-purple-500 to-purple-600',
+      green: 'from-green-500 to-green-600', 
+      blue: 'from-blue-500 to-blue-600',
+      yellow: 'from-yellow-500 to-yellow-600'
+    };
+    return gradients[color as keyof typeof gradients] || 'from-gray-500 to-gray-600';
+  };
+
+  const getActionCardGradient = (color: string) => {
+    const gradients = {
+      purple: 'from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200',
+      blue: 'from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200',
+      green: 'from-green-50 to-green-100 hover:from-green-100 hover:to-green-200',
+      yellow: 'from-yellow-50 to-yellow-100 hover:from-yellow-100 hover:to-yellow-200'
+    };
+    return gradients[color as keyof typeof gradients] || 'from-gray-50 to-gray-100';
+  };
+
+  const getIconGradient = (color: string) => {
+    const gradients = {
+      purple: 'from-purple-500 to-purple-600',
+      blue: 'from-blue-500 to-blue-600',
+      green: 'from-green-500 to-green-600',
+      yellow: 'from-yellow-500 to-yellow-600'
+    };
+    return gradients[color as keyof typeof gradients] || 'from-gray-500 to-gray-600';
+  };
+
   return (
     <div>
       {/* Page Header */}
@@ -52,38 +82,66 @@ const UserDashboard = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-sm border p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
-                <p className="text-sm mt-1 text-green-600">{stat.change}</p>
-              </div>
-              <div className={`p-3 rounded-lg bg-${stat.color}-100 text-${stat.color}-600`}>
-                {stat.icon}
+          <div key={index} className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group">
+            {/* Background gradient overlay */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${getStatCardGradient(stat.color)} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+            
+            <div className="relative p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
+                  <p className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</p>
+                  <div className="flex items-center">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      {stat.change}
+                    </span>
+                  </div>
+                </div>
+                <div className={`p-4 rounded-xl bg-gradient-to-br ${getStatCardGradient(stat.color)} shadow-lg transform group-hover:scale-110 transition-transform duration-300`}>
+                  <div className="text-white">
+                    {stat.icon}
+                  </div>
+                </div>
               </div>
             </div>
+            
+            {/* Bottom accent line */}
+            <div className={`h-1 bg-gradient-to-r ${getStatCardGradient(stat.color)}`}></div>
           </div>
         ))}
       </div>
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Hành động nhanh</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Hành động nhanh</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {quickActions.map((action, index) => (
             <Link 
               key={index}
               href={action.href}
-              className="bg-white rounded-lg shadow-sm border p-6 hover:shadow-md transition-shadow group"
+              className={`relative bg-gradient-to-br ${getActionCardGradient(action.color)} rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-white/50 overflow-hidden group`}
             >
-              <div className="flex flex-col items-center text-center">
-                <div className={`p-4 rounded-lg bg-${action.color}-100 text-${action.color}-600 group-hover:bg-${action.color}-200 transition-colors mb-4`}>
-                  {action.icon}
+              {/* Shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              
+              <div className="relative p-8">
+                <div className="flex flex-col items-center text-center">
+                  <div className={`relative p-5 rounded-2xl bg-gradient-to-br ${getIconGradient(action.color)} shadow-lg mb-4 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                    <div className="text-white">
+                      {action.icon}
+                    </div>
+                    {/* Icon glow effect */}
+                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getIconGradient(action.color)} blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300`}></div>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 text-lg group-hover:text-gray-700 transition-colors duration-300">{action.label}</h3>
+                  
+                  {/* Arrow indicator */}
+                  <div className="mt-3 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                    <div className={`w-8 h-0.5 bg-gradient-to-r ${getIconGradient(action.color)} rounded-full`}></div>
+                  </div>
                 </div>
-                <h3 className="font-medium text-gray-900">{action.label}</h3>
               </div>
             </Link>
           ))}

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { FiBook, FiClock, FiPlay, FiPlus, FiSearch, FiCheck, FiArrowRight, FiLock, FiStar } from 'react-icons/fi';
 import { useAuth } from '@/hooks/useAuth';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Course {
   id: number;
@@ -492,13 +493,13 @@ const UserCoursesPage = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Khóa học của tôi</h1>
-          <button
-            onClick={() => router.push('/courses')}
+          <Link
+            href='/courses'
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <FiPlus className="w-5 h-5 mr-2" />
             Xem tất cả khóa học
-          </button>
+          </Link>
         </div>
 
         {error && (

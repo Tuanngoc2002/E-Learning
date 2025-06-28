@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { ChevronLeft } from 'lucide-react';
+import Link from 'next/link';
 
 const LessonPage = () => {
   const params = useParams();
@@ -75,36 +76,34 @@ const LessonPage = () => {
     );
   }
 
-  // Handle not enrolled state
   if (!isEnrolled) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-xl mb-4">Bạn cần đăng ký khóa học để truy cập các bài học.</p>
-          <button
-            onClick={() => router.push(`/courses/${courseId}`)}
+          <Link
+            href={`/courses/${courseId}`}
             className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-300"
           >
             Đến trang khóa học
-          </button>
+          </Link>
         </div>
       </div>
     );
   }
 
-  // Handle lesson not found
   if (!currentLesson) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-red-600 text-center">
           <h2 className="text-2xl font-bold mb-2">Không tìm thấy bài học</h2>
           <p>Bài học bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
-          <button
-            onClick={() => router.push(`/courses/${courseId}`)}
+          <Link
+            href={`/courses/${courseId}`}
             className="mt-4 bg-indigo-600 text-white py-2 px-4 rounded-full hover:bg-indigo-700 transition duration-300"
           >
             Quay lại khóa học
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -151,7 +150,6 @@ const LessonPage = () => {
     }
   };
 
-  // Sort lessons by ID in ascending order
   const sortedLessons = lessons ? [...lessons].sort((a, b) => a.id - b.id) : [];
 
   return (
@@ -159,17 +157,16 @@ const LessonPage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Back Button */}
-          <button
-            onClick={() => router.push(`/courses/${courseId}`)}
+          <Link
+            href={`/courses/${courseId}`}
             className="flex items-center text-indigo-600 mb-6 sticky top-20 z-10 bg-white px-3 h-11 rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 hover:bg-indigo-800 hover:text-white"
           >
             <ChevronLeft className="mr-2" />
             Quay lại khóa học
-          </button>
+          </Link>
 
           {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Video and Description (2/3 width) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2 space-y-6">
               {/* Video Section */}
               <div className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -305,9 +302,9 @@ const LessonPage = () => {
                       <AccordionContent>
                         <div className="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
                           {sortedLessons.map((lesson, index) => (
-                            <div
+                            <Link
                               key={lesson.id}
-                              onClick={() => router.push(`/courses/${courseId}/lessons/${lesson.id}`)}
+                              href={`/courses/${courseId}/lessons/${lesson.id}`}
                               className={`cursor-pointer p-4 rounded-lg border-2 transition-all duration-300 hover:shadow-md group ${
                                 lesson.id.toString() === lessonId
                                   ? 'bg-gradient-to-r from-indigo-50 to-blue-50 border-indigo-300 shadow-md'
@@ -350,7 +347,7 @@ const LessonPage = () => {
                                   )}
                                 </div>
                               </div>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </AccordionContent>

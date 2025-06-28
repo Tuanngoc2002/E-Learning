@@ -114,7 +114,6 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
       
       router.push('/dashboard/instructor')
     } catch (error) {
-      console.error('Error updating course:', error)
       setErrorMessage(error instanceof Error ? error.message : 'Failed to update course')
     } finally {
       setIsSubmitting(false)
@@ -224,7 +223,7 @@ export default function EditCoursePage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto">
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Edit Course</h1>

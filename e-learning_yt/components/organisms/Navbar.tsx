@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { FiUser, FiChevronDown, FiLogOut, FiSettings, FiBook } from 'react-icons/fi';
+import { toastSuccess, getVietnameseSuccessMessage } from '@/lib/toast';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,6 +44,7 @@ const Navbar = () => {
     setIsAuthenticated(false);
     setUserRole('');
     setUserName('');
+    toastSuccess(getVietnameseSuccessMessage('Logout successful'));
     router.push('/');
   };
 
@@ -52,8 +54,8 @@ const Navbar = () => {
         onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
         className="flex items-center space-x-2 focus:outline-none"
       >
-        <div className="relative w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-          <FiUser className="w-5 h-5 text-gray-600" />
+        <div className="relative w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
+        <Image src={`/images/${userRole}.webp`} alt="avatar" width={100} height={100} className='rounded-full h-full w-full object-cover' />
         </div>
         <span className="text-gray-700">{userName}</span>
         <FiChevronDown className={`w-4 h-4 transition-transform ${isUserMenuOpen ? 'transform rotate-180' : ''}`} />
@@ -80,7 +82,7 @@ const Navbar = () => {
             className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-gray-100"
           >
             <FiLogOut className="w-4 h-4 mr-2" />
-            Logout
+            Đăng xuất
           </button>
         </div>
       )}
@@ -225,7 +227,7 @@ const Navbar = () => {
                 onClick={handleLogout}
                 className="block w-full text-left px-3 py-2 rounded-md text-red-600 hover:bg-gray-100"
               >
-                Logout
+                Đăng xuất
               </button>
             </>
           ) : (

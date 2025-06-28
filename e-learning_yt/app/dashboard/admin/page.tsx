@@ -25,6 +25,7 @@ interface User {
   role: string
   joined: string
   status: "Active" | "Pending" | "Suspended"
+  avatar: string
 }
 
 interface Course {
@@ -65,6 +66,36 @@ const AdminDashboard = () => {
   const [error, setError] = useState<string | null>(null)
   const { jwt } = useAuth()
 
+  const getStatCardGradient = (color: string) => {
+    const gradients = {
+      blue: 'from-blue-500 to-blue-600',
+      green: 'from-emerald-500 to-emerald-600',
+      purple: 'from-purple-500 to-purple-600',
+      orange: 'from-orange-500 to-orange-600'
+    };
+    return gradients[color as keyof typeof gradients] || 'from-gray-500 to-gray-600';
+  };
+
+  const getActionCardGradient = (color: string) => {
+    const gradients = {
+      blue: 'from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200',
+      green: 'from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200',
+      purple: 'from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200',
+      orange: 'from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200'
+    };
+    return gradients[color as keyof typeof gradients] || 'from-gray-50 to-gray-100';
+  };
+
+  const getIconGradient = (color: string) => {
+    const gradients = {
+      blue: 'from-blue-500 to-blue-600',
+      green: 'from-emerald-500 to-emerald-600',
+      purple: 'from-purple-500 to-purple-600',
+      orange: 'from-orange-500 to-orange-600'
+    };
+    return gradients[color as keyof typeof gradients] || 'from-gray-500 to-gray-600';
+  };
+
   const stats = [
     {
       label: "Total Users",
@@ -72,9 +103,6 @@ const AdminDashboard = () => {
       icon: <FiUsers className="w-6 h-6" />,
       color: "blue",
       change: "+12%",
-      bgGradient: "from-blue-50 to-blue-100",
-      iconBg: "bg-blue-500",
-      textColor: "text-blue-600",
     },
     {
       label: "Total Courses",
@@ -82,9 +110,6 @@ const AdminDashboard = () => {
       icon: <FiBook className="w-6 h-6" />,
       color: "green",
       change: "+8%",
-      bgGradient: "from-emerald-50 to-emerald-100",
-      iconBg: "bg-emerald-500",
-      textColor: "text-emerald-600",
     },
     {
       label: "Total Enrollments",
@@ -92,9 +117,6 @@ const AdminDashboard = () => {
       icon: <FiBookOpen className="w-6 h-6" />,
       color: "purple",
       change: "+15%",
-      bgGradient: "from-purple-50 to-purple-100",
-      iconBg: "bg-purple-500",
-      textColor: "text-purple-600",
     },
     {
       label: "Total Revenue",
@@ -102,9 +124,6 @@ const AdminDashboard = () => {
       icon: <FiDollarSign className="w-6 h-6" />,
       color: "orange",
       change: "+23%",
-      bgGradient: "from-orange-50 to-orange-100",
-      iconBg: "bg-orange-500",
-      textColor: "text-orange-600",
     },
   ]
 
@@ -114,36 +133,24 @@ const AdminDashboard = () => {
       href: "/dashboard/admin/users",
       icon: <FiUsers className="w-8 h-8" />,
       color: "blue",
-      bgGradient: "from-blue-50 to-blue-100",
-      iconBg: "bg-blue-500",
-      hoverBg: "hover:from-blue-100 hover:to-blue-200",
     },
     {
       label: "Quản lý khóa học",
       href: "/dashboard/admin/courses",
       icon: <FiBook className="w-8 h-8" />,
       color: "green",
-      bgGradient: "from-emerald-50 to-emerald-100",
-      iconBg: "bg-emerald-500",
-      hoverBg: "hover:from-emerald-100 hover:to-emerald-200",
     },
     {
       label: "Phân tích đăng ký",
       href: "/dashboard/admin/enrollments",
       icon: <FiBarChart2 className="w-8 h-8" />,
       color: "purple",
-      bgGradient: "from-purple-50 to-purple-100",
-      iconBg: "bg-purple-500",
-      hoverBg: "hover:from-purple-100 hover:to-purple-200",
     },
     {
       label: "Cài đặt hệ thống",
       href: "/dashboard/admin/settings",
       icon: <FiShield className="w-8 h-8" />,
       color: "orange",
-      bgGradient: "from-orange-50 to-orange-100",
-      iconBg: "bg-orange-500",
-      hoverBg: "hover:from-orange-100 hover:to-orange-200",
     },
   ]
 
@@ -312,81 +319,125 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Admin Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="container mx-auto px-4 py-6 !rounded-lg overflow-hidden">
+      <header className="relative bg-white shadow-md border-b border-gray-200 overflow-hidden">
+        {/* Decorative bubbles */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Large bubbles */}
+          <div className="absolute top-4 right-20 w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full opacity-20 animate-pulse"></div>
+          <div className="absolute top-8 right-80 w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full opacity-15 animate-bounce" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-6 left-32 w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-full opacity-20 animate-pulse" style={{animationDelay: '2s'}}></div>
+          
+          {/* Medium bubbles */}
+          <div className="absolute top-12 left-1/4 w-8 h-8 bg-gradient-to-br from-indigo-100 to-indigo-200 rounded-full opacity-25 animate-bounce" style={{animationDelay: '0.5s'}}></div>
+          <div className="absolute bottom-8 right-1/3 w-6 h-6 bg-gradient-to-br from-cyan-100 to-cyan-200 rounded-full opacity-20 animate-pulse" style={{animationDelay: '1.5s'}}></div>
+          <div className="absolute top-6 left-1/2 w-7 h-7 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full opacity-15 animate-bounce" style={{animationDelay: '2.5s'}}></div>
+          
+          {/* Small bubbles */}
+          <div className="absolute top-16 right-1/4 w-4 h-4 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-full opacity-30 animate-ping" style={{animationDelay: '0.8s'}}></div>
+          <div className="absolute bottom-4 left-1/3 w-3 h-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full opacity-25 animate-pulse" style={{animationDelay: '1.2s'}}></div>
+          <div className="absolute top-20 left-20 w-5 h-5 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full opacity-20 animate-bounce" style={{animationDelay: '1.8s'}}></div>
+          <div className="absolute bottom-12 right-16 w-4 h-4 bg-gradient-to-br from-violet-100 to-violet-200 rounded-full opacity-15 animate-ping" style={{animationDelay: '2.2s'}}></div>
+          
+          {/* Tiny floating bubbles */}
+          <div className="absolute top-8 left-1/5 w-2 h-2 bg-blue-200 rounded-full opacity-30 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+          <div className="absolute bottom-6 right-1/5 w-2 h-2 bg-purple-200 rounded-full opacity-25 animate-bounce" style={{animationDelay: '1.7s'}}></div>
+          <div className="absolute top-14 right-1/2 w-1.5 h-1.5 bg-green-200 rounded-full opacity-35 animate-ping" style={{animationDelay: '2.8s'}}></div>
+        </div>
+
+        <div className="relative container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden mr-4 ring-2 ring-gray-200">
-                <Image src="/admin-avatar.jpg" alt="Admin Avatar" fill className="object-cover" />
+              <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 ring-2 ring-blue-100 shadow-md">
+                <Image src="/images/admin.webp" alt="Admin Avatar" fill className="object-cover" />
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Bảng điều khiển quản trị viên</h1>
-                <h2 className="text-gray-600 font-bold">Chào mừng trở lại, Admin</h2>
-                <p className="text-gray-600 mt-2">
+                <h2 className="text-gray-600 font-semibold">Chào mừng trở lại, Admin</h2>
+                <p className="text-gray-600 mt-1 text-sm">
                   Đây là những gì đang xảy ra với nền tảng học tập kĩ thuật số của bạn hôm nay.
                 </p>
               </div>
             </div>
-            <button className="p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200">
-              <FiSettings className="w-6 h-6" />
-            </button>
+            <div className="flex items-center space-x-3">
+              <button className="p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all duration-200">
+                <FiSettings className="w-6 h-6" />
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto py-8">
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className={`bg-gradient-to-br ${stat.bgGradient} rounded-xl border border-gray-200 p-6 hover:shadow-sm transition-all duration-300 hover:scale-[1.02] group cursor-pointer`}
+              className="relative bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden group cursor-pointer"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900 mb-2">{stat.value}</p>
-                  <div className="flex items-center">
-                    <FiTrendingUp className="w-4 h-4 text-green-500 mr-1" />
-                    <p
-                      className={`text-sm font-medium ${stat.change.startsWith("+") ? "text-green-600" : "text-red-600"}`}
-                    >
-                      {stat.change} từ tháng trước
-                    </p>
+              {/* Background gradient overlay */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${getStatCardGradient(stat.color)} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+              
+              <div className="relative p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
+                    <p className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</p>
+                    <div className="flex items-center">
+                      <span className="text-nowrap inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {stat.change} từ tháng trước
+                      </span>
+                    </div>
+                  </div>
+                  <div className={`p-4 rounded-xl bg-gradient-to-br ${getStatCardGradient(stat.color)} shadow-lg transform group-hover:scale-110 transition-transform duration-300`}>
+                    <div className="text-white">
+                      {stat.icon}
+                    </div>
                   </div>
                 </div>
-                <div
-                  className={`p-3 rounded-xl ${stat.iconBg} text-white group-hover:scale-110 transition-transform duration-300`}
-                >
-                  {stat.icon}
-                </div>
               </div>
+              
+              {/* Bottom accent line */}
+              <div className={`h-1 bg-gradient-to-r ${getStatCardGradient(stat.color)}`}></div>
             </div>
           ))}
         </div>
 
         {/* Quick Actions */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
             <FiActivity className="w-5 h-5 mr-2 text-gray-600" />
             Hành động nhanh
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {quickActions.map((action, index) => (
               <Link
                 key={index}
                 href={action.href}
-                className={`bg-gradient-to-br ${action.bgGradient} ${action.hoverBg} rounded-xl border border-gray-200 p-6 transition-all duration-300 hover:shadow-sm hover:scale-[1.02] group`}
+                className={`relative bg-gradient-to-br ${getActionCardGradient(action.color)} rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-white/50 overflow-hidden group`}
               >
-                <div className="flex flex-col items-center text-center">
-                  <div
-                    className={`p-4 rounded-xl ${action.iconBg} text-white group-hover:scale-110 transition-transform duration-300 mb-4`}
-                  >
-                    {action.icon}
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                
+                <div className="relative p-8">
+                  <div className="flex flex-col items-center text-center">
+                    <div className={`relative p-5 rounded-2xl bg-gradient-to-br ${getIconGradient(action.color)} shadow-lg mb-4 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                      <div className="text-white">
+                        {action.icon}
+                      </div>
+                      {/* Icon glow effect */}
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getIconGradient(action.color)} blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300`}></div>
+                    </div>
+                    <h3 className="font-semibold text-gray-900 text-lg group-hover:text-gray-700 transition-colors duration-300">
+                      {action.label}
+                    </h3>
+                    
+                    {/* Arrow indicator */}
+                    <div className="mt-3 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                      <div className={`w-8 h-0.5 bg-gradient-to-r ${getIconGradient(action.color)} rounded-full`}></div>
+                    </div>
                   </div>
-                  <h3 className="font-medium text-gray-900 group-hover:text-gray-700 transition-colors">
-                    {action.label}
-                  </h3>
                 </div>
               </Link>
             ))}
