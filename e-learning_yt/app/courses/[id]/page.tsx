@@ -1075,39 +1075,41 @@ const CourseDetailPage = () => {
       )}
 
       {/* Floating Chat Icon - Fixed to bottom right */}
-      <div className="fixed bottom-24 right-8 z-50">
-        {!showChatBox ? (
-          <button
-            onClick={() => setShowChatBox(true)}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white h-11 w-11 flex items-center justify-center rounded-full shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
-          >
-            <FaCommentDots className="w-5 h-5" />
-          </button>
-        ) : (
-          <div className="bg-white rounded-lg shadow-2xl w-80 sm:w-96 border border-gray-200">
-            <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
-              <div className="flex items-center">
-                <FaCommentDots className="w-5 h-5 mr-2" />
-                <div>
-                  <h3 className="font-semibold text-sm">Course Chat</h3>
-                  <p className="text-xs opacity-90">Ask instructor</p>
+      {user?.id && (
+        <div className="fixed bottom-24 right-8 z-50">
+          {!showChatBox ? (
+            <button
+              onClick={() => setShowChatBox(true)}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white h-11 w-11 flex items-center justify-center rounded-full shadow-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105"
+            >
+              <FaCommentDots className="w-5 h-5" />
+            </button>
+          ) : (
+            <div className="bg-white rounded-lg shadow-2xl w-80 sm:w-96 border border-gray-200">
+              <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
+                <div className="flex items-center">
+                  <FaCommentDots className="w-5 h-5 mr-2" />
+                  <div>
+                    <h3 className="font-semibold text-sm">Course Chat</h3>
+                    <p className="text-xs opacity-90">Ask instructor</p>
+                  </div>
                 </div>
+                <button
+                  onClick={() => setShowChatBox(false)}
+                  className="text-white hover:text-gray-200 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
+                >
+                  ×
+                </button>
               </div>
-              <button
-                onClick={() => setShowChatBox(false)}
-                className="text-white hover:text-gray-200 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
-              >
-                ×
-              </button>
+              <ChatBox
+                courseId={courseId.toString()}
+                instructorId={course.instructor.id.toString()}
+                currentUserId={user?.id?.toString() || ""}
+              />
             </div>
-            <ChatBox
-              courseId={courseId.toString()}
-              instructorId={course.instructor.id.toString()}
-              currentUserId={user?.id?.toString() || ""}
-            />
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       <ChatbotButton />
     </div>
