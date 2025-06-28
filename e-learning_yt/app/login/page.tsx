@@ -226,9 +226,9 @@ export default function LoginPage() {
           <div className="mt-6">
             <h3 className="text-center text-sm font-medium text-gray-500">Tài khoản Demo:</h3>
             <div className="mt-2 text-sm text-gray-500">
-              <p>Quản trị viên: admin@example.com / admin123</p>
-              <p>Giảng viên: instructor@example.com / instructor123</p>
-              <p>Học viên: user@example.com / user123</p>
+              <p>Quản trị viên: admin@gmail.com / 123456</p>
+              <p>Giảng viên: instructor1@gmail.com / 123456</p>
+              <p>Học viên: student1@gmail.com / 123456</p>
             </div>
           </div>
         </div>
